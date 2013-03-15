@@ -1,0 +1,35 @@
+/*
+ * Simple jQuery Dialog
+ * https://github.com/filamentgroup/dialog
+ *
+ * Copyright (c) 2013 Filament Group, Inc.
+ * Licensed under the MIT, GPL licenses.
+ */
+.dialog {
+	width: 100%;
+	min-height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: #aaa;
+	background-color: rgba(0,0,0,.4);
+	display: none;
+	z-index: 99999;
+}
+.dialog-content {
+	margin: 1em;
+	background: #fff;
+	padding: 1em 2em;
+	max-width: 30em;
+	position: relative;
+	box-shadow: 0 1px 2px #777;
+}
+div.dialog-open {
+	display: block;
+}
+
+@media (min-width: 32em){
+	.dialog-content {
+		margin: 4em auto 1em;
+	}
+}
