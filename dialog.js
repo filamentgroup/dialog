@@ -58,9 +58,9 @@
 
 			$el
 				.wrapInner( "<div class='"+ contentClass +"' role='dialog' tabindex='0'></div>" )
-				.on( "open", open )
-				.on( "close", close )
-				.on( "click", function( e ){
+				.bind( "open", open )
+				.bind( "close", close )
+				.bind( "click", function( e ){
 					if( $( e.target ).is( "." + closeClass ) || $el.is( e.target ) ){
 						w.history.back();
 						e.preventDefault();
@@ -69,7 +69,7 @@
 
 			$( w )
 				// close on hashchange if open (supports back button closure)
-				.on( "hashchange", function( e ){
+				.bind( "hashchange", function( e ){
 					var hash = w.location.hash.replace( "#", "" );
 
 					if( hash !== nullHash && isOpen ){
@@ -79,14 +79,14 @@
 
 			$( doc )
 				// open on matching a[href=#id] click
-				.on( "click", function( e ){
+				.bind( "click", function( e ){
 					if( !isOpen && $( e.target ).is( "a" ) && $el.is( $( e.target ).attr( "href" ) ) ){
 						open();
 						e.preventDefault();
 					}
 				})
 				// close on escape key
-				.on( "keyup", function( e ){
+				.bind( "keyup", function( e ){
 					if( isOpen && e.which === 27 ){
 						close();
 					}
