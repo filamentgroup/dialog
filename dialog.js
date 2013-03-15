@@ -23,6 +23,7 @@
 
 			var $el = $( this ),
 				scroll = 0,
+				focused = null,
 				isOpen = false;
 
 			$el.appendTo( body );
@@ -39,12 +40,18 @@
 				$html.addClass( openClass );
 				isOpen = true;
 				location.hash = nullHash;
+				if( doc.activeElement ){
+					focused = doc.activeElement;
+				}
 				$el.children( 0 )[ 0 ].focus();
 			}
 
 			function close(){
 				$el.removeClass( openClass );
 				$html.removeClass( openClass );
+				if( focused ){
+					focused.focus();
+				}
 				w.scrollTo( 0, scroll );
 				isOpen = false;
 			}
