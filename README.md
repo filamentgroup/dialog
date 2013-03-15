@@ -84,7 +84,7 @@ You can open and close the dialog via JavaScript by triggering an open or close 
 open:
 $( "#mydialog" ).trigger( "open" );
 close:
-$( "#mydialog" ).trigger( "open" );
+$( "#mydialog" ).trigger( "close" );
 ````
 
 
