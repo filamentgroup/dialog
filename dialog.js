@@ -39,6 +39,7 @@
 				$html.addClass( openClass );
 				isOpen = true;
 				location.hash = nullHash;
+				$el.children( 0 )[ 0 ].focus();
 			}
 
 			function close(){
@@ -49,7 +50,7 @@
 			}
 
 			$el
-				.wrapInner( "<div class='"+ contentClass +"'></div>" )
+				.wrapInner( "<div class='"+ contentClass +"' role='dialog' tabindex='0'></div>" )
 				.on( "open", open )
 				.on( "close", close )
 				.on( "click", function( e ){
