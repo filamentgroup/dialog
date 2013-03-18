@@ -73,7 +73,7 @@
 					var hash = w.location.hash.replace( "#", "" );
 
 					if( hash !== nullHash && isOpen ){
-						close();
+						$el.trigger( "close" );
 					}
 				});
 
@@ -81,14 +81,14 @@
 				// open on matching a[href=#id] click
 				.bind( "click", function( e ){
 					if( !isOpen && $( e.target ).is( "a" ) && $el.is( $( e.target ).attr( "href" ) ) ){
-						open();
+						$el.trigger( "open" );
 						e.preventDefault();
 					}
 				})
 				// close on escape key
 				.bind( "keyup", function( e ){
 					if( isOpen && e.which === 27 ){
-						close();
+						$el.trigger( "close" );
 					}
 				});
 		});
