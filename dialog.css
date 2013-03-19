@@ -5,15 +5,18 @@
  * Copyright (c) 2013 Filament Group, Inc.
  * Licensed under the MIT, GPL licenses.
  */
-.dialog {
-	width: 100%;
-	min-height: 100%;
+.dialog-content,
+.dialog-background {
 	position: absolute;
 	top: 0;
 	left: 0;
+	right: 0;
+	display: none;
+}
+.dialog-background {
+	min-height: 100%;
 	background: #aaa;
 	background-color: rgba(0,0,0,.4);
-	display: none;
 	z-index: 99999;
 }
 .dialog-content {
@@ -21,10 +24,11 @@
 	background: #fff;
 	padding: 1em 2em;
 	max-width: 30em;
-	position: relative;
 	box-shadow: 0 1px 2px #777;
+	z-index: 100000;
 }
-div.dialog-open {
+.dialog-open,
+.dialog-open .dialog-background {
 	display: block;
 }
 

@@ -13,11 +13,13 @@
 		var openClass = "dialog-open",
 			contentClass = "dialog-content",
 			closeClass = "dialog-close",
+			backgroundClass = "dialog-background",
 			nullHash = "dialog",
 			doc = w.document,
 			docElem = doc.documentElement,
 			body = doc.body,
-			$html = $( docElem );
+			$html = $( docElem ),
+			$background = $( doc.createElement( 'div' ) ).addClass( backgroundClass );
 
 		return this.each(function(){
 
@@ -26,12 +28,12 @@
 				focused = null,
 				isOpen = false;
 
-			$el.appendTo( body );
+			$background.appendTo( body );
 
 			function open( e ){
 				scroll = "pageYOffset" in w ? w.pageYOffset : ( docElem.scrollY || ( body && body.scrollY ) );
 
-				$el[ 0 ].style.height = body.clientHeight + "px";
+				$background[ 0 ].style.height = body.clientHeight + "px";
 
 				$el
 					.addClass( openClass )
@@ -57,15 +59,21 @@
 			}
 
 			$el
-				.wrapInner( "<div class='"+ contentClass +"' role='dialog' tabindex='0'></div>" )
+				.addClass( contentClass )
+				.attr( "role", "dialog" )
+				.attr( "tabindex", 0 )
 				.bind( "open", open )
 				.bind( "close", close )
 				.bind( "click", function( e ){
-					if( $( e.target ).is( "." + closeClass ) || $el.is( e.target ) ){
+					if( $( e.target ).is( "." + closeClass ) ){
 						w.history.back();
 						e.preventDefault();
 					}
 				});
+
+			$background.bind( "click", function( e ) {
+				w.history.back();
+			});
 
 			$( w )
 				// close on hashchange if open (supports back button closure)
