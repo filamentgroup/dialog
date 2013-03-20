@@ -24,20 +24,27 @@
 		return this.each(function(){
 
 			var $el = $( this ),
+				positionMedia = $el.attr( 'data-set-position-media' ),
 				scroll = 0,
 				focused = null,
 				isOpen = false;
 
 			$background.appendTo( body );
 
+			function isSetScrollPosition() {
+				return !positionMedia || ( w.matchMedia && w.matchMedia( positionMedia ).matches );
+			}
+
 			function open( e ){
-				scroll = "pageYOffset" in w ? w.pageYOffset : ( docElem.scrollY || ( body && body.scrollY ) );
-
 				$background[ 0 ].style.height = body.clientHeight + "px";
+				$el.addClass( openClass );
 
-				$el
-					.addClass( openClass )
-					[ 0 ].style.top = scroll + "px";
+				if( isSetScrollPosition() ) {
+					scroll = "pageYOffset" in w ? w.pageYOffset : ( docElem.scrollY || ( body && body.scrollY ) );
+					$el[ 0 ].style.top = scroll + "px";
+				} else {
+					$el[ 0 ].style.top = 'auto';
+				}
 
 				$html.addClass( openClass );
 				isOpen = true;
@@ -54,7 +61,9 @@
 				if( focused ){
 					focused.focus();
 				}
-				w.scrollTo( 0, scroll );
+				if( isSetScrollPosition() ) {
+					w.scrollTo( 0, scroll );
+				}
 				isOpen = false;
 			}
 
