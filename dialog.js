@@ -37,7 +37,7 @@
 
 				$el
 					.addClass( openClass )
-					.children( 0 )[ 0 ].style.top = scroll + "px";
+					[ 0 ].style.top = scroll + "px";
 
 				$html.addClass( openClass );
 				isOpen = true;
@@ -45,7 +45,7 @@
 				if( doc.activeElement ){
 					focused = doc.activeElement;
 				}
-				$el.children( 0 )[ 0 ].focus();
+				$el[ 0 ].focus();
 			}
 
 			function close(){
