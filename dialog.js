@@ -13,29 +13,38 @@
 		var openClass = "dialog-open",
 			contentClass = "dialog-content",
 			closeClass = "dialog-close",
+			backgroundClass = "dialog-background",
 			nullHash = "dialog",
 			doc = w.document,
 			docElem = doc.documentElement,
 			body = doc.body,
-			$html = $( docElem );
+			$html = $( docElem ),
+			$background = $( doc.createElement( 'div' ) ).addClass( backgroundClass );
 
 		return this.each(function(){
 
 			var $el = $( this ),
+				positionMedia = $el.attr( 'data-set-position-media' ),
 				scroll = 0,
 				focused = null,
 				isOpen = false;
 
-			$el.appendTo( body );
+			$background.appendTo( body );
+
+			function isSetScrollPosition() {
+				return !positionMedia || ( w.matchMedia && w.matchMedia( positionMedia ).matches );
+			}
 
 			function open( e ){
-				scroll = "pageYOffset" in w ? w.pageYOffset : ( docElem.scrollY || ( body && body.scrollY ) );
+				$background[ 0 ].style.height = body.clientHeight + "px";
+				$el.addClass( openClass );
 
-				$el[ 0 ].style.height = body.clientHeight + "px";
-
-				$el
-					.addClass( openClass )
-					.children( 0 )[ 0 ].style.top = scroll + "px";
+				if( isSetScrollPosition() ) {
+					scroll = "pageYOffset" in w ? w.pageYOffset : ( docElem.scrollY || ( body && body.scrollY ) );
+					$el[ 0 ].style.top = scroll + "px";
+				} else {
+					$el[ 0 ].style.top = 'auto';
+				}
 
 				$html.addClass( openClass );
 				isOpen = true;
@@ -43,7 +52,7 @@
 				if( doc.activeElement ){
 					focused = doc.activeElement;
 				}
-				$el.children( 0 )[ 0 ].focus();
+				$el[ 0 ].focus();
 			}
 
 			function close(){
@@ -52,20 +61,28 @@
 				if( focused ){
 					focused.focus();
 				}
-				w.scrollTo( 0, scroll );
+				if( isSetScrollPosition() ) {
+					w.scrollTo( 0, scroll );
+				}
 				isOpen = false;
 			}
 
 			$el
-				.wrapInner( "<div class='"+ contentClass +"' role='dialog' tabindex='0'></div>" )
+				.addClass( contentClass )
+				.attr( "role", "dialog" )
+				.attr( "tabindex", 0 )
 				.bind( "open", open )
 				.bind( "close", close )
 				.bind( "click", function( e ){
-					if( $( e.target ).is( "." + closeClass ) || $el.is( e.target ) ){
+					if( $( e.target ).is( "." + closeClass ) ){
 						w.history.back();
 						e.preventDefault();
 					}
 				});
+
+			$background.bind( "click", function( e ) {
+				w.history.back();
+			});
 
 			$( w )
 				// close on hashchange if open (supports back button closure)
