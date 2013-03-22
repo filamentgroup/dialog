@@ -97,7 +97,8 @@
 			$( doc )
 				// open on matching a[href=#id] click
 				.bind( "click", function( e ){
-					if( !isOpen && $( e.target ).is( "a" ) && $el.is( $( e.target ).attr( "href" ) ) ){
+					var $a = $( e.target ).closest( "a" );
+					if( !isOpen && $a.length && $a.attr( "href" ) ){
 						$el.trigger( "open" );
 						e.preventDefault();
 					}
