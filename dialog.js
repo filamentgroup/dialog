@@ -43,7 +43,7 @@
 					scroll = "pageYOffset" in w ? w.pageYOffset : ( docElem.scrollY || ( body && body.scrollY ) );
 					$el[ 0 ].style.top = scroll + "px";
 				} else {
-					$el[ 0 ].style.top = 'auto';
+					$el[ 0 ].style.top = '';
 				}
 
 				$html.addClass( openClass );
