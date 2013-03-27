@@ -10,16 +10,23 @@
 (function( w, $ ){
 	$.fn.dialog = function(){
 
-		var openClass = "dialog-open",
-			contentClass = "dialog-content",
-			closeClass = "dialog-close",
-			backgroundClass = "dialog-background",
+		var pluginName = "dialog",
+			cl = {
+				open: pluginName + "-open",
+				content: pluginName + "-content",
+				close: pluginName + "-close",
+				bkgd: pluginName + "-background"
+			},
+			ev = {
+				open: pluginName + "-open",
+				close: pluginName + "-close"
+			},
 			nullHash = "dialog",
 			doc = w.document,
 			docElem = doc.documentElement,
 			body = doc.body,
 			$html = $( docElem ),
-			$background = $( doc.createElement( 'div' ) ).addClass( backgroundClass );
+			$background = $( doc.createElement( 'div' ) ).addClass( cl.bkgd );
 
 		return this.each(function(){
 
@@ -37,7 +44,7 @@
 
 			function open( e ){
 				$background[ 0 ].style.height = body.clientHeight + "px";
-				$el.addClass( openClass );
+				$el.addClass( cl.open );
 
 				if( isSetScrollPosition() ) {
 					scroll = "pageYOffset" in w ? w.pageYOffset : ( docElem.scrollY || ( body && body.scrollY ) );
@@ -46,7 +53,7 @@
 					$el[ 0 ].style.top = '';
 				}
 
-				$html.addClass( openClass );
+				$html.addClass( cl.open );
 				isOpen = true;
 				location.hash = nullHash;
 				if( doc.activeElement ){
@@ -56,8 +63,8 @@
 			}
 
 			function close(){
-				$el.removeClass( openClass );
-				$html.removeClass( openClass );
+				$el.removeClass( cl.open );
+				$html.removeClass( cl.open );
 				if( focused ){
 					focused.focus();
 				}
@@ -68,13 +75,13 @@
 			}
 
 			$el
-				.addClass( contentClass )
+				.addClass( cl.content )
 				.attr( "role", "dialog" )
 				.attr( "tabindex", 0 )
-				.bind( "open", open )
-				.bind( "close", close )
+				.bind( ev.open, open )
+				.bind( ev.close, close )
 				.bind( "click", function( e ){
-					if( $( e.target ).is( "." + closeClass ) ){
+					if( $( e.target ).is( "." + cl.close ) ){
 						w.history.back();
 						e.preventDefault();
 					}
@@ -90,7 +97,7 @@
 					var hash = w.location.hash.replace( "#", "" );
 
 					if( hash !== nullHash && isOpen ){
-						$el.trigger( "close" );
+						$el.trigger( ev.close );
 					}
 				});
 
@@ -99,14 +106,14 @@
 				.bind( "click", function( e ){
 					var $a = $( e.target ).closest( "a" );
 					if( !isOpen && $a.length && $a.attr( "href" ) ){
-						$el.trigger( "open" );
+						$el.trigger( ev.open );
 						e.preventDefault();
 					}
 				})
 				// close on escape key
 				.bind( "keyup", function( e ){
 					if( isOpen && e.which === 27 ){
-						$el.trigger( "close" );
+						$el.trigger( ev.close );
 					}
 				});
 		});
