@@ -105,8 +105,9 @@
 				// open on matching a[href=#id] click
 				.bind( "click", function( e ){
 					var $a = $( e.target ).closest( "a" );
+
 					if( !isOpen && $a.length && $a.attr( "href" ) ){
-						$el.trigger( ev.open );
+						$( $a.attr( "href" ) ).trigger( ev.open );
 						e.preventDefault();
 					}
 				})
