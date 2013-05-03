@@ -6,13 +6,14 @@
   <title>Dialog Example</title>
   <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
   <script src="dialog.js"></script>
+  <script src="dialog-linker.js"></script>
   <link rel="stylesheet" href="dialog.css">
 </head>
 <body>
 	
-
+<p>
   <a href="#mydialog" id="mydialog-btn">Open Dialog</a>
-
+</p>
 
 
   <div class="dialog" id="mydialog">
@@ -20,6 +21,9 @@
     <a href="#mydialog-btn" class="dialog-close">Close</a>
   </div>
 	
+<p>
+  <a href="example-external.html" data-dialog-link>Open Ajax Dialog</a>
+</p>
 
 </body>
 </html>
