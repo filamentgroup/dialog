@@ -15,7 +15,8 @@
 				open: pluginName + "-open",
 				content: pluginName + "-content",
 				close: pluginName + "-close",
-				bkgd: pluginName + "-background"
+				bkgd: pluginName + "-background",
+				bkgdOpen: pluginName + "-background-open"
 			},
 			ev = {
 				open: pluginName + "-open",
@@ -43,8 +44,9 @@
 			}
 
 			function open( e ){
-				$background[ 0 ].style.height = body.clientHeight + "px";
+				$background[ 0 ].style.height = document.documentElement.clientHeight + "px";
 				$el.addClass( cl.open );
+				$background.addClass( cl.bkgdOpen );
 
 				if( isSetScrollPosition() ) {
 					scroll = "pageYOffset" in w ? w.pageYOffset : ( docElem.scrollY || ( body && body.scrollY ) );
@@ -64,6 +66,7 @@
 
 			function close(){
 				$el.removeClass( cl.open );
+				$background.removeClass( cl.bkgdOpen );
 				$html.removeClass( cl.open );
 				if( focused ){
 					focused.focus();
