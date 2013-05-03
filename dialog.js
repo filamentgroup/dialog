@@ -107,8 +107,11 @@
 					var $a = $( e.target ).closest( "a" );
 
 					if( !isOpen && $a.length && $a.attr( "href" ) ){
-						$( $a.attr( "href" ) ).trigger( ev.open );
-						e.preventDefault();
+						var $matchingDialog = $( $a.attr( "href" ) );
+						if( $matchingDialog.length && $matchingDialog.is( $el ) ){
+							$matchingDialog.trigger( ev.open );
+							e.preventDefault();
+						}
 					}
 				})
 				// close on escape key
