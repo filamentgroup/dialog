@@ -28,6 +28,16 @@
 	box-shadow: 0 1px 2px #777;
 	z-index: 100000;
 }
+/*
+	IE8+ issue with centering dialog
+	https://github.com/filamentgroup/dialog/issues/6
+	requires Respond.JS for IE8
+*/
+@media (min-width: 30em) {
+	.dialog-content {
+		width: 30em;
+	}
+}
 .dialog-open,
 .dialog-background-open {
 	display: block;
