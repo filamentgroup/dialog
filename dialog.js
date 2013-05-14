@@ -44,12 +44,12 @@
 			}
 
 			function open( e ){
-				$background[ 0 ].style.height = document.documentElement.clientHeight + "px";
+				$background[ 0 ].style.height = Math.max( docElem.scrollHeight, docElem.clientHeight ) + "px";
 				$el.addClass( cl.open );
 				$background.addClass( cl.bkgdOpen );
 
 				if( isSetScrollPosition() ) {
-					scroll = "pageYOffset" in w ? w.pageYOffset : ( docElem.scrollY || ( body && body.scrollY ) );
+					scroll = ( "pageYOffset" in w ? w.pageYOffset : ( docElem.scrollY || docElem.scrollTop || ( body && body.scrollY ) ) );
 					$el[ 0 ].style.top = scroll + "px";
 				} else {
 					$el[ 0 ].style.top = '';
