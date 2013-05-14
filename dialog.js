@@ -49,7 +49,7 @@
 				$background.addClass( cl.bkgdOpen );
 
 				if( isSetScrollPosition() ) {
-					scroll = ( "pageYOffset" in w ? w.pageYOffset : ( docElem.scrollY || docElem.scrollTop || ( body && body.scrollY ) ) );
+					scroll = "pageYOffset" in w ? w.pageYOffset : ( docElem.scrollY || docElem.scrollTop || ( body && body.scrollY ) || 0 );
 					$el[ 0 ].style.top = scroll + "px";
 				} else {
 					$el[ 0 ].style.top = '';
