@@ -42,6 +42,9 @@
 .dialog-background-open {
 	display: block;
 }
+.dialog-background-trans {
+	background: transparent;
+}
 
 @media (min-width: 32em){
 	.dialog-content {

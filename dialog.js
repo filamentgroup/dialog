@@ -8,7 +8,7 @@
  */
 
 (function( w, $ ){
-	$.fn.dialog = function(){
+	$.fn.dialog = function( transbg ){
 
 		var pluginName = "dialog",
 			cl = {
@@ -16,7 +16,8 @@
 				content: pluginName + "-content",
 				close: pluginName + "-close",
 				bkgd: pluginName + "-background",
-				bkgdOpen: pluginName + "-background-open"
+				bkgdOpen: pluginName + "-background-open",
+				bkgdTrans: pluginName + "-background-trans"
 			},
 			ev = {
 				open: pluginName + "-open",
@@ -36,6 +37,14 @@
 				scroll = 0,
 				focused = null,
 				isOpen = false;
+
+			if( !transbg ){
+				transbg = $el.is( '[data-transbg]' );
+			}
+
+			if( transbg ){
+				$background.addClass( cl.bkgdTrans );
+			}
 
 			$background.appendTo( body );
 
