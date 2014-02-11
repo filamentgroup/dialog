@@ -13,6 +13,7 @@
 		var pluginName = "dialog",
 			cl = {
 				open: pluginName + "-open",
+				opened: pluginName + "-opened",
 				content: pluginName + "-content",
 				close: pluginName + "-close",
 				bkgd: pluginName + "-background",
@@ -71,6 +72,7 @@
 					focused = doc.activeElement;
 				}
 				$el[ 0 ].focus();
+        $el.trigger( "dialog-opened" );
 			}
 
 			function close(){
@@ -139,5 +141,4 @@
 	$(function(){
 		$( ".dialog" ).dialog();
 	});
-
 }( this, jQuery ));
