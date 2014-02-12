@@ -32,13 +32,50 @@
 			$html = $( docElem ),
 			$background = $( doc.createElement( 'div' ) ).addClass( cl.bkgd );
 
+		w.Dialog = function( element ){
+			this.$el = $( element );
+			this.isOpen = false;
+			this.positionMedia = this.$el.attr( 'data-set-position-media' );
+		};
+
+		w.Dialog.prototype.isSetScrollPosition = function() {
+			return !this.positionMedia ||
+				( w.matchMedia && w.matchMedia( this.positionMedia ).matches );
+		};
+
+		w.Dialog.prototype.open = function( e ) {
+			$background[ 0 ].style.height = Math.max( docElem.scrollHeight, docElem.clientHeight ) + "px";
+			this.$el.addClass( cl.open );
+			$background.addClass( cl.bkgdOpen );
+
+			if( this.isSetScrollPosition() ) {
+				this.scroll = "pageYOffset" in w ? w.pageYOffset : ( docElem.scrollY || docElem.scrollTop || ( body && body.scrollY ) || 0 );
+				this.$el[ 0 ].style.top = this.scroll + "px";
+			} else {
+				this.$el[ 0 ].style.top = '';
+			}
+
+			$html.addClass( cl.open );
+			this.isOpen = true;
+
+			location.hash = nullHash;
+
+			if( doc.activeElement ){
+				this.focused = doc.activeElement;
+			}
+			this.$el[ 0 ].focus();
+
+			this.$el.trigger( cl.opened );
+		};
+
 		return this.each(function(){
 
 			var $el = $( this ),
 				positionMedia = $el.attr( 'data-set-position-media' ),
 				scroll = 0,
 				focused = null,
-				isOpen = false;
+				isOpen = false,
+				dialog = new w.Dialog( this );
 
 			if( !transbg ){
 				transbg = $el.is( '[data-transbg]' );
@@ -51,43 +88,27 @@
 			$background.appendTo( body );
 
 			function isSetScrollPosition() {
-				return !positionMedia || ( w.matchMedia && w.matchMedia( positionMedia ).matches );
+				return dialog.isSetScrollPosition();
 			}
 
 			function open( e ){
-				$background[ 0 ].style.height = Math.max( docElem.scrollHeight, docElem.clientHeight ) + "px";
-				$el.addClass( cl.open );
-				$background.addClass( cl.bkgdOpen );
-
-				if( isSetScrollPosition() ) {
-					scroll = "pageYOffset" in w ? w.pageYOffset : ( docElem.scrollY || docElem.scrollTop || ( body && body.scrollY ) || 0 );
-					$el[ 0 ].style.top = scroll + "px";
-				} else {
-					$el[ 0 ].style.top = '';
-				}
-
-				$html.addClass( cl.open );
-				isOpen = true;
-				location.hash = nullHash;
-				if( doc.activeElement ){
-					focused = doc.activeElement;
-				}
-				$el[ 0 ].focus();
-
-				$el.trigger( cl.opened );
+				dialog.open( e );
 			}
 
 			function close(){
 				$el.removeClass( cl.open );
 				$background.removeClass( cl.bkgdOpen );
 				$html.removeClass( cl.open );
-				if( focused ){
-					focused.focus();
+
+				if( dialog.focused ){
+					dialog.focused.focus();
 				}
+
 				if( isSetScrollPosition() ) {
-					w.scrollTo( 0, scroll );
+					w.scrollTo( 0, dialog.scroll );
 				}
-				isOpen = false;
+
+				dialog.isOpen = false;
 
 				$el.trigger( cl.closed );
 			}
@@ -114,7 +135,7 @@
 				.bind( "hashchange", function( e ){
 					var hash = w.location.hash.replace( "#", "" );
 
-					if( hash !== nullHash && isOpen ){
+					if( hash !== nullHash && dialog.isOpen ){
 						$el.trigger( ev.close );
 					}
 				});
@@ -124,7 +145,7 @@
 				.bind( "click", function( e ){
 					var $a = $( e.target ).closest( "a" );
 
-					if( !isOpen && $a.length && $a.attr( "href" ) ){
+					if( !dialog.isOpen && $a.length && $a.attr( "href" ) ){
 						var $matchingDialog = $( $a.attr( "href" ) );
 						if( $matchingDialog.length && $matchingDialog.is( $el ) ){
 							$matchingDialog.trigger( ev.open );
@@ -134,7 +155,7 @@
 				})
 				// close on escape key
 				.bind( "keyup", function( e ){
-					if( isOpen && e.which === 27 ){
+					if( dialog.isOpen && e.which === 27 ){
 						$el.trigger( ev.close );
 					}
 				});
