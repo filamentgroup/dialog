@@ -16,6 +16,7 @@
 				opened: pluginName + "-opened",
 				content: pluginName + "-content",
 				close: pluginName + "-close",
+				closed: pluginName + "-closed",
 				bkgd: pluginName + "-background",
 				bkgdOpen: pluginName + "-background-open",
 				bkgdTrans: pluginName + "-background-trans"
@@ -72,7 +73,8 @@
 					focused = doc.activeElement;
 				}
 				$el[ 0 ].focus();
-        $el.trigger( "dialog-opened" );
+
+				$el.trigger( cl.opened );
 			}
 
 			function close(){
@@ -86,6 +88,8 @@
 					w.scrollTo( 0, scroll );
 				}
 				isOpen = false;
+
+				$el.trigger( cl.closed );
 			}
 
 			$el
