@@ -70,6 +70,10 @@
 		};
 
 		w.Dialog.prototype.close = function(){
+			if( !this.isOpen ){
+				return;
+			}
+
 			this.$el.removeClass( cl.open );
 
 			$background.removeClass( cl.bkgdOpen );
@@ -140,7 +144,7 @@
 			$( w ).bind( "hashchange", function( e ){
 				var hash = w.location.hash.replace( "#", "" );
 
-				if( hash !== nullHash && dialog.isOpen ){
+				if( hash !== nullHash ){
 					$el.trigger( ev.close );
 				}
 			});
@@ -159,8 +163,8 @@
 			});
 
 			// close on escape key
-			$( doc )..bind( "keyup", function( e ){
-				if( dialog.isOpen && e.which === 27 ){
+			$( doc ).bind( "keyup", function( e ){
+				if( e.which === 27 ){
 					$el.trigger( ev.close );
 				}
 			});
