@@ -5,10 +5,6 @@
 		$instance = $( "#dialog" ).dialog();
 	};
 
-	$( document ).bind( "dialog-opened", function() {
-		console.log( 'dialog-opened fired at doc' );
-	});
-
 	commonTeardown = function() {
 		$instance.unbind( "dialog-closed" );
 		$instance.unbind( "dialog-opened" );
@@ -57,9 +53,46 @@
 		teardown: commonTeardown
 	});
 
-	test( "makes the dialog invisible", function() {
+	asyncTest( "using trigger makes the dialog invisible", function() {
+		expect( 3 );
+
 		$instance.one( "dialog-opened", function(){
 			ok( $instance.is(":visible") );
+			$instance.trigger( "dialog-close" );
+		});
+
+		$instance.one( "dialog-closed", function(){
+			ok( !$instance.is(":visible") );
+			start();
+		});
+
+		ok( !$instance.is(":visible") );
+		$instance.trigger( "dialog-open" );
+	});
+
+	asyncTest( "using the back button makes the dialog invisible", function() {
+		$instance.one( "dialog-opened", function(){
+			ok( $instance.is(":visible") );
+			window.history.back();
+		});
+
+		$instance.one( "dialog-closed", function(){
+			ok( !$instance.is(":visible") );
+			start();
+		});
+
+		ok( !$instance.is(":visible") );
+		$instance.trigger( "dialog-open" );
+	});
+
+	asyncTest( "using the escapte key makes the dialog invisible", function() {
+		var keyupEvent = $.Event( "keyup" );
+
+		keyupEvent.which = 27;
+
+		$instance.one( "dialog-opened", function(){
+			ok( $instance.is(":visible") );
+			$( document ).trigger( keyupEvent );
 		});
 
 		$instance.one( "dialog-closed", function(){
