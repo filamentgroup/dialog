@@ -34,6 +34,7 @@
 
 		w.Dialog = function( element ){
 			this.$el = $( element );
+
 			this.isOpen = false;
 			this.positionMedia = this.$el.attr( 'data-set-position-media' );
 		};
@@ -68,6 +69,25 @@
 			this.$el.trigger( cl.opened );
 		};
 
+		w.Dialog.prototype.close = function(){
+			this.$el.removeClass( cl.open );
+
+			$background.removeClass( cl.bkgdOpen );
+			$html.removeClass( cl.open );
+
+			if( this.focused ){
+				this.focused.focus();
+			}
+
+			if( this.isSetScrollPosition() ) {
+				w.scrollTo( 0, this.scroll );
+			}
+
+			this.isOpen = false;
+
+			this.$el.trigger( cl.closed );
+		};
+
 		return this.each(function(){
 
 			var $el = $( this ),
@@ -96,21 +116,7 @@
 			}
 
 			function close(){
-				$el.removeClass( cl.open );
-				$background.removeClass( cl.bkgdOpen );
-				$html.removeClass( cl.open );
-
-				if( dialog.focused ){
-					dialog.focused.focus();
-				}
-
-				if( isSetScrollPosition() ) {
-					w.scrollTo( 0, dialog.scroll );
-				}
-
-				dialog.isOpen = false;
-
-				$el.trigger( cl.closed );
+				dialog.close();
 			}
 
 			$el
@@ -130,35 +136,34 @@
 				w.history.back();
 			});
 
-			$( w )
-				// close on hashchange if open (supports back button closure)
-				.bind( "hashchange", function( e ){
-					var hash = w.location.hash.replace( "#", "" );
+			// close on hashchange if open (supports back button closure)
+			$( w ).bind( "hashchange", function( e ){
+				var hash = w.location.hash.replace( "#", "" );
 
-					if( hash !== nullHash && dialog.isOpen ){
-						$el.trigger( ev.close );
-					}
-				});
+				if( hash !== nullHash && dialog.isOpen ){
+					$el.trigger( ev.close );
+				}
+			});
 
-			$( doc )
-				// open on matching a[href=#id] click
-				.bind( "click", function( e ){
-					var $a = $( e.target ).closest( "a" );
+			// open on matching a[href=#id] click
+			$( doc ).bind( "click", function( e ){
+				var $a = $( e.target ).closest( "a" );
 
-					if( !dialog.isOpen && $a.length && $a.attr( "href" ) ){
-						var $matchingDialog = $( $a.attr( "href" ) );
-						if( $matchingDialog.length && $matchingDialog.is( $el ) ){
-							$matchingDialog.trigger( ev.open );
-							e.preventDefault();
-						}
+				if( !dialog.isOpen && $a.length && $a.attr( "href" ) ){
+					var $matchingDialog = $( $a.attr( "href" ) );
+					if( $matchingDialog.length && $matchingDialog.is( $el ) ){
+						$matchingDialog.trigger( ev.open );
+						e.preventDefault();
 					}
-				})
-				// close on escape key
-				.bind( "keyup", function( e ){
-					if( dialog.isOpen && e.which === 27 ){
-						$el.trigger( ev.close );
-					}
-				});
+				}
+			});
+
+			// close on escape key
+			$( doc )..bind( "keyup", function( e ){
+				if( dialog.isOpen && e.which === 27 ){
+					$el.trigger( ev.close );
+				}
+			});
 		});
 	};
 
