@@ -93,13 +93,7 @@
 		};
 
 		return this.each(function(){
-
-			var $el = $( this ),
-				positionMedia = $el.attr( 'data-set-position-media' ),
-				scroll = 0,
-				focused = null,
-				isOpen = false,
-				dialog = new w.Dialog( this );
+			var $el = $( this ), dialog = new w.Dialog( this );
 
 			if( !transbg ){
 				transbg = $el.is( '[data-transbg]' );
@@ -111,24 +105,12 @@
 
 			$background.appendTo( body );
 
-			function isSetScrollPosition() {
-				return dialog.isSetScrollPosition();
-			}
-
-			function open( e ){
-				dialog.open( e );
-			}
-
-			function close(){
-				dialog.close();
-			}
-
 			$el
 				.addClass( cl.content )
 				.attr( "role", "dialog" )
 				.attr( "tabindex", 0 )
-				.bind( ev.open, open )
-				.bind( ev.close, close )
+				.bind( ev.open, $.proxy(dialog, 'open') )
+				.bind( ev.close, $.proxy(dialog, 'close') )
 				.bind( "click", function( e ){
 					if( $( e.target ).is( "." + cl.close ) ){
 						w.history.back();
@@ -145,7 +127,7 @@
 				var hash = w.location.hash.replace( "#", "" );
 
 				if( hash !== nullHash ){
-					$el.trigger( ev.close );
+					dialog.close();
 				}
 			});
 
@@ -165,7 +147,7 @@
 			// close on escape key
 			$( doc ).bind( "keyup", function( e ){
 				if( e.which === 27 ){
-					$el.trigger( ev.close );
+					dialog.close();
 				}
 			});
 		});
