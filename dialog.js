@@ -109,8 +109,7 @@
 
 			$el.data( "instance", dialog );
 
-			$el
-				.addClass( cl.content )
+			$el.addClass( cl.content )
 				.attr( "role", "dialog" )
 				.attr( "tabindex", 0 )
 				.bind( ev.open, $.proxy(dialog, 'open') )
