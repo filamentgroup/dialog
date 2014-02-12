@@ -83,25 +83,25 @@
 	};
 
 	var pluginName = "dialog",
-			cl = {
-				open: pluginName + "-open",
-				opened: pluginName + "-opened",
-				content: pluginName + "-content",
-				close: pluginName + "-close",
-				closed: pluginName + "-closed",
-				bkgd: pluginName + "-background",
-				bkgdOpen: pluginName + "-background-open",
-				bkgdTrans: pluginName + "-background-trans"
-			},
-			ev = {
-				open: pluginName + "-open",
-				close: pluginName + "-close"
-			},
-			nullHash = "dialog",
-			doc = w.document,
-			docElem = doc.documentElement,
-			body = doc.body,
-			$html = $( docElem );
+		cl = {
+			open: pluginName + "-open",
+			opened: pluginName + "-opened",
+			content: pluginName + "-content",
+			close: pluginName + "-close",
+			closed: pluginName + "-closed",
+			bkgd: pluginName + "-background",
+			bkgdOpen: pluginName + "-background-open",
+			bkgdTrans: pluginName + "-background-trans"
+		},
+		ev = {
+			open: pluginName + "-open",
+			close: pluginName + "-close"
+		},
+		nullHash = "dialog",
+		doc = w.document,
+		docElem = doc.documentElement,
+		body = doc.body,
+		$html = $( docElem );
 
 	$.fn.dialog = function( transbg ){
 		return this.each(function(){
