@@ -16,26 +16,29 @@
 		teardown: commonTeardown
 	});
 
+	var openTest = function( open ) {
+		$instance.one( "dialog-opened", function(){
+			ok( $instance.is(":visible") );
+			start();
+		});
+
+		ok( !$instance.is(":visible") );
+
+		open();
+	};
+
 	asyncTest( "with the link", function() {
 		var $link = $( $instance.find("a").attr( "href" ) );
 
-		$instance.one( "dialog-opened", function(){
-			ok( $instance.is(":visible") );
-			start();
+		openTest(function() {
+			$link.trigger( "click" );
 		});
-
-		ok( !$instance.is(":visible") );
-		$link.trigger( "click" );
 	});
 
 	asyncTest( "with a trigger", function() {
-		$instance.one( "dialog-opened", function(){
-			ok( $instance.is(":visible") );
-			start();
+		openTest(function() {
+			$instance.trigger( "dialog-open" );
 		});
-
-		ok( !$instance.is(":visible") );
-		$instance.trigger( "dialog-open" );
 	});
 
 	asyncTest( "with trigger sets the hash to #dialog", function() {
