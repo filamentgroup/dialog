@@ -4,13 +4,85 @@
  *
  * Copyright (c) 2013 Filament Group, Inc.
  * Author: @scottjehl
+ * Contributors: @johnbender
  * Licensed under the MIT, GPL licenses.
  */
 
 (function( w, $ ){
-	$.fn.dialog = function( transbg ){
+	w.Dialog = function( element ){
+		this.$el = $( element );
+		this.$background =
+			$( doc.createElement('div') ).addClass( cl.bkgd ).appendTo( "body");
 
-		var pluginName = "dialog",
+		this.isOpen = false;
+		this.positionMedia = this.$el.attr( 'data-set-position-media' );
+		this.isTransparentBackground = this.$el.is( '[data-transbg]' );
+	};
+
+	w.Dialog.prototype.isSetScrollPosition = function() {
+		return !this.positionMedia ||
+			( w.matchMedia && w.matchMedia( this.positionMedia ).matches );
+	};
+
+	w.Dialog.prototype.destroy = function() {
+		this.$background.remove();
+	};
+
+	w.Dialog.prototype.open = function( e ) {
+		this.$background[ 0 ].style.height = Math.max( docElem.scrollHeight, docElem.clientHeight ) + "px";
+		this.$el.addClass( cl.open );
+		this.$background.addClass( cl.bkgdOpen );
+
+		if( this.isSetScrollPosition() ) {
+			this.scroll = "pageYOffset" in w ? w.pageYOffset : ( docElem.scrollY || docElem.scrollTop || ( body && body.scrollY ) || 0 );
+			this.$el[ 0 ].style.top = this.scroll + "px";
+		} else {
+			this.$el[ 0 ].style.top = '';
+		}
+
+		$html.addClass( cl.open );
+		this.isOpen = true;
+
+		location.hash = nullHash;
+
+		if( doc.activeElement ){
+			this.focused = doc.activeElement;
+		}
+		this.$el[ 0 ].focus();
+
+		this.$el.trigger( cl.opened );
+	};
+
+	w.Dialog.prototype._setBackgroundTransparency = function() {
+		if( this.isTransparentBackground ){
+			this.$background.addClass( cl.bkgdTrans );
+		}
+	};
+
+	w.Dialog.prototype.close = function(){
+		if( !this.isOpen ){
+			return;
+		}
+
+		this.$el.removeClass( cl.open );
+
+		this.$background.removeClass( cl.bkgdOpen );
+		$html.removeClass( cl.open );
+
+		if( this.focused ){
+			this.focused.focus();
+		}
+
+		if( this.isSetScrollPosition() ) {
+			w.scrollTo( 0, this.scroll );
+		}
+
+		this.isOpen = false;
+
+		this.$el.trigger( cl.closed );
+	};
+
+	var pluginName = "dialog",
 			cl = {
 				open: pluginName + "-open",
 				opened: pluginName + "-opened",
@@ -29,81 +101,13 @@
 			doc = w.document,
 			docElem = doc.documentElement,
 			body = doc.body,
-			$html = $( docElem ),
-			$background = $( doc.createElement( 'div' ) ).addClass( cl.bkgd );
+			$html = $( docElem );
 
-		w.Dialog = function( element ){
-			this.$el = $( element );
-
-			this.isOpen = false;
-			this.positionMedia = this.$el.attr( 'data-set-position-media' );
-		};
-
-		w.Dialog.prototype.isSetScrollPosition = function() {
-			return !this.positionMedia ||
-				( w.matchMedia && w.matchMedia( this.positionMedia ).matches );
-		};
-
-		w.Dialog.prototype.open = function( e ) {
-			$background[ 0 ].style.height = Math.max( docElem.scrollHeight, docElem.clientHeight ) + "px";
-			this.$el.addClass( cl.open );
-			$background.addClass( cl.bkgdOpen );
-
-			if( this.isSetScrollPosition() ) {
-				this.scroll = "pageYOffset" in w ? w.pageYOffset : ( docElem.scrollY || docElem.scrollTop || ( body && body.scrollY ) || 0 );
-				this.$el[ 0 ].style.top = this.scroll + "px";
-			} else {
-				this.$el[ 0 ].style.top = '';
-			}
-
-			$html.addClass( cl.open );
-			this.isOpen = true;
-
-			location.hash = nullHash;
-
-			if( doc.activeElement ){
-				this.focused = doc.activeElement;
-			}
-			this.$el[ 0 ].focus();
-
-			this.$el.trigger( cl.opened );
-		};
-
-		w.Dialog.prototype.close = function(){
-			if( !this.isOpen ){
-				return;
-			}
-
-			this.$el.removeClass( cl.open );
-
-			$background.removeClass( cl.bkgdOpen );
-			$html.removeClass( cl.open );
-
-			if( this.focused ){
-				this.focused.focus();
-			}
-
-			if( this.isSetScrollPosition() ) {
-				w.scrollTo( 0, this.scroll );
-			}
-
-			this.isOpen = false;
-
-			this.$el.trigger( cl.closed );
-		};
-
+	$.fn.dialog = function( transbg ){
 		return this.each(function(){
 			var $el = $( this ), dialog = new w.Dialog( this );
 
-			if( !transbg ){
-				transbg = $el.is( '[data-transbg]' );
-			}
-
-			if( transbg ){
-				$background.addClass( cl.bkgdTrans );
-			}
-
-			$background.appendTo( body );
+			$el.data( "instance", dialog );
 
 			$el
 				.addClass( cl.content )
@@ -118,7 +122,7 @@
 					}
 				});
 
-			$background.bind( "click", function( e ) {
+			dialog.$background.bind( "click", function( e ) {
 				w.history.back();
 			});
 

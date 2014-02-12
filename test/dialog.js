@@ -2,7 +2,13 @@
 	var $doc, $instance, commonSetup, commonTeardown;
 
 	commonSetup = function() {
-		$instance = $( "#dialog" ).dialog();
+		$instance = $( "#dialog" );
+
+		if( $instance.data("instance") ) {
+			$instance.data( "instance" ).destroy();
+		}
+
+		$instance.dialog();
 	};
 
 	commonTeardown = function() {
@@ -10,6 +16,15 @@
 		$instance.unbind( "dialog-opened" );
 		$instance.trigger( "dialog-close" );
 	};
+
+	module( "background", {
+		setup: commonSetup,
+		teardown: commonTeardown
+	});
+
+	test( "is added to the body", function() {
+		equal($( "body" ).find( ".dialog-background" ).length ,1 );
+	});
 
 	module( "opening", {
 		setup: commonSetup,
