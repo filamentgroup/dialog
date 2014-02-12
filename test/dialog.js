@@ -53,7 +53,7 @@
 		teardown: commonTeardown
 	});
 
-	asyncTest( "using trigger makes the dialog invisible", function() {
+	var closeTest = function( close ) {
 		expect( 3 );
 
 		$instance.one( "dialog-opened", function(){
@@ -68,21 +68,18 @@
 
 		ok( !$instance.is(":visible") );
 		$instance.trigger( "dialog-open" );
+	};
+
+	asyncTest( "using trigger makes the dialog invisible", function() {
+		closeTest(function() {
+			$instance.trigger( "dialog-close" );
+		});
 	});
 
 	asyncTest( "using the back button makes the dialog invisible", function() {
-		$instance.one( "dialog-opened", function(){
-			ok( $instance.is(":visible") );
+		closeTest(function() {
 			window.history.back();
 		});
-
-		$instance.one( "dialog-closed", function(){
-			ok( !$instance.is(":visible") );
-			start();
-		});
-
-		ok( !$instance.is(":visible") );
-		$instance.trigger( "dialog-open" );
 	});
 
 	asyncTest( "using the escapte key makes the dialog invisible", function() {
@@ -90,17 +87,8 @@
 
 		keyupEvent.which = 27;
 
-		$instance.one( "dialog-opened", function(){
-			ok( $instance.is(":visible") );
+		closeTest(function() {
 			$( document ).trigger( keyupEvent );
 		});
-
-		$instance.one( "dialog-closed", function(){
-			ok( !$instance.is(":visible") );
-			start();
-		});
-
-		ok( !$instance.is(":visible") );
-		$instance.trigger( "dialog-open" );
 	});
 })( jQuery, this );
