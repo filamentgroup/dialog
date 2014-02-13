@@ -33,11 +33,11 @@
 
 	var openTest = function( open ) {
 		$instance.one( "dialog-opened", function(){
-			ok( $instance.is(":visible") );
+			ok( $instance.is(".dialog-open") );
 			start();
 		});
 
-		ok( !$instance.is(":visible") );
+		ok( !$instance.is(".dialog-open") );
 
 		open();
 	};
@@ -62,7 +62,7 @@
 			start();
 		});
 
-		ok( !$instance.is(":visible") );
+		ok( !$instance.is(".dialog-open") );
 		$instance.trigger( "dialog-open" );
 	});
 
@@ -75,16 +75,16 @@
 		expect( 3 );
 
 		$instance.one( "dialog-opened", function(){
-			ok( $instance.is(":visible") );
+			ok( $instance.is(".dialog-open") );
 			$instance.trigger( "dialog-close" );
 		});
 
 		$instance.one( "dialog-closed", function(){
-			ok( !$instance.is(":visible") );
+			ok( !$instance.is(".dialog-open") );
 			start();
 		});
 
-		ok( !$instance.is(":visible") );
+		ok( !$instance.is(".dialog-open") );
 		$instance.trigger( "dialog-open" );
 	};
 
