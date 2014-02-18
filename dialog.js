@@ -9,10 +9,11 @@
  */
 
 (function( w, $ ){
-	w.Dialog = function( element ){
+	var Dialog = w.Dialog = function( element ){
 		this.$el = $( element );
 		this.$background =
 			$( doc.createElement('div') ).addClass( cl.bkgd ).appendTo( "body");
+		this.hash = this.$el.attr( "id" ) + "-component";
 
 		this.isOpen = false;
 		this.positionMedia = this.$el.attr( 'data-set-position-media' );
@@ -43,7 +44,7 @@
 		$html.addClass( cl.open );
 		this.isOpen = true;
 
-		location.hash = nullHash;
+		location.hash = this.hash;
 
 		if( doc.activeElement ){
 			this.focused = doc.activeElement;
@@ -129,7 +130,7 @@
 			$( w ).bind( "hashchange", function( e ){
 				var hash = w.location.hash.replace( "#", "" );
 
-				if( hash !== nullHash ){
+				if( hash !== dialog.hash ){
 					dialog.close();
 				}
 			});

@@ -58,7 +58,7 @@
 
 	asyncTest( "with trigger sets the hash to #dialog", function() {
 		$instance.one( "dialog-opened", function(){
-			equal( location.hash, "#dialog" );
+			equal( location.hash, "#dialog-component" );
 			start();
 		});
 
