@@ -13,7 +13,7 @@
 		this.$el = $( element );
 		this.$background =
 			$( doc.createElement('div') ).addClass( cl.bkgd ).appendTo( "body");
-		this.hash = this.$el.attr( "id" ) + "-component";
+		this.hash = this.$el.attr( "id" ) + "-dialog";
 
 		this.isOpen = false;
 		this.positionMedia = this.$el.attr( 'data-set-position-media' );
