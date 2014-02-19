@@ -7,8 +7,11 @@ Demo page here: http://filamentgroup.github.com/dialog/example.html
 
 ## How-to
 
-The dialog itself is an element with a class of dialog.  It'll auto-initialize on dom-ready.
+The dialog itself is an element with a class of `dialog`. It can be enhanced, most commonly on DOM-ready:
 
+```javascript
+$( ".dialog" ).dialog();
+```
 
 ### Full typical markup
 

@@ -158,9 +158,4 @@
 			});
 		});
 	};
-
-	// auto-init
-	$(function(){
-		$( ".dialog" ).dialog();
-	});
 }( this, jQuery ));
