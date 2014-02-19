@@ -8,7 +8,7 @@ module.exports = function(grunt) {
 		},
 
 		jshint: {
-			files: ['Gruntfile.js', 'dialog.js', 'dialog-method.js']
+			files: ['Gruntfile.js', 'dialog.js', 'dialog-init.js']
 		},
 
 		uglify: {
@@ -24,9 +24,9 @@ module.exports = function(grunt) {
 
 		concat: {
 			dist: {
-				src: ['dialog.js', 'dialog-method.js'],
+				src: ['dialog.js', 'dialog-init.js'],
 				dest: 'dialog.build.js'
-			},
+			}
 		}
 	});
 

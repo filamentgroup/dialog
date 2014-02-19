@@ -1,5 +1,5 @@
 (function( w, $ ){
-  var Dialog = w.Dialog, doc = document;
+  var Dialog = w.componentNamespace.Dialog, doc = document;
 
 	$.fn.dialog = function( transbg ){
 		return this.each(function(){

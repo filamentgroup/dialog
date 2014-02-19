@@ -9,6 +9,7 @@
  */
 
 (function( w, $ ){
+	w.componentNamespace = w.componentNamespace || w;
 
 	var pluginName = "dialog", cl, ev,
 		nullHash = "dialog",
@@ -17,7 +18,7 @@
 		body = doc.body,
 		$html = $( docElem );
 
-	var Dialog = w.Dialog = function( element ){
+	var Dialog = w.componentNamespace.Dialog = function( element ){
 		this.$el = $( element );
 		this.$background =
 			$( doc.createElement('div') ).addClass( cl.bkgd ).appendTo( "body");
