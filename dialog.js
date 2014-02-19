@@ -9,6 +9,14 @@
  */
 
 (function( w, $ ){
+
+	var pluginName = "dialog", cl, ev,
+		nullHash = "dialog",
+		doc = w.document,
+		docElem = doc.documentElement,
+		body = doc.body,
+		$html = $( docElem );
+
 	var Dialog = w.Dialog = function( element ){
 		this.$el = $( element );
 		this.$background =
@@ -20,16 +28,32 @@
 		this.isTransparentBackground = this.$el.is( '[data-transbg]' );
 	};
 
-	w.Dialog.prototype.isSetScrollPosition = function() {
+	Dialog.events = ev = {
+		open: pluginName + "-open",
+		close: pluginName + "-close"
+	};
+
+	Dialog.classes = cl = {
+		open: pluginName + "-open",
+		opened: pluginName + "-opened",
+		content: pluginName + "-content",
+		close: pluginName + "-close",
+		closed: pluginName + "-closed",
+		bkgd: pluginName + "-background",
+		bkgdOpen: pluginName + "-background-open",
+		bkgdTrans: pluginName + "-background-trans"
+	};
+
+	Dialog.prototype.isSetScrollPosition = function() {
 		return !this.positionMedia ||
 			( w.matchMedia && w.matchMedia( this.positionMedia ).matches );
 	};
 
-	w.Dialog.prototype.destroy = function() {
+	Dialog.prototype.destroy = function() {
 		this.$background.remove();
 	};
 
-	w.Dialog.prototype.open = function( e ) {
+	Dialog.prototype.open = function( e ) {
 		this.$background[ 0 ].style.height = Math.max( docElem.scrollHeight, docElem.clientHeight ) + "px";
 		this.$el.addClass( cl.open );
 		this.$background.addClass( cl.bkgdOpen );
@@ -54,13 +78,13 @@
 		this.$el.trigger( cl.opened );
 	};
 
-	w.Dialog.prototype._setBackgroundTransparency = function() {
+	Dialog.prototype._setBackgroundTransparency = function() {
 		if( this.isTransparentBackground ){
 			this.$background.addClass( cl.bkgdTrans );
 		}
 	};
 
-	w.Dialog.prototype.close = function(){
+	Dialog.prototype.close = function(){
 		if( !this.isOpen ){
 			return;
 		}
@@ -82,83 +106,4 @@
 
 		this.$el.trigger( cl.closed );
 	};
-
-	var pluginName = "dialog",
-		cl = {
-			open: pluginName + "-open",
-			opened: pluginName + "-opened",
-			content: pluginName + "-content",
-			close: pluginName + "-close",
-			closed: pluginName + "-closed",
-			bkgd: pluginName + "-background",
-			bkgdOpen: pluginName + "-background-open",
-			bkgdTrans: pluginName + "-background-trans"
-		},
-		ev = {
-			open: pluginName + "-open",
-			close: pluginName + "-close"
-		},
-		nullHash = "dialog",
-		doc = w.document,
-		docElem = doc.documentElement,
-		body = doc.body,
-		$html = $( docElem );
-
-	$.fn.dialog = function( transbg ){
-		return this.each(function(){
-			var $el = $( this ), dialog = new w.Dialog( this );
-
-			$el.data( "instance", dialog );
-
-			$el.addClass( cl.content )
-				.attr( "role", "dialog" )
-				.attr( "tabindex", 0 )
-				.bind( ev.open, $.proxy(dialog, 'open') )
-				.bind( ev.close, $.proxy(dialog, 'close') )
-				.bind( "click", function( e ){
-					if( $( e.target ).is( "." + cl.close ) ){
-						w.history.back();
-						e.preventDefault();
-					}
-				});
-
-			dialog.$background.bind( "click", function( e ) {
-				w.history.back();
-			});
-
-			// close on hashchange if open (supports back button closure)
-			$( w ).bind( "hashchange", function( e ){
-				var hash = w.location.hash.replace( "#", "" );
-
-				if( hash !== dialog.hash ){
-					dialog.close();
-				}
-			});
-
-			// open on matching a[href=#id] click
-			$( doc ).bind( "click", function( e ){
-				var $a = $( e.target ).closest( "a" );
-
-				if( !dialog.isOpen && $a.length && $a.attr( "href" ) ){
-					var $matchingDialog = $( $a.attr( "href" ) );
-					if( $matchingDialog.length && $matchingDialog.is( $el ) ){
-						$matchingDialog.trigger( ev.open );
-						e.preventDefault();
-					}
-				}
-			});
-
-			// close on escape key
-			$( doc ).bind( "keyup", function( e ){
-				if( e.which === 27 ){
-					dialog.close();
-				}
-			});
-		});
-	};
-
-	// auto-init
-	$(function(){
-		$( ".dialog" ).dialog();
-	});
 }( this, jQuery ));
