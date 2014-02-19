@@ -9,7 +9,30 @@
  */
 
 (function( w, $ ){
-	var Dialog = w.Dialog = function( element ){
+	var namespace = w.componentNamespace = w.componentNamespace || w;
+
+	var pluginName = "dialog",
+		cl = {
+			open: pluginName + "-open",
+			opened: pluginName + "-opened",
+			content: pluginName + "-content",
+			close: pluginName + "-close",
+			closed: pluginName + "-closed",
+			bkgd: pluginName + "-background",
+			bkgdOpen: pluginName + "-background-open",
+			bkgdTrans: pluginName + "-background-trans"
+		},
+		ev = {
+			open: pluginName + "-open",
+			close: pluginName + "-close"
+		},
+		nullHash = "dialog",
+		doc = w.document,
+		docElem = doc.documentElement,
+		body = doc.body,
+		$html = $( docElem );
+
+	var Dialog = namespace.Dialog = function( element ){
 		this.$el = $( element );
 		this.$background =
 			$( doc.createElement('div') ).addClass( cl.bkgd ).appendTo( "body");
@@ -83,30 +106,9 @@
 		this.$el.trigger( cl.closed );
 	};
 
-	var pluginName = "dialog",
-		cl = {
-			open: pluginName + "-open",
-			opened: pluginName + "-opened",
-			content: pluginName + "-content",
-			close: pluginName + "-close",
-			closed: pluginName + "-closed",
-			bkgd: pluginName + "-background",
-			bkgdOpen: pluginName + "-background-open",
-			bkgdTrans: pluginName + "-background-trans"
-		},
-		ev = {
-			open: pluginName + "-open",
-			close: pluginName + "-close"
-		},
-		nullHash = "dialog",
-		doc = w.document,
-		docElem = doc.documentElement,
-		body = doc.body,
-		$html = $( docElem );
-
 	$.fn.dialog = function( transbg ){
 		return this.each(function(){
-			var $el = $( this ), dialog = new w.Dialog( this );
+			var $el = $( this ), dialog = new namespace.Dialog( this );
 
 			$el.data( "instance", dialog );
 
