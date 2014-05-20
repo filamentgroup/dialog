@@ -58,6 +58,7 @@
 		this.$background[ 0 ].style.height = Math.max( docElem.scrollHeight, docElem.clientHeight ) + "px";
 		this.$el.addClass( cl.open );
 		this.$background.addClass( cl.bkgdOpen );
+		this._setBackgroundTransparency();
 
 		if( this.isSetScrollPosition() ) {
 			this.scroll = "pageYOffset" in w ? w.pageYOffset : ( docElem.scrollY || docElem.scrollTop || ( body && body.scrollY ) || 0 );
