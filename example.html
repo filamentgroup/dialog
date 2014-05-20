@@ -8,33 +8,39 @@
 	<script src="dialog.js"></script>
 	<script src="dialog-init.js"></script>
 	<script src="dialog-linker.js"></script>
+	<link rel="stylesheet" href="docs.css">
 	<link rel="stylesheet" href="dialog.css">
 </head>
-<body>
+<body class="docs">
+	<div class="header">
+		<a href="http://filamentgroup.com/"><h1 id="fg-logo">Filament Group</h1></a>
+	</div>
 
-<p>
-	<a href="#mydialog" id="mydialog-btn">Open Dialog</a>
-</p>
+	<div class="docs-main">
 
-
-<div class="dialog" id="mydialog">
-	<p>This is a dialog</p>
-	<a href="#mydialog-btn" class="dialog-close">Close</a>
-</div>
-
-<p>
-	<a href="#mytransparentdialog" id="mytransparentdialog-btn">Open Dialog with Transparent Background</a>
-</p>
+		<p class="docs">
+			<a href="#mydialog" id="mydialog-btn">Open Dialog</a>
+		</p>
 
 
-<div class="dialog" id="mytransparentdialog" data-transbg>
-	<p>This is a dialog</p>
-	<a href="#mytransparentdialog-btn" class="dialog-close">Close</a>
-</div>
+		<div class="dialog" id="mydialog">
+			<p>This is a dialog</p>
+			<a href="#mydialog-btn" class="dialog-close">Close</a>
+		</div>
 
-<p>
-	<a href="example-external.html" data-dialog-link>Open Ajax Dialog</a>
-</p>
+		<p class="docs">
+			<a href="#mytransparentdialog" id="mytransparentdialog-btn">Open Dialog with Transparent Background</a>
+		</p>
 
+
+		<div class="dialog" id="mytransparentdialog" data-transbg>
+			<p>This is a dialog with a transparent background</p>
+			<a href="#mytransparentdialog-btn" class="dialog-close">Close</a>
+		</div>
+
+		<p class="docs">
+			<a href="example-external.html" data-dialog-link>Open Ajax Dialog</a>
+		</p>
+	</div>
 </body>
 </html>
