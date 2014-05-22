@@ -1,5 +1,6 @@
-dialog
-======
+# dialog
+
+[![Filament Group](http://filamentgroup.com/images/fg-logo-positive-sm-crop.png) ](http://www.filamentgroup.com/)
 
 Just a simple, minimal, Responsive jQuery dialog with typical interactivity
 
