@@ -26,6 +26,10 @@ module.exports = function(grunt) {
 			dist: {
 				src: ['src/dialog.js', 'src/dialog-init.js'],
 				dest: 'dist/dialog.build.js'
+			},
+			css: {
+				src: ['src/dialog.css'],
+				dest: 'dist/dialog.css'
 			}
 		}
 	});
