@@ -1,4 +1,2 @@
 .vagrant
 node_modules
-dialog.min.js
-dialog.build.js
