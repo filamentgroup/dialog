@@ -20,8 +20,9 @@
 
 	var Dialog = w.componentNamespace.Dialog = function( element ){
 		this.$el = $( element );
-		this.$background =
-			$( doc.createElement('div') ).addClass( cl.bkgd ).appendTo( "body");
+		this.$background = !this.$el.is( '[data-nobg]' ) ? 
+			$( doc.createElement('div') ).addClass( cl.bkgd ).appendTo( "body") :
+			$( [] );
 		this.hash = this.$el.attr( "id" ) + "-dialog";
 
 		this.isOpen = false;
@@ -55,7 +56,9 @@
 	};
 
 	Dialog.prototype.open = function( e ) {
-		this.$background[ 0 ].style.height = Math.max( docElem.scrollHeight, docElem.clientHeight ) + "px";
+		if( this.$background.length ) {
+			this.$background[ 0 ].style.height = Math.max( docElem.scrollHeight, docElem.clientHeight ) + "px";
+		}
 		this.$el.addClass( cl.open );
 		this.$background.addClass( cl.bkgdOpen );
 		this._setBackgroundTransparency();
