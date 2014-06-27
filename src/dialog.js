@@ -80,7 +80,7 @@
 		}
 		this.$el[ 0 ].focus();
 
-		this.$el.trigger( cl.opened );
+		this.$el.trigger( ev.opene );
 	};
 
 	Dialog.prototype._setBackgroundTransparency = function() {
@@ -109,6 +109,6 @@
 
 		this.isOpen = false;
 
-		this.$el.trigger( cl.closed );
+		this.$el.trigger( ev.close );
 	};
 }( this, jQuery ));
