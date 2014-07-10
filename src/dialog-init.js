@@ -1,6 +1,15 @@
 (function( w, $ ){
   var Dialog = w.componentNamespace.Dialog, doc = document;
 
+  var isValidSelector = function(selector) {
+    try {
+      var $element = $(selector);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  };
+
 	$.fn.dialog = function( transbg ){
 		return this.each(function(){
 			var $el = $( this ), dialog = new Dialog( this );
@@ -36,7 +45,7 @@
 			$( doc ).bind( "click", function( e ){
 				var $a = $( e.target ).closest( "a" );
 
-				if( !dialog.isOpen && $a.length && $a.attr( "href" ) ){
+				if( !dialog.isOpen && $a.length && $a.attr( "href" ) && isValidSelector($a.attr( "href" )) ){
 					var $matchingDialog = $( $a.attr( "href" ) );
 					if( $matchingDialog.length && $matchingDialog.is( $el ) ){
 						$matchingDialog.trigger( Dialog.events.open );
