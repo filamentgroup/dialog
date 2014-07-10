@@ -15,16 +15,9 @@
 		$instance.unbind( "dialog-closed" );
 		$instance.unbind( "dialog-opened" );
 		$instance.trigger( "dialog-close" );
+
+		$instance.data( "instance" ).destroy();
 	};
-
-	module( "background", {
-		setup: commonSetup,
-		teardown: commonTeardown
-	});
-
-	test( "is added to the body", function() {
-		equal($( "body" ).find( ".dialog-background" ).length ,1 );
-	});
 
 	module( "opening", {
 		setup: commonSetup,
@@ -64,6 +57,15 @@
 
 		ok( !$instance.is(".dialog-open") );
 		$instance.trigger( "dialog-open" );
+	});
+
+	module( "background", {
+		setup: commonSetup,
+		teardown: commonTeardown
+	});
+
+	test( "is added to the body", function() {
+		equal($( "body" ).find( ".dialog-background" ).length ,1 );
 	});
 
 	module( "closing", {

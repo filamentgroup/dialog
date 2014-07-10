@@ -20,7 +20,7 @@
 
 	var Dialog = w.componentNamespace.Dialog = function( element ){
 		this.$el = $( element );
-		this.$background = !this.$el.is( '[data-nobg]' ) ? 
+		this.$background = !this.$el.is( '[data-nobg]' ) ?
 			$( doc.createElement('div') ).addClass( cl.bkgd ).appendTo( "body") :
 			$( [] );
 		this.hash = this.$el.attr( "id" ) + "-dialog";
@@ -32,7 +32,9 @@
 
 	Dialog.events = ev = {
 		open: pluginName + "-open",
-		close: pluginName + "-close"
+		opened: pluginName + "-opened",
+		close: pluginName + "-close",
+		closed: pluginName + "-closed"
 	};
 
 	Dialog.classes = cl = {
@@ -80,7 +82,7 @@
 		}
 		this.$el[ 0 ].focus();
 
-		this.$el.trigger( ev.opene );
+		this.$el.trigger( ev.opened );
 	};
 
 	Dialog.prototype._setBackgroundTransparency = function() {
@@ -109,6 +111,6 @@
 
 		this.isOpen = false;
 
-		this.$el.trigger( ev.close );
+		this.$el.trigger( ev.closed );
 	};
 }( this, jQuery ));
