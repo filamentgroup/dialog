@@ -10,8 +10,12 @@
 			$el.addClass( Dialog.classes.content )
 				.attr( "role", "dialog" )
 				.attr( "tabindex", 0 )
-				.bind( Dialog.events.open, $.proxy(dialog, 'open') )
-				.bind( Dialog.events.close, $.proxy(dialog, 'close') )
+				.bind( Dialog.events.open, function(){
+					dialog.open();
+				})
+				.bind( Dialog.events.close, function(){
+					dialog.close();
+				})
 				.bind( "click", function( e ){
 					if( $( e.target ).is( "." + Dialog.classes.close ) ){
 						w.history.back();

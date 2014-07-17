@@ -102,8 +102,11 @@
 		});
 	});
 
-	asyncTest( "using the escapte key makes the dialog invisible", function() {
-		var keyupEvent = $.Event( "keyup" );
+	asyncTest( "using the escape key makes the dialog invisible", function() {
+		var keyupEvent = {
+			type: "keyup",
+			timestamp: (new Date()).getTime()
+		};
 
 		keyupEvent.which = 27;
 
