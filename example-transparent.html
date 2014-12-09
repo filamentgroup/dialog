@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Dialog Example</title>
+	<link rel="stylesheet" href="docs.css">
+	<link rel="stylesheet" href="src/dialog.css">
+	<link rel="stylesheet" href="https://filamentgroup.github.io/demo-head/demohead.css">
+	<script src="bower_components/jquery/dist/jquery.js"></script>
+	<script src="src/dialog.js"></script>
+	<script src="src/dialog-init.js"></script>
+	<script src="src/dialog-linker.js"></script>
+	<script src="https://filamentgroup.github.io/demo-head/loadfont.js"></script>
+</head>
+<body class="docs">
+	<div class="demo-header">
+		<div class="company">
+			<img src="http://filamentgroup.com/images/fg-logo-positive-sm-crop.png">
+		</div>
+		<div class="details">
+			<h1 class="description-container">Demo of <span class="repo-name">Dialog</span>
+				<span class="description">Just a simple, minimal jQuery dialog with typical interactivity</span>
+			</h1>
+			<ul class="outbound-links">
+				<li><a href="https://github.com/filamentgroup/dialog">Code</a></li>
+				<li><a href="https://github.com/filamentgroup/dialog/issues">Issues</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="nav-container">
+		<div class="docs-globalnav">
+			<nav class="docs-nav">
+				<a href="example.html">Standard Dialog</a>
+				<a href="example-transparent.html" class="current">Transparent Background</a>
+				<a href="example-ajax.html">Dialog with Ajax</a>
+			</nav>
+		</div>
+	</div>
+	<div class="docs-main">
+
+<pre><code>
+&lt;p class="docs"&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;a href="#mytransparentdialog" id="mytransparentdialog-btn"&gt;Open Dialog with Transparent Background&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;div class="dialog" id="mytransparentdialog" data-transbg&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;This is a dialog with a transparent background&lt;/p&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;a href="#mytransparentdialog-btn" class="dialog-close"&gt;Close&lt;/a&gt;
+&lt;/div&gt;
+</code></pre>
+
+		<p class="docs">
+			<a href="#mytransparentdialog" id="mytransparentdialog-btn">Open Dialog with Transparent Background</a>
+		</p>
+
+
+		<div class="dialog" id="mytransparentdialog" data-transbg>
+			<p>This is a dialog with a transparent background</p>
+			<a href="#mytransparentdialog-btn" class="dialog-close">Close</a>
+		</div>
+
+	</div>
+</body>
+</html>
