@@ -8,7 +8,13 @@ module.exports = function(grunt) {
 		},
 
 		jshint: {
-			files: ['Gruntfile.js', 'dialog.js', 'dialog-init.js']
+			all: {
+				options: {
+					jshintrc: ".jshintrc"
+				},
+
+				src: ['Gruntfile.js', 'src/**/*.js']
+			}
 		},
 
 		uglify: {
@@ -40,6 +46,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks( 'grunt-contrib-uglify' );
 
 	// Default task.
-	grunt.registerTask('default', ['jshint', 'qunit', 'concat', 'uglify']);
-	grunt.registerTask('travis', ['jshint', 'qunit']);
+	grunt.registerTask('test', ['jshint', 'qunit']);
+	grunt.registerTask('default', ['test', 'concat', 'uglify']);
+	grunt.registerTask('travis', ['test']);
 };

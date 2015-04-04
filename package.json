@@ -13,7 +13,7 @@
 	},
 	"scripts": {
 		"postinstall" : "./node_modules/.bin/bower install",
-		"test": "./node_modules/.bin/grunt travis --verbose"
+		"test": "./node_modules/.bin/grunt test --verbose"
 	},
 	"devDependencies": {
 		"grunt-cli":"~0.1",

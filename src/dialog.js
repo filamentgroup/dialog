@@ -12,7 +12,6 @@
 	w.componentNamespace = w.componentNamespace || w;
 
 	var pluginName = "dialog", cl, ev,
-		nullHash = "dialog",
 		doc = w.document,
 		docElem = doc.documentElement,
 		body = doc.body,
@@ -57,7 +56,7 @@
 		this.$background.remove();
 	};
 
-	Dialog.prototype.open = function( e ) {
+	Dialog.prototype.open = function() {
 		if( this.$background.length ) {
 			this.$background[ 0 ].style.height = Math.max( docElem.scrollHeight, docElem.clientHeight ) + "px";
 		}
@@ -75,7 +74,7 @@
 		$html.addClass( cl.open );
 		this.isOpen = true;
 
-		location.hash = this.hash;
+		window.location.hash = this.hash;
 
 		if( doc.activeElement ){
 			this.focused = doc.activeElement;
@@ -113,4 +112,4 @@
 
 		this.$el.trigger( ev.closed );
 	};
-}( this, jQuery ));
+}( this, window.jQuery ));

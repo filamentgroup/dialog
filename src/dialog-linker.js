@@ -20,7 +20,7 @@
 				$.get( $a.attr( "href" ), function( content ){
 
 					if( $a.is( "[data-dialog-selector]" ) ){
-						
+
 					}
 
 					var id = "dialog-" + new Date().getTime();
@@ -40,4 +40,4 @@
 			}
 		});
 
-}( this, jQuery ));
+}( this, window.jQuery ));
