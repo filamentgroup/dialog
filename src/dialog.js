@@ -8,6 +8,8 @@
  * Licensed under the MIT, GPL licenses.
  */
 
+window.jQuery = window.jQuery || window.shoestring;
+
 (function( w, $ ){
 	w.componentNamespace = w.componentNamespace || w;
 

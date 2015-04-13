@@ -114,4 +114,4 @@
 			$( document ).trigger( keyupEvent );
 		});
 	});
-})( jQuery, this );
+})( window.jQuery || window.shoestring, this );
