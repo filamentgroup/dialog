@@ -4,7 +4,7 @@
  *
  * Copyright (c) 2013 Filament Group, Inc.
  * Author: @scottjehl
- * Contributors: @johnbender
+ * Contributors: @johnbender, @zachleat
  * Licensed under the MIT, GPL licenses.
  */
 
@@ -64,6 +64,7 @@ window.jQuery = window.jQuery || window.shoestring;
 		}
 		this.$el.addClass( cl.open );
 		this.$background.addClass( cl.bkgdOpen );
+		this.$background.attr( "id", this.$el.attr( "id" ) + "-background" );
 		this._setBackgroundTransparency();
 
 		if( this.isSetScrollPosition() ) {
