@@ -8,6 +8,7 @@
 		"email": "thegroup@filamentgroup.com",
 		"url": "http://filamentgroup.com"
 	},
+  "license": "MIT",
 	"engines": {
 		"node": "0.10"
 	},
