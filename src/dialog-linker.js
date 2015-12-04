@@ -18,9 +18,14 @@
 			if( $a.length && $a.is( "[data-dialog-link]" ) ){
 
 				$.get( $a.attr( "href" ), function( content ){
+					var linkId = $a.attr( "id" );
+					var id;
 
-					var id = ( $a.attr( "id" ) + "-dialog" ) ||
-						( "dialog-" + new Date().getTime() );
+					if( linkId ) {
+						id = linkId + "-dialog";
+					} else {
+						id = "dialog-" + new Date().getTime();
+					}
 
 					$a
 						.attr("href", "#" + id )
