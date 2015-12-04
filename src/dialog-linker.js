@@ -19,11 +19,8 @@
 
 				$.get( $a.attr( "href" ), function( content ){
 
-					if( $a.is( "[data-dialog-selector]" ) ){
-
-					}
-
-					var id = "dialog-" + new Date().getTime();
+					var id = ( $a.attr( "id" ) + "-dialog" ) ||
+						( "dialog-" + new Date().getTime() );
 
 					$a
 						.attr("href", "#" + id )
