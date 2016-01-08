@@ -157,9 +157,9 @@ window.jQuery = window.jQuery || window.shoestring;
 
 			// open on matching a[href=#id] click
 			$( doc ).bind( "click", function( e ){
-        var $matchingDialog, $a;
+				var $matchingDialog, $a;
 
-        $a = $( e.target ).closest( "a" );
+				$a = $( e.target ).closest( "a" );
 
 				if( !dialog.isOpen && $a.length && $a.attr( "href" ) ){
 
