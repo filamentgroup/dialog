@@ -34,7 +34,7 @@ module.exports = function(grunt) {
 				dest: 'dist/dialog.build.js'
 			},
 			css: {
-				src: ['src/dialog.css'],
+				src: ['src/dialog.css', 'src/dialog-animation.css'],
 				dest: 'dist/dialog.css'
 			}
 		}

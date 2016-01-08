@@ -1,0 +1,41 @@
+/*
+ * Sandra from http://tympanus.net/codrops/2014/12/08/inspiration-dialog-effects/
+ * License: http://tympanus.net/codrops/licensing/
+ */
+.dialog.dialog-open {
+	-webkit-animation-duration: 0.3s;
+	-webkit-animation-fill-mode: forwards;
+	-webkit-animation-name: dialog-animation-open;
+	animation-duration: 0.3s;
+	animation-fill-mode: forwards;
+	animation-name: dialog-animation-open;
+}
+
+.dialog.dialog-closed {
+	-webkit-animation-duration: 0.3s;
+	-webkit-animation-fill-mode: forwards;
+	-webkit-animation-name: dialog-anim-close;
+	animation-duration: 0.3s;
+	animation-fill-mode: forwards;
+	animation-name: dialog-anim-close;
+}
+
+@-webkit-keyframes dialog-animation-open {
+	0% { opacity: 0; -webkit-transform: scale3d(1.1, 1.1, 1); }
+	100% { opacity: 1; -webkit-transform: scale3d(1, 1, 1); }
+}
+
+@keyframes dialog-animation-open {
+	0% { opacity: 0; transform: scale3d(1.1, 1.1, 1); }
+	100% { opacity: 1; transform: scale3d(1, 1, 1); }
+}
+
+@-webkit-keyframes dialog-anim-close {
+	0% { opacity: 1; }
+	100% { opacity: 0; -webkit-transform: scale3d(0.9, 0.9, 1); }
+}
+
+@keyframes dialog-anim-close {
+	0% { opacity: 1; }
+	100% { opacity: 0; transform: scale3d(0.9, 0.9, 1); }
+}
