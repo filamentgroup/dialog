@@ -5,9 +5,6 @@
  * Copyright (c) 2013 Filament Group, Inc.
  * Licensed under the MIT, GPL licenses.
  */
-.dialog {
-	outline: none;
-}
 .dialog-content,
 .dialog-background {
 	position: absolute;
@@ -41,6 +38,9 @@
 	.dialog-content {
 		width: 30em;
 	}
+}
+.dialog-open:focus {
+	outline: none;
 }
 .dialog-open,
 .dialog-background-open {
