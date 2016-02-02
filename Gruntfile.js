@@ -23,7 +23,8 @@ module.exports = function(grunt) {
 			},
 			min: {
 				files: {
-					'dist/dialog.min.js': ['dist/dialog.build.js']
+					'dist/dialog.min.js': ['dist/dialog.build.js'],
+					'dist/dialog.linker.min.js': ['dist/dialog.linker.build.js']
 				}
 			}
 		},
@@ -32,6 +33,10 @@ module.exports = function(grunt) {
 			dist: {
 				src: ['src/dialog.js', 'src/dialog-init.js'],
 				dest: 'dist/dialog.build.js'
+			},
+			distLinker: {
+				src: ['src/dialog.js', 'src/dialog-linker.js', 'src/dialog-init.js'],
+				dest: 'dist/dialog.linker.build.js'
 			},
 			css: {
 				src: ['src/dialog.css'],
