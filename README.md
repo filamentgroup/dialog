@@ -89,3 +89,20 @@ $( "#mydialog" ).trigger( "dialog-open" );
 close:
 $( "#mydialog" ).trigger( "dialog-close" );
 ````
+
+### Ajax linking
+
+You can pull another page into a dialog by adding a data-dialog-link attribute to a link.
+
+````
+<a href="/path/to/content.html" data-dialog-link>Open in dialog</a>
+````
+
+#### Adding a class via ajax linking
+
+To set classes on the ajax dialog container, you can specify classes in a data-dialog-addclass attribute on the anchor:
+
+
+````
+<a href="/path/to/content.html" data-dialog-link data-dialog-addclass="foo bar baz">Open in dialog</a>
+````
