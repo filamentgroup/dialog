@@ -19,6 +19,7 @@
 
 				$.get( $a.attr( "href" ), function( content ){
 					var linkId = $a.attr( "id" );
+					var dialogClasses = $a.attr( "data-dialog-addclass" ) || "";
 					var id;
 
 					if( linkId ) {
@@ -31,7 +32,7 @@
 						.attr("href", "#" + id )
 						.removeAttr( "data-dialog-link" );
 
-					$( "<div class='dialog' id='" + id + "'></div>" )
+					$( "<div class='dialog "+ dialogClasses +"' id='" + id + "'></div>" )
 							.append( content )
 							.appendTo( "body" )
 							.dialog()
