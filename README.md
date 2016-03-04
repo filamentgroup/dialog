@@ -106,3 +106,11 @@ To set classes on the ajax dialog container, you can specify classes in a data-d
 ````
 <a href="/path/to/content.html" data-dialog-link data-dialog-addclass="foo bar baz">Open in dialog</a>
 ````
+
+### Iframe linking
+
+You can pull another page into a dialog in an iframe by adding a data-dialog-iframe attribute to an data-dialog-link link.
+
+````
+<a href="/path/to/content.html" data-dialog-link data-dialog-iframe>Open in dialog</a>
+````

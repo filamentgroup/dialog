@@ -15,29 +15,38 @@
 
 			var $a = $( e.target ).closest( "a" );
 
+			function createDialog(content){
+				var linkId = $a.attr( "id" );
+				var dialogClasses = $a.attr( "data-dialog-addclass" ) || "";
+				var id;
+
+				if( linkId ) {
+					id = linkId + "-dialog";
+				} else {
+					id = "dialog-" + new Date().getTime();
+				}
+
+				$a
+					.attr("href", "#" + id )
+					.removeAttr( "data-dialog-link" );
+
+				$( "<div class='dialog "+ dialogClasses +"' id='" + id + "'></div>" )
+						.append( content )
+						.appendTo( "body" )
+						.dialog()
+						.trigger( "dialog-open" );
+			}
+
 			if( $a.length && $a.is( "[data-dialog-link]" ) ){
+				var url = $a.attr( "href" );
 
-				$.get( $a.attr( "href" ), function( content ){
-					var linkId = $a.attr( "id" );
-					var dialogClasses = $a.attr( "data-dialog-addclass" ) || "";
-					var id;
-
-					if( linkId ) {
-						id = linkId + "-dialog";
-					} else {
-						id = "dialog-" + new Date().getTime();
-					}
-
-					$a
-						.attr("href", "#" + id )
-						.removeAttr( "data-dialog-link" );
-
-					$( "<div class='dialog "+ dialogClasses +"' id='" + id + "'></div>" )
-							.append( content )
-							.appendTo( "body" )
-							.dialog()
-							.trigger( "dialog-open" );
-				});
+				// get content either from an iframe or not
+				if( $a.is( "[data-dialog-iframe]" ) ){
+					createDialog( "<iframe src='"+ url +"' class='dialog-iframe'></iframe>" );
+				}
+				else {
+					$.get( url, createDialog );
+				}
 
 				e.preventDefault();
 			}
