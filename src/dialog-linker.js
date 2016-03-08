@@ -14,6 +14,9 @@
 		.bind( "click", function( e ){
 
 			var $a = $( e.target ).closest( "a" );
+			var link = $a.is( "[data-dialog-link]" );
+			var iframe = $a.is( "[data-dialog-iframe]" );
+
 
 			function createDialog(content){
 				var linkId = $a.attr( "id" );
@@ -30,14 +33,24 @@
 					.attr("href", "#" + id )
 					.removeAttr( "data-dialog-link" );
 
-				$( "<div class='dialog "+ dialogClasses +"' id='" + id + "'></div>" )
+				var $dialog = $( "<div class='dialog "+ dialogClasses +"' id='" + id + "'></div>" )
 						.append( content )
 						.appendTo( "body" )
-						.dialog()
-						.trigger( "dialog-open" );
+						.dialog();
+
+				function open(){
+					$dialog.trigger( "dialog-open" );
+				}
+
+				if( iframe ){
+					$dialog.find( "iframe" ).one( "load", open );
+				}
+				else {
+					open();
+				}
 			}
 
-			if( $a.length && $a.is( "[data-dialog-link]" ) ){
+			if( link ){
 				var url = $a.attr( "href" );
 
 				// get content either from an iframe or not
