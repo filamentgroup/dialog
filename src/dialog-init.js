@@ -17,7 +17,7 @@
 					dialog.close();
 				})
 				.bind( "click", function( e ){
-					if( $( e.target ).is( "." + Dialog.classes.close ) ){
+					if( $(e.target).closest(Dialog.selectors.close).length ){
 						w.history.back();
 						e.preventDefault();
 					}
