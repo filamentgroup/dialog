@@ -49,6 +49,10 @@ window.jQuery = window.jQuery || window.shoestring;
 		bkgdTrans: pluginName + "-background-trans"
 	};
 
+	Dialog.selectors = {
+		close: "." + Dialog.classes.close + ", [data-close], [data-dialog-close]"
+	};
+
 	Dialog.prototype.isSetScrollPosition = function() {
 		return !this.positionMedia ||
 			( w.matchMedia && w.matchMedia( this.positionMedia ).matches );
@@ -205,7 +209,7 @@ window.jQuery = window.jQuery || window.shoestring;
 					dialog.close();
 				})
 				.bind( "click", function( e ){
-					if( $( e.target ).is( "." + Dialog.classes.close ) ){
+					if( $(e.target).closest(Dialog.selectors.close).length ){
 						w.history.back();
 						e.preventDefault();
 					}
