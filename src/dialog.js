@@ -102,6 +102,16 @@ window.jQuery = window.jQuery || window.shoestring;
 			return;
 		}
 
+		// if someone is calling close directly and the hash for this dialog is in
+		// the url then we need to go back, this will trigger the hashchange binding
+		// in init
+		// NOTE the bindings seem better in the constructor e.g.
+		// "#foo".indexOf("foo") === 1
+		if(window.location.hash.replace(/^#/, "") === this.hash){
+			window.history.back();
+			return;
+		}
+
 		this.$el.removeClass( cl.open );
 
 		this.$background.removeClass( cl.bkgdOpen );

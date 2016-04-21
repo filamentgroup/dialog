@@ -18,13 +18,13 @@
 				})
 				.bind( "click", function( e ){
 					if( $(e.target).closest(Dialog.selectors.close).length ){
-						w.history.back();
 						e.preventDefault();
+						dialog.close();
 					}
 				});
 
 			dialog.$background.bind( "click", function() {
-				w.history.back();
+				dialog.close();
 			});
 
 			// close on hashchange if open (supports back button closure)
