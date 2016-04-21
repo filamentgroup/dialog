@@ -1,4 +1,8 @@
 (function( $, window ) {
+	if(location.hash !== ""){
+		throw "Hash must be empty for tests to work properly";
+	}
+
 	var $doc, $instance, commonSetup, commonTeardown;
 
 	commonSetup = function() {
@@ -14,10 +18,18 @@
 	commonTeardown = function() {
 		$instance.unbind( "dialog-closed" );
 		$instance.unbind( "dialog-opened" );
-		$instance.trigger( "dialog-close" );
 
 		$instance.data( "instance" ).destroy();
 	};
+
+	// we have to give the browser the time to trigger a hashchange
+	// so there's no mixup
+	function closeInstance(){
+		$instance.trigger( "dialog-close" );
+		setTimeout(function(){
+			start()
+		}, 400);
+	}
 
 	module( "opening", {
 		setup: commonSetup,
@@ -27,7 +39,7 @@
 	var openTest = function( open ) {
 		$instance.one( "dialog-opened", function(){
 			ok( $instance.is(".dialog-open") );
-			start();
+			closeInstance();
 		});
 
 		ok( !$instance.is(".dialog-open") );
@@ -52,7 +64,7 @@
 	asyncTest( "with trigger sets the hash to #dialog", function() {
 		$instance.one( "dialog-opened", function(){
 			equal( location.hash, "#dialog-dialog" );
-			start();
+			closeInstance();
 		});
 
 		ok( !$instance.is(".dialog-open") );
@@ -91,6 +103,7 @@
 	};
 
 	asyncTest( "using trigger makes the dialog invisible", function() {
+		window.foo = true;
 		closeTest(function() {
 			$instance.trigger( "dialog-close" );
 		});
@@ -114,4 +127,40 @@
 			$( document ).trigger( keyupEvent );
 		});
 	});
+
+	asyncTest( "closing an open dialog clears the hash", function() {
+		$(window).one("hashchange", function(){
+			equal(location.hash, "#dialog-dialog");
+
+			$(window).one("hashchange", function(){
+				equal(location.hash, "");
+				start();
+			});
+
+			$instance.trigger("dialog-close");
+		});
+
+		$instance.trigger("dialog-open");
+	});
+
+	asyncTest( "closing an open dialog doesn't clear other hash", function() {
+		$(window).one("hashchange", function(){
+			equal(location.hash, "#dialog-dialog");
+
+			$(window).one("hashchange", function(){
+				// the hash should not have changed ...
+				equal(location.hash, "#foo");
+
+				// ... but the dialog should be closed
+				ok( !$instance.is(".dialog-open") );
+				start();
+			});
+
+			location.hash = "foo"
+			$instance.trigger("dialog-close");
+		});
+
+		$instance.trigger("dialog-open");
+	});
+
 })( window.jQuery || window.shoestring, this );
