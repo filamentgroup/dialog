@@ -147,7 +147,7 @@
 		$(window).one("hashchange", function(){
 			equal(location.hash, "#dialog-dialog");
 
-			$(window).one("hashchange", function(){
+			$instance.one("dialog-closed", function(){
 				// the hash should not have changed ...
 				equal(location.hash, "#foo");
 
