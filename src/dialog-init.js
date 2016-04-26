@@ -70,7 +70,7 @@
 	};
 
 	// auto-init
-	$(function(){
-		$( ".dialog" ).dialog();
+	$(document).bind("enhance", function(e){
+		$( e.target ).find( ".dialog" ).dialog();
 	});
 }( this, window.jQuery ));
