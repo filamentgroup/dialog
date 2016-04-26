@@ -42,7 +42,7 @@
 
 				$a = $( e.target ).closest( "a" );
 
-				if( !dialog.isOpen && $a.length && $a.attr( "href" ) ){
+				if( $a.length && $a.attr( "href" ) ){
 
 					// catch invalid selector exceptions
 					try {
@@ -54,7 +54,7 @@
 					}
 
 					if( $matchingDialog.length && $matchingDialog.is( $el ) ){
-						$matchingDialog.trigger( Dialog.events.open );
+						$matchingDialog.data( "instance" ).open( $a );
 						e.preventDefault();
 					}
 				}

@@ -62,7 +62,7 @@ window.jQuery = window.jQuery || window.shoestring;
 		this.$background.remove();
 	};
 
-	Dialog.prototype.open = function() {
+	Dialog.prototype.open = function( triggerElement ) {
 		if( this.$background.length ) {
 			this.$background[ 0 ].style.height = Math.max( docElem.scrollHeight, docElem.clientHeight ) + "px";
 		}
@@ -81,7 +81,10 @@ window.jQuery = window.jQuery || window.shoestring;
 		$html.addClass( cl.open );
 		this.isOpen = true;
 
-		window.location.hash = this.hash;
+		// prevent nested dialogs from hacking up the hash state
+		if( !triggerElement || !$(triggerElement).closest( ".dialog" ).length ){
+			window.location.hash = this.hash;
+		}
 
 		if( doc.activeElement ){
 			this.focused = doc.activeElement;
