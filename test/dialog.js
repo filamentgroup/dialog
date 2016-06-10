@@ -8,8 +8,8 @@
 	commonSetup = function() {
 		$instance = $( "#dialog" );
 
-		if( $instance.data("instance") ) {
-			$instance.data( "instance" ).destroy();
+		if( $instance.data("dialog-instance") ) {
+			$instance.data( "dialog-instance" ).destroy();
 		}
 
 		$instance.dialog();
@@ -19,7 +19,7 @@
 		$instance.unbind( "dialog-closed" );
 		$instance.unbind( "dialog-opened" );
 
-		$instance.data( "instance" ).destroy();
+		$instance.data( "dialog-instance" ).destroy();
 	};
 
 	// we have to give the browser the time to trigger a hashchange

@@ -5,7 +5,7 @@
 		return this.each(function(){
 			var $el = $( this ), dialog = new Dialog( this );
 
-			$el.data( "instance", dialog );
+			$el.data( "dialog-instance", dialog );
 
 			$el.addClass( Dialog.classes.content )
 				.attr( "role", "dialog" )

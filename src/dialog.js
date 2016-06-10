@@ -81,7 +81,13 @@ window.jQuery = window.jQuery || window.shoestring;
 		$html.addClass( cl.open );
 		this.isOpen = true;
 
+		// var hash = window.location.hash;
+		// if( hash && hash === this.hash ) {
+		// 	window.history.replaceState( {}, "", "" );
+		// }
+
 		window.location.hash = this.hash;
+
 
 		if( doc.activeElement ){
 			this.focused = doc.activeElement;

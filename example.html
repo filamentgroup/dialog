@@ -12,6 +12,7 @@
 	<script src="src/dialog-init.js"></script>
 	<script src="src/dialog-linker.js"></script>
 	<script src="https://filamentgroup.github.io/demo-head/loadfont.js"></script>
+	<script src="src/dialog-open-onload.js"></script>
 </head>
 <body class="docs">
 	<div class="header">
@@ -78,6 +79,18 @@
 				<p class="docs">
 					<a href="https://filamentgroup.com" data-dialog-link data-dialog-iframe>Open Iframe Dialog</a>
 				</p>
+
+		<pre><code>
+&lt;div class="dialog" data-dialog-open-onload id="mydialog-auto"&gt;
+  &lt;p&gt;This dialog opened automatically, right?&lt;/p&gt;
+  &lt;a href="#mydialog-btn" class="dialog-close"&gt;Close&lt;/a&gt;
+&lt;/div&gt;
+</code></pre>
+
+		<div class="dialog" data-dialog-open-onload id="mydialog-auto">
+			<p>This dialog opened automatically, right?</p>
+			<a href="#mydialog-btn" class="dialog-close">Close</a>
+		</div>
 	</div>
 </body>
 </html>
