@@ -24,7 +24,7 @@ window.jQuery = window.jQuery || window.shoestring;
 		this.$background = !this.$el.is( '[data-nobg]' ) ?
 			$( doc.createElement('div') ).addClass( cl.bkgd ).appendTo( "body") :
 			$( [] );
-		this.hash = this.$el.attr( "id" ) + "-dialog";
+		this.hash = this.$el.attr( "id" ) + "-dialog-" + Date.now().toString();
 
 		this.isOpen = false;
 		this.positionMedia = this.$el.attr( 'data-set-position-media' );
