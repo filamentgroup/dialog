@@ -4,7 +4,7 @@
 
 Just a simple, minimal, Responsive jQuery/Shoestring dialog with typical interactivity
 
-Demo page here: http://filamentgroup.github.com/dialog/example.html
+Demo page here: http://filamentgroup.github.com/dialog/demos/
 
 [![Build Status](https://travis-ci.org/filamentgroup/dialog.svg)](https://travis-ci.org/filamentgroup/dialog)
 
