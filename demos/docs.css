@@ -180,3 +180,13 @@ pre[class*="language-"] {
 	margin-bottom: 1em;
 }
 
+pre {
+	    padding: 16px;
+			background: #f7f7f7;
+			  tab-size: 2;
+}
+code {
+	font-size: 1.2em;
+	line-height: 1.4;
+	font-weight: 300;
+}

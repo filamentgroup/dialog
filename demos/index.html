@@ -4,10 +4,11 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Dialog Example</title>
+	<link rel="stylesheet" href="https://filamentgroup.github.io/demo-head/demohead.css">
 	<link rel="stylesheet" href="docs.css">
 	<link rel="stylesheet" href="../lib/xrayhtml.css">
 	<link rel="stylesheet" href="../src/dialog.css">
-	<link rel="stylesheet" href="https://filamentgroup.github.io/demo-head/demohead.css">
+
 	<script src="../lib/shoestring-dev.js"></script>
 	<script src="../lib/xrayhtml.js"></script>
 	<script src="../src/dialog.js"></script>
@@ -36,12 +37,9 @@
 
 		<h1 class="docs">Dialog Examples</h1>
 
-		<h2 class="docs">Default modal in-page dialog</h2>
-		<p class="docs">A standard in-page dialog consists of an element with a class of <code>dialog</code> and a unique ID.
-			The element may contain any HTML you'd like, including an optional close link, which should be denoted by the attribute <code>data-dialog-close</code>.
-			Any links in the page can open that dialog by referencing its ID via their <code>href</code> attribute.
-			To redirect the browser's focus back to the element that opened a dialog after it is closed, you can give the opening link a unique ID and reference it via the close link's <code>href</code> attribute.
-		</p>
+		<p class="docs">The dialog itself is an element with a class of <code>dialog</code>.  It'll auto-initialize on dom-ready.</p>
+
+		<h2 class="docs">Typical dialog example</h2>
 
 		<div data-xrayhtml>
 			<div class="dialog" id="mydialog">
@@ -51,39 +49,86 @@
 			<a href="#mydialog" id="mydialog-btn">Open Dialog</a>
 		</div>
 
-		<p class="docs">When opened, the browser's URL bar will receive a hash value equal to the dialog's ID, and an overlay screen will cover all page elements just underneath the dialog.
-		That overlay screen will close the dialog when clicked. Also, clicking the escape key or back button will close the dialog as well.</p>
+		<h2 class="docs">Markup broken down</h2>
 
+		<p class="docs">The dialog itself is an element with a class of dialog:</p>
 
-		<h2 class="docs">In-page dialog with transparent background</h2>
-		<p class="docs">To specify that the overlay screen is transparent, but still clickable to dismiss the dialog, you can add the attribute <code>data-transbg</code> to the dialog div.</p>
+		<pre  class="docs"><code>&lt;div class="dialog"&gt;Content here...&lt;/div&gt;
+		</code></pre>
+
+		<p class="docs">To open it via a link, give the dialog an <code>id</code> and link to that ID somewhere on the page:</p>
+
+			<pre  class="docs"><code>&lt;div class="dialog" id="mydialog"&gt;Content here....&lt;/div&gt;
+
+&lt;a href="#mydialog"&gt;Open Dialog&lt;/a&gt;
+		</code></pre>
+
+		<p class="docs">Once open, the dialog can be closed via back button, escape key, clicking or tapping the overlay screen (if styled to be visible).</p>
+
+		<p class="docs">You can also add a close link by adding a link anywhere in the dialog element with an attribute <code>data-dialog-close</code>.</p>
+
+		<pre class="docs"><code>&lt;div class="dialog" id="mydialog"&gt;
+			&lt;p&gt;This is a dialog&lt;/p&gt;
+			&lt;a href="#" data-dialog-close&gt;Close&lt;/a&gt;
+		&lt;/div&gt;
+		</code></pre>
+
+		<p class="docs">Rather than using a null <code>#</code> href for the close link, we find it's nice to link back to the link that opened the dialog, just in case the user scrolled away from that place while the dialog was open. You can do this by giving the opener link an <code>id</code> attribute and linking to that ID from the close link:</p>
+
+		<pre class="docs"><code>&lt;div class="dialog" id="mydialog"&gt;
+			&lt;p&gt;This is a dialog&lt;/p&gt;
+			&lt;a href="#mydialog-btn" data-dialog-close&gt;Close&lt;/a&gt;
+		&lt;/div&gt;
+
+		&lt;a href="#mydialog" id="mydialog-btn"&gt;Open Dialog&lt;/a&gt;
+			</code></pre>
+
+		<h2 class="docs">Modal and non-modal</h2>
+
+		<p class="docs">Much of the presentation of the dialog is configured in CSS. If you don't want a modal appearance, you can set the <code>.dialog</code> element's background to transparent.</p>
+
+		<pre class="docs"><code>.dialog {
+			background: transparent;
+		}
+		</code></pre>
+
+		<h2 class="docs">Opening and closing programatically</h2>
+
+		<p class="docs">You can open and close the dialog via JavaScript by triggering an open or close event:</p>
+
+		<pre class="docs"><code>// open:
+		$( "#mydialog" ).trigger( "dialog-open" );
+
+		// close:
+		$( "#mydialog" ).trigger( "dialog-close" );
+		</code></pre>
+
+		<h2 class="docs">Ajax linking</h2>
+
+		<p class="docs">You can pull another page into a dialog by adding a <code>data-dialog-link</code> attribute to a link.</p>
 
 		<div data-xrayhtml>
-			<div class="dialog" id="mytransparentdialog" data-transbg>
-				<p>This is a dialog with a transparent background</p>
-				<a href="#mytransparentdialog-btn" class="dialog-close">Close</a>
-			</div>
-				<a href="#mytransparentdialog" id="mytransparentdialog-btn">Open Dialog with Transparent Background</a>
+		<a href="example-external.html" data-dialog-link>Open in dialog</a>
+		</div>
+
+		<h3 class="docs">Adding a class via ajax linking</h3>
+
+		<p class="docs">To set classes on the ajax dialog container, you can specify classes in a <code>data-dialog-addclass</code> attribute on the anchor:</p>
+
+	<div data-xrayhtml>
+	<a href="example-external.html" data-dialog-link data-dialog-addclass="foo bar baz">Open in dialog</a>
+	</div>
+
+		<h2 class="docs">Iframe linking</h2>
+
+		<p>You can pull another page into a dialog in an iframe by adding a <code>data-dialog-iframe</code> attribute to a <code>data-dialog-link</code> link.</p>
+
+		<div data-xrayhtml>
+		<a href="example-external.html" data-dialog-link data-dialog-iframe>Open in dialog</a>
 		</div>
 
 
-		<h2 class="docs">Ajax dialogs</h2>
 
-		<p class="docs">A link to an external HTML file can be converted to include the external file inside a dialog instead of leaving the page. To do this, simply add the <code>data-dialog-link</code> attribute to any link.
-			Note: this will pull the entire referenced document in and insert its HTML into a dialog element, and typical cross-domain Ajax restrictions will apply.</p>
-
-
-		<div data-xrayhtml>
-				<a href="example-external.html" data-dialog-link>Open Ajax Dialog</a>
-		</div>
-
-		<h2 class="docs">Iframed dialogs</h2>
-
-		<p class="docs">To pull an external page into a dialog inside an iframe, you can apply the <code>data-dialog-link</code> and <code>data-dialog-iframe</code> attributes.</p>
-
-		<div data-xrayhtml>
-			<a href="https://filamentgroup.com" data-dialog-link data-dialog-iframe>Open Iframe Dialog</a>
-		</div>
 	</div>
 </body>
 </html>
