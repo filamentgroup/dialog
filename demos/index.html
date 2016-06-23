@@ -14,6 +14,11 @@
 	<script src="../src/dialog.js"></script>
 	<script src="../src/dialog-init.js"></script>
 	<script src="../src/dialog-linker.js"></script>
+	<script>
+		$( function(){
+			$( document ).trigger( "enhance" );
+		} );
+	</script>
 	<script src="https://filamentgroup.github.io/demo-head/loadfont.js"></script>
 </head>
 <body class="docs">
@@ -85,11 +90,24 @@
 
 		<h2 class="docs">Modal and non-modal</h2>
 
-		<p class="docs">Much of the presentation of the dialog is configured in CSS. If you don't want a modal appearance, you can set the <code>.dialog</code> element's background to transparent.</p>
+		<p class="docs">Much of the presentation of the dialog is configured in CSS.
+			The default modal appearance is applied to <code>.dialog-background</code> element that the script generates by default.
+			If you want to style this element differently, just style that selector however you'd like:
+		</p>
 
-		<pre class="docs"><code>.dialog {
-			background: transparent;
+		<pre class="docs"><code>.dialog-background {
+			background: red;
 		}
+		</code></pre>
+
+		<p class="docs">You can also configure the background to be transparent via the dialog markup, by using the <code>data-dialog-transbg</code> attribute:</p>
+
+		<pre class="docs"><code>&lt;div class="dialog" data-dialog-transbg&gt;Content here...&lt;/div&gt;
+		</code></pre>
+
+		<p class="docs">If you'd prefer to have no background element at all, you can use the <code>data-dialog-nobg</code> attribute:</p>
+
+		<pre class="docs"><code>&lt;div class="dialog" data-dialog-nobg&gt;Content here...&lt;/div&gt;
 		</code></pre>
 
 		<h2 class="docs">Opening and closing programatically</h2>
@@ -124,7 +142,7 @@
 		<p>You can pull another page into a dialog in an iframe by adding a <code>data-dialog-iframe</code> attribute to a <code>data-dialog-link</code> link.</p>
 
 		<div data-xrayhtml>
-		<a href="example-external.html" data-dialog-link data-dialog-iframe>Open in dialog</a>
+		<a href="https://filamentgroup.com" data-dialog-link data-dialog-iframe>Open in dialog</a>
 		</div>
 
 
