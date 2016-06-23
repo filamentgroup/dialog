@@ -31,15 +31,20 @@
 			});
 
 			// close on hashchange if open (supports back button closure)
-			$( w ).bind( "hashchange", function(){
+			$( w ).bind( "hashchange load", function(){
 				var hash = w.location.hash.replace( "#", "" );
 
-				if( hash !== dialog.hash ){
-					dialog.close();
+        // if the hash matches this dialog's, open!
+        if( hash === dialog.hash ){
+          dialog.open();
+        }
+        // if it doesn't match...
+				else {
+          dialog.close();
 				}
 			});
 
-			// open on matching a[href=#id] click
+      // open on matching a[href=#id] click
 			$( doc ).bind( "click", function( e ){
 				var $matchingDialog, $a;
 
@@ -62,6 +67,8 @@
 					}
 				}
 			});
+
+
 
 			// close on escape key
 			$( doc ).bind( "keyup", function( e ){

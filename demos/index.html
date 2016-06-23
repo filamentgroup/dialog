@@ -146,6 +146,19 @@
 		</div>
 
 
+		<h2 class="docs">"Nested" Dialogs</h2>
+		<p class="docs">Dialogs can open without closing already-open dialogs, and they'll close in the order they were opened.</p>
+
+		<div data-xrayhtml>
+			<div class="dialog" id="mydialog-parent">
+				<p>This is a dialog</p>
+				<p><a href="#mydialog" id="mydialog-child-btn">Open the first Dialog on the page</a></p>
+				<p><a href="#mydialog-btn" data-dialog-close>Close</a></p>
+			</div>
+			<a href="#mydialog-parent" id="mydialog-btn">Open Dialog</a>
+		</div>
+
+
 
 	</div>
 </body>

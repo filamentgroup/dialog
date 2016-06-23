@@ -24,6 +24,9 @@ window.jQuery = window.jQuery || window.shoestring;
 		this.$background = !this.$el.is( '[data-nobg]' ) ?
 			$( doc.createElement('div') ).addClass( cl.bkgd ).appendTo( "body") :
 			$( [] );
+		this.initialLocationHash = w.location.hash;
+		// the hash is different from the dialog's actual ID because pairing the ID directly makes the browser jump to the top of the dialog,
+		// rather than allowing us to space it off the top of the viewport
 		this.hash = this.$el.attr( "id" ) + "-dialog";
 
 		this.isOpen = false;
@@ -107,8 +110,15 @@ window.jQuery = window.jQuery || window.shoestring;
 		// in init
 		// NOTE the bindings seem better in the constructor e.g.
 		// "#foo".indexOf("foo") === 1
-		if(window.location.hash.replace(/^#/, "") === this.hash){
-			window.history.back();
+		if( window.location.hash.replace(/^#/, "") === this.hash ){
+			// if the hash doesn't equal the initial hash at init time, it's safe to go back to close this out
+			if( window.location.hash !== this.initialLocationHash ){
+				window.history.back();
+			}
+			// if it's the same hash as init time, we can't go back (back might take us elsewhere) - gotta go forward
+			else {
+				window.location.hash = "";
+			}
 			return;
 		}
 
@@ -152,14 +162,12 @@ window.jQuery = window.jQuery || window.shoestring;
 
 
 			function createDialog(content){
-				var linkId = $a.attr( "id" );
+				var linkHref = $a.attr( "href" );
 				var dialogClasses = $a.attr( "data-dialog-addclass" ) || "";
 				var id;
 
-				if( linkId ) {
-					id = linkId + "-dialog";
-				} else {
-					id = "dialog-" + new Date().getTime();
+				if( linkHref ) {
+					id = linkHref;
 				}
 
 				$a
@@ -198,6 +206,17 @@ window.jQuery = window.jQuery || window.shoestring;
 			}
 		});
 
+	// if the hash matches an ajaxlink's url, open it
+	$( w ).bind( "hashchange load", function(){
+		var hash = w.location.hash.replace( "#", "" );
+		var id = hash.replace( /-dialog$/, "" );
+		var $ajaxLink = $( 'a[href="' + id +'"][data-dialog-link]' );
+		var $dialogInPage = $( '.dialog[id="' + id + '"]' );
+		if( $ajaxLink.length && !$dialogInPage.length ){
+			$ajaxLink.eq( 0 ).trigger( "click" );
+		}
+	});
+
 }( this, window.jQuery ));
 
 (function( w, $ ){
@@ -233,15 +252,20 @@ window.jQuery = window.jQuery || window.shoestring;
 			});
 
 			// close on hashchange if open (supports back button closure)
-			$( w ).bind( "hashchange", function(){
+			$( w ).bind( "hashchange load", function(){
 				var hash = w.location.hash.replace( "#", "" );
 
-				if( hash !== dialog.hash ){
-					dialog.close();
+        // if the hash matches this dialog's, open!
+        if( hash === dialog.hash ){
+          dialog.open();
+        }
+        // if it doesn't match...
+				else {
+          dialog.close();
 				}
 			});
 
-			// open on matching a[href=#id] click
+      // open on matching a[href=#id] click
 			$( doc ).bind( "click", function( e ){
 				var $matchingDialog, $a;
 
@@ -264,6 +288,8 @@ window.jQuery = window.jQuery || window.shoestring;
 					}
 				}
 			});
+
+
 
 			// close on escape key
 			$( doc ).bind( "keyup", function( e ){

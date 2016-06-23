@@ -19,14 +19,12 @@
 
 
 			function createDialog(content){
-				var linkId = $a.attr( "id" );
+				var linkHref = $a.attr( "href" );
 				var dialogClasses = $a.attr( "data-dialog-addclass" ) || "";
 				var id;
 
-				if( linkId ) {
-					id = linkId + "-dialog";
-				} else {
-					id = "dialog-" + new Date().getTime();
+				if( linkHref ) {
+					id = linkHref;
 				}
 
 				$a
@@ -64,5 +62,16 @@
 				e.preventDefault();
 			}
 		});
+
+	// if the hash matches an ajaxlink's url, open it
+	$( w ).bind( "hashchange load", function(){
+		var hash = w.location.hash.replace( "#", "" );
+		var id = hash.replace( /-dialog$/, "" );
+		var $ajaxLink = $( 'a[href="' + id +'"][data-dialog-link]' );
+		var $dialogInPage = $( '.dialog[id="' + id + '"]' );
+		if( $ajaxLink.length && !$dialogInPage.length ){
+			$ajaxLink.eq( 0 ).trigger( "click" );
+		}
+	});
 
 }( this, window.jQuery ));
