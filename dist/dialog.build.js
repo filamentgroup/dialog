@@ -132,11 +132,14 @@ window.jQuery = window.jQuery || window.shoestring;
 }( this, window.jQuery ));
 
 (function( w, $ ){
-  var Dialog = w.componentNamespace.Dialog, doc = document;
+  var Dialog = w.componentNamespace.Dialog,
+      doc = w.document,
+      pluginName = "dialog";
 
-	$.fn.dialog = function(){
+	$.fn[ pluginName ] = function(){
 		return this.each(function(){
-			var $el = $( this ), dialog = new Dialog( this );
+			var $el = $( this ),
+          dialog = new Dialog( this );
 
 			$el.data( "instance", dialog );
 
@@ -202,8 +205,9 @@ window.jQuery = window.jQuery || window.shoestring;
 		});
 	};
 
-	// auto-init
-	$(function(){
-		$( ".dialog" ).dialog();
+  // auto-init on enhance
+	$( w.document ).bind( "enhance", function( e ){
+    var target = e.target === w.document ? "" : e.target;
+		$( "." + pluginName, e.target ).add( target ).filter( "." + pluginName )[ pluginName ]();
 	});
 }( this, window.jQuery ));
