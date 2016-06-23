@@ -36,7 +36,7 @@
 				var $dialog = $( "<div class='dialog "+ dialogClasses +"' id='" + id + "'></div>" )
 						.append( content )
 						.appendTo( "body" )
-						.dialog();
+						.trigger( "enhance" );
 
 				function open(){
 					$dialog.trigger( "dialog-open" );
