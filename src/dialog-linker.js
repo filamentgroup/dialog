@@ -64,7 +64,7 @@
 
 	// if the hash matches an ajaxlink's url, open it
 	$( w ).bind( "hashchange load", function(){
-		var hash = w.location.hash.replace( "#", "" );
+		var hash = w.location.hash.split( "#" ).pop();
 		var id = hash.replace( /-dialog$/, "" );
 		var $ajaxLink = $( 'a[href="' + id +'"][data-dialog-link]' );
 		var nohistory = $ajaxLink.is( "[data-dialog-nohistory]" );

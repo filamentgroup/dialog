@@ -32,7 +32,7 @@
 
 			// close on hashchange if open (supports back button closure)
 			$( w ).bind( "hashchange load", function(){
-				var hash = w.location.hash.replace( "#", "" );
+				var hash = w.location.hash.split( "#" ).pop();
 
         // if the hash matches this dialog's, open!
         if( hash === dialog.hash ){
