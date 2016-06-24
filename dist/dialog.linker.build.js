@@ -27,6 +27,8 @@ window.jQuery = window.jQuery || window.shoestring;
 		this.initialLocationHash = w.location.hash;
 		// the hash is different from the dialog's actual ID because pairing the ID directly makes the browser jump to the top of the dialog,
 		// rather than allowing us to space it off the top of the viewport
+		// if the dialog has a data-nohistory attr, the -dialog suffix will be prefixed with an -x to break its findability for linking and hashchanges
+		this.nohistory = this.$el.is( '[data-dialog-nohistory]' );
 		this.hash = this.$el.attr( "id" ) + "-dialog";
 
 		this.isOpen = false;
@@ -160,7 +162,6 @@ window.jQuery = window.jQuery || window.shoestring;
 			var link = $a.is( "[data-dialog-link]" );
 			var iframe = $a.is( "[data-dialog-iframe]" );
 
-
 			function createDialog(content){
 				var linkHref = $a.attr( "href" );
 				var dialogClasses = $a.attr( "data-dialog-addclass" ) || "";
@@ -211,8 +212,9 @@ window.jQuery = window.jQuery || window.shoestring;
 		var hash = w.location.hash.replace( "#", "" );
 		var id = hash.replace( /-dialog$/, "" );
 		var $ajaxLink = $( 'a[href="' + id +'"][data-dialog-link]' );
+		var nohistory = $ajaxLink.is( "[data-dialog-nohistory]" );
 		var $dialogInPage = $( '.dialog[id="' + id + '"]' );
-		if( $ajaxLink.length && !$dialogInPage.length ){
+		if( $ajaxLink.length && !nohistory && !$dialogInPage.length ){
 			$ajaxLink.eq( 0 ).trigger( "click" );
 		}
 	});
@@ -257,7 +259,9 @@ window.jQuery = window.jQuery || window.shoestring;
 
         // if the hash matches this dialog's, open!
         if( hash === dialog.hash ){
-          dialog.open();
+          if( !dialog.nohistory ){
+            dialog.open();
+          }
         }
         // if it doesn't match...
 				else {

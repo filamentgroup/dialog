@@ -27,6 +27,8 @@ window.jQuery = window.jQuery || window.shoestring;
 		this.initialLocationHash = w.location.hash;
 		// the hash is different from the dialog's actual ID because pairing the ID directly makes the browser jump to the top of the dialog,
 		// rather than allowing us to space it off the top of the viewport
+		// if the dialog has a data-nohistory attr, the -dialog suffix will be prefixed with an -x to break its findability for linking and hashchanges
+		this.nohistory = this.$el.is( '[data-dialog-nohistory]' );
 		this.hash = this.$el.attr( "id" ) + "-dialog";
 
 		this.isOpen = false;

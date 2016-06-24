@@ -17,7 +17,6 @@
 			var link = $a.is( "[data-dialog-link]" );
 			var iframe = $a.is( "[data-dialog-iframe]" );
 
-
 			function createDialog(content){
 				var linkHref = $a.attr( "href" );
 				var dialogClasses = $a.attr( "data-dialog-addclass" ) || "";
@@ -68,8 +67,9 @@
 		var hash = w.location.hash.replace( "#", "" );
 		var id = hash.replace( /-dialog$/, "" );
 		var $ajaxLink = $( 'a[href="' + id +'"][data-dialog-link]' );
+		var nohistory = $ajaxLink.is( "[data-dialog-nohistory]" );
 		var $dialogInPage = $( '.dialog[id="' + id + '"]' );
-		if( $ajaxLink.length && !$dialogInPage.length ){
+		if( $ajaxLink.length && !nohistory && !$dialogInPage.length ){
 			$ajaxLink.eq( 0 ).trigger( "click" );
 		}
 	});

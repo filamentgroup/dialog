@@ -36,7 +36,9 @@
 
         // if the hash matches this dialog's, open!
         if( hash === dialog.hash ){
-          dialog.open();
+          if( !dialog.nohistory ){
+            dialog.open();
+          }
         }
         // if it doesn't match...
 				else {
