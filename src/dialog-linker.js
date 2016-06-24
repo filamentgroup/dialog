@@ -62,11 +62,12 @@
 			}
 		});
 
-	// if the hash matches an ajaxlink's url, open it
+	// if the hash matches an ajaxlink's url, open it by triggering a click on the ajaxlink
 	$( w ).bind( "hashchange load", function(){
 		var hash = w.location.hash.split( "#" ).pop();
 		var id = hash.replace( /-dialog$/, "" );
 		var $ajaxLink = $( 'a[href="' + id +'"][data-dialog-link]' );
+		// if the link specified nohistory, don't click it
 		var nohistory = $ajaxLink.is( "[data-dialog-nohistory]" );
 		var $dialogInPage = $( '.dialog[id="' + id + '"]' );
 		if( $ajaxLink.length && !nohistory && !$dialogInPage.length ){

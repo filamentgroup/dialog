@@ -153,9 +153,9 @@
 			<div class="dialog" id="mydialog-2">
 				<p>This is a dialog</p>
 				<p><a href="#mydialog">Open the first Dialog on the page</a></p>
-				<p><a href="#mydialog-btn" data-dialog-close>Close</a></p>
+				<p><a href="#mydialog-2-btn" data-dialog-close>Close</a></p>
 			</div>
-			<a href="#mydialog-2" id="mydialog-btn">Open Dialog</a>
+			<a href="#mydialog-2" id="mydialog-2-btn">Open Dialog</a>
 		</div>
 
 
@@ -165,14 +165,15 @@
 
 		<div data-xrayhtml>
 			<div class="dialog" id="mydialog-3" data-dialog-nohistory>
-				<p>This is a non-history dialog</p>
-				<p><a href="#mydialog-btn" data-dialog-close>Close</a></p>
+				<p>This is a no-history dialog</p>
+				<p><a href="#mydialog">Open the first Dialog on the page (that one does have history!)</a></p>
+				<p><a href="#mydialog-2-btn" data-dialog-close>Close</a></p>
 			</div>
-			<a href="#mydialog-3" id="mydialog-btn">Open Non-history Dialog</a>
+			<a href="#mydialog-3" id="mydialog-2-btn">Open Dialog</a>
 		</div>
 
 		<div data-xrayhtml>
-		<a href="example-external.html?2" data-dialog-link>Open in dialog</a>
+		<a href="example-external.html?2" data-dialog-link data-dialog-nohistory>Open Non-history Ajax Dialog</a>
 		</div>
 
 

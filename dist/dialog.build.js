@@ -24,10 +24,15 @@ window.jQuery = window.jQuery || window.shoestring;
 		this.$background = !this.$el.is( '[data-nobg]' ) ?
 			$( doc.createElement('div') ).addClass( cl.bkgd ).appendTo( "body") :
 			$( [] );
+
+		// when dialog first inits, save a reference to the initial hash so we can know whether
+		// there's room in the history stack to go back or not when closing
 		this.initialLocationHash = w.location.hash;
-		// the hash is different from the dialog's actual ID because pairing the ID directly makes the browser jump to the top of the dialog,
-		// rather than allowing us to space it off the top of the viewport
-		// if the dialog has a data-nohistory attr, the -dialog suffix will be prefixed with an -x to break its findability for linking and hashchanges
+
+		// the dialog's url hash is different from the dialog's actual ID attribute
+		// this is because pairing the ID directly makes the browser jump to the top of the dialog,
+		// rather than allowing us to space it off the top of the viewport.
+		// also, if the dialog has a data-nohistory attr, this property will prevent its findability for onload and hashchanges
 		this.nohistory = this.$el.is( '[data-dialog-nohistory]' );
 		this.hash = this.$el.attr( "id" ) + "-dialog";
 
@@ -68,6 +73,9 @@ window.jQuery = window.jQuery || window.shoestring;
 	};
 
 	Dialog.prototype.open = function() {
+		if( this.isOpen ){
+			return;
+		}
 		if( this.$background.length ) {
 			this.$background[ 0 ].style.height = Math.max( docElem.scrollHeight, docElem.clientHeight ) + "px";
 		}
@@ -86,7 +94,15 @@ window.jQuery = window.jQuery || window.shoestring;
 		$html.addClass( cl.open );
 		this.isOpen = true;
 
-		window.location.hash = this.hash;
+		var cleanHash = w.location.hash.replace( /^#/, "" );
+		var lastHash = w.location.hash.split( "#" ).pop();
+
+		if( cleanHash.indexOf( "-dialog" ) > -1 && lastHash !== this.hash ){
+			w.location.hash += "#" + this.hash;
+		}
+		else if( lastHash !== this.hash ) {
+			w.location.hash = this.hash;
+		}
 
 		if( doc.activeElement ){
 			this.focused = doc.activeElement;
@@ -107,19 +123,22 @@ window.jQuery = window.jQuery || window.shoestring;
 			return;
 		}
 
-		// if someone is calling close directly and the hash for this dialog is in
-		// the url then we need to go back, this will trigger the hashchange binding
-		// in init
-		// NOTE the bindings seem better in the constructor e.g.
-		// "#foo".indexOf("foo") === 1
-		if( window.location.hash.replace(/^#/, "") === this.hash ){
-			// if the hash doesn't equal the initial hash at init time, it's safe to go back to close this out
-			if( window.location.hash !== this.initialLocationHash ){
+		// if close() is called directly and the hash for this dialog is at the end of the url,
+		// then we need to change the hash to remove it, either by going back if we can, or by adding a history
+		// state that doesn't have it at the end
+		if( window.location.hash.split( "#" ).pop() === this.hash ){
+			// let's check if the first segment in the hash is the same as the first segment in the initial hash
+			// if not, it's safe to use back() to close this out and clean the hash up
+			var firstHashSegment = window.location.hash.split( "#" )[ 1 ];
+			var firstInitialHashSegment = this.initialLocationHash.split( "#" )[ 1 ];
+			if( firstHashSegment && firstInitialHashSegment && firstInitialHashSegment !== firstHashSegment ){
 				window.history.back();
 			}
-			// if it's the same hash as init time, we can't go back (back might take us elsewhere) - gotta go forward
+			// otherwise, if it's the same starting hash as it was at init time,
+			// we can't trigger back to close the dialog, as it might take us elsewhere.
+			// so we have to go forward and create a new hash that does not have this dialog's hash at the end
 			else {
-				window.location.hash = "";
+				window.location.hash = window.location.hash.replace( new RegExp( "#" + this.hash + "$" ), "" );
 			}
 			return;
 		}
@@ -175,9 +194,9 @@ window.jQuery = window.jQuery || window.shoestring;
 				dialog.close();
 			});
 
-			// close on hashchange if open (supports back button closure)
+			// on load and hashchange, open the dialog if its hash matches the last part of the hash, and close if it doesn't
 			$( w ).bind( "hashchange load", function(){
-				var hash = w.location.hash.replace( "#", "" );
+				var hash = w.location.hash.split( "#" ).pop();
 
         // if the hash matches this dialog's, open!
         if( hash === dialog.hash ){

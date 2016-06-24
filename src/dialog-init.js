@@ -30,7 +30,7 @@
 				dialog.close();
 			});
 
-			// close on hashchange if open (supports back button closure)
+			// on load and hashchange, open the dialog if its hash matches the last part of the hash, and close if it doesn't
 			$( w ).bind( "hashchange load", function(){
 				var hash = w.location.hash.split( "#" ).pop();
 
