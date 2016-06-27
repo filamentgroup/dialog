@@ -52,11 +52,13 @@
 
 				$a = $( e.target ).closest( "a" );
 
+
 				if( !dialog.isOpen && $a.length && $a.attr( "href" ) ){
+          var id = $a.attr( "href" ).replace( /^#/, "" );
 
 					// catch invalid selector exceptions
 					try {
-						$matchingDialog = $( $a.attr( "href" ) );
+						$matchingDialog = $( "[id='" + id + "']" );
 					} catch ( error ) {
 						// TODO should check the type of exception, it's not clear how well
 						//      the error name "SynatxError" is supported

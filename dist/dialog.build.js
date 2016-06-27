@@ -37,7 +37,6 @@ window.jQuery = window.jQuery || window.shoestring;
 		this.hash = this.$el.attr( "id" ) + "-dialog";
 
 		this.isOpen = false;
-		this.positionMedia = this.$el.attr( 'data-set-position-media' );
 		this.isTransparentBackground = this.$el.is( '[data-transbg]' );
 	};
 
@@ -63,11 +62,6 @@ window.jQuery = window.jQuery || window.shoestring;
 		close: "." + Dialog.classes.close + ", [data-close], [data-dialog-close]"
 	};
 
-	Dialog.prototype.isSetScrollPosition = function() {
-		return !this.positionMedia ||
-			( w.matchMedia && w.matchMedia( this.positionMedia ).matches );
-	};
-
 	Dialog.prototype.destroy = function() {
 		this.$background.remove();
 	};
@@ -84,12 +78,8 @@ window.jQuery = window.jQuery || window.shoestring;
 		this.$background.attr( "id", this.$el.attr( "id" ) + "-background" );
 		this._setBackgroundTransparency();
 
-		if( this.isSetScrollPosition() ) {
-			this.scroll = "pageYOffset" in w ? w.pageYOffset : ( docElem.scrollY || docElem.scrollTop || ( body && body.scrollY ) || 0 );
-			this.$el[ 0 ].style.top = this.scroll + "px";
-		} else {
-			this.$el[ 0 ].style.top = '';
-		}
+		this.scroll = "pageYOffset" in w ? w.pageYOffset : ( docElem.scrollY || docElem.scrollTop || ( body && body.scrollY ) || 0 );
+		this.$el[ 0 ].style.top = this.scroll + "px";
 
 		$html.addClass( cl.open );
 		this.isOpen = true;
@@ -153,9 +143,7 @@ window.jQuery = window.jQuery || window.shoestring;
 			this.focused.focus();
 		}
 
-		if( this.isSetScrollPosition() ) {
-			w.scrollTo( 0, this.scroll );
-		}
+		w.scrollTo( 0, this.scroll );
 
 		this.isOpen = false;
 
@@ -217,11 +205,13 @@ window.jQuery = window.jQuery || window.shoestring;
 
 				$a = $( e.target ).closest( "a" );
 
+
 				if( !dialog.isOpen && $a.length && $a.attr( "href" ) ){
+          var id = $a.attr( "href" ).replace( /^#/, "" );
 
 					// catch invalid selector exceptions
 					try {
-						$matchingDialog = $( $a.attr( "href" ) );
+						$matchingDialog = $( "[id='" + id + "']" );
 					} catch ( error ) {
 						// TODO should check the type of exception, it's not clear how well
 						//      the error name "SynatxError" is supported
