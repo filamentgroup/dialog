@@ -20,6 +20,7 @@
 			function createDialog(content){
 				var linkHref = $a.attr( "href" );
 				var dialogClasses = $a.attr( "data-dialog-addclass" ) || "";
+				var dialogNoHistory = $a.is( "[data-dialog-nohistory]" );
 				var id;
 
 				if( linkHref ) {
@@ -30,7 +31,7 @@
 					.attr("href", "#" + id )
 					.removeAttr( "data-dialog-link" );
 
-				var $dialog = $( "<div class='dialog "+ dialogClasses +"' id='" + id + "'></div>" )
+				var $dialog = $( "<div class='dialog "+ dialogClasses +"' id='" + id + "' " + ( dialogNoHistory ? " data-dialog-nohistory" : "" ) + "></div>" )
 						.append( content )
 						.appendTo( "body" )
 						.trigger( "enhance" );

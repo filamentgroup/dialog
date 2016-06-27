@@ -138,7 +138,8 @@ window.jQuery = window.jQuery || window.shoestring;
 			// we can't trigger back to close the dialog, as it might take us elsewhere.
 			// so we have to go forward and create a new hash that does not have this dialog's hash at the end
 			else {
-				window.location.hash = window.location.hash.replace( new RegExp( "#" + this.hash + "$" ), "" );
+				var escapedRegexpHash = this.hash.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+				window.location.hash = window.location.hash.replace( new RegExp( "#" + escapedRegexpHash + "$" ), "" );
 			}
 			return;
 		}
@@ -184,6 +185,7 @@ window.jQuery = window.jQuery || window.shoestring;
 			function createDialog(content){
 				var linkHref = $a.attr( "href" );
 				var dialogClasses = $a.attr( "data-dialog-addclass" ) || "";
+				var dialogNoHistory = $a.is( "[data-dialog-nohistory]" );
 				var id;
 
 				if( linkHref ) {
@@ -194,7 +196,7 @@ window.jQuery = window.jQuery || window.shoestring;
 					.attr("href", "#" + id )
 					.removeAttr( "data-dialog-link" );
 
-				var $dialog = $( "<div class='dialog "+ dialogClasses +"' id='" + id + "'></div>" )
+				var $dialog = $( "<div class='dialog "+ dialogClasses +"' id='" + id + "' " + ( dialogNoHistory ? " data-dialog-nohistory" : "" ) + "></div>" )
 						.append( content )
 						.appendTo( "body" )
 						.trigger( "enhance" );
