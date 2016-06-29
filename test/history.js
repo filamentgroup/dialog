@@ -1,7 +1,6 @@
 (function( $, window ) {
-	if(location.hash !== "#dialog-dialog"){
-		throw "Hash must be set to #dialog-dialog for tests to cover initial load behavior";
-	}
+	// force the hash to test init
+	location.hash = "#dialog-dialog";
 
 	var $doc, $instance, commonSetup, commonTeardown;
 
