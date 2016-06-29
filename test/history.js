@@ -30,6 +30,11 @@
 		}, 400);
 	}
 
+	module( "init", {
+		setup: commonSetup,
+		teardown: commonTeardown
+	});
+
 	var initOpened;
 
 	$(window).bind("dialog-opened", function(event){
@@ -40,4 +45,13 @@
 		ok(initOpened);
 		start();
 	});
+
+	// TODO move to `dialog.js` tests
+	test("should prevent double init", function(){
+		// the `isOpen` propery of the dialog object is set
+		// to `false` at the end of init, we check that it never gets there
+		$instance.data("dialog").isOpen = true;
+		$instance.dialog();
+		equal($instance.data("dialog").isOpen, true);
+	})
 })(jQuery, this);

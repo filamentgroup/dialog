@@ -21,6 +21,15 @@ window.jQuery = window.jQuery || window.shoestring;
 
 	var Dialog = w.componentNamespace.Dialog = function( element ){
 		this.$el = $( element );
+
+		// prevent double init
+		if( this.$el.data( pluginName ) ){
+			return this.$el.data( pluginName );
+		}
+
+		// record init
+		this.$el.data( pluginName, this );
+
 		this.$background = !this.$el.is( '[data-nobg]' ) ?
 			$( doc.createElement('div') ).addClass( cl.bkgd ).appendTo( "body") :
 			$( [] );
@@ -63,6 +72,8 @@ window.jQuery = window.jQuery || window.shoestring;
 	};
 
 	Dialog.prototype.destroy = function() {
+		// clear init for this dom element
+		this.$el.data()[pluginName] = undefined;
 		this.$background.remove();
 	};
 
