@@ -74,8 +74,6 @@
 				}
 			});
 
-
-
 			// close on escape key
 			$( doc ).bind( "keyup", function( e ){
 				if( e.which === 27 ){

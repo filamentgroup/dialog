@@ -21,15 +21,19 @@
 
 			<div class="dialog" id="dialog">
 				<p>This is a dialog</p>
-				<a href="#nested-dialog" id="nested-dialog-anchor">
+				<a href="#nested" id="nested-dialog-anchor">
 					Open Nested Dialog
 				</a>
 				<a href="#dialog-anchor" class="dialog-close">Close</a>
 			</div>
 
-			<div class="dialog" id="nested-dialog">
-				<p>This is a dialog</p>
-				<a href="#dialog-anchor" class="dialog-close">Close</a>
+			<div class="dialog" id="nested">
+			</div>
+
+			<div class="dialog" id="nohist" data-dialog-nohistory>
+				<a href="#nested-dialog" id="nested-dialog-anchor">
+					Open Nested Dialog
+				</a>
 			</div>
 		</div>
 
