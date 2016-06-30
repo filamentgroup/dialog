@@ -8,8 +8,6 @@
 			var $el = $( this ),
           dialog = new Dialog( this );
 
-			$el.data( "instance", dialog );
-
 			$el.addClass( Dialog.classes.content )
 				.attr( "role", "dialog" )
 				.attr( "tabindex", 0 )
