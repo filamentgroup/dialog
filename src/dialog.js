@@ -124,23 +124,32 @@ window.jQuery = window.jQuery || window.shoestring;
 			return;
 		}
 
-		// if close() is called directly and the hash for this dialog is at the end of the url,
-		// then we need to change the hash to remove it, either by going back if we can, or by adding a history
-		// state that doesn't have it at the end
+		// if close() is called directly and the hash for this dialog is at the end
+		// of the url, then we need to change the hash to remove it, either by going
+		// back if we can, or by adding a history state that doesn't have it at the
+		// end
 		if( window.location.hash.split( "#" ).pop() === this.hash ){
-			// let's check if the first segment in the hash is the same as the first segment in the initial hash
-			// if not, it's safe to use back() to close this out and clean the hash up
+			// let's check if the first segment in the hash is the same as the first
+			// segment in the initial hash if not, it's safe to use back() to close
+			// this out and clean the hash up
 			var firstHashSegment = window.location.hash.split( "#" )[ 1 ];
 			var firstInitialHashSegment = this.initialLocationHash.split( "#" )[ 1 ];
 			if( firstHashSegment && firstInitialHashSegment && firstInitialHashSegment !== firstHashSegment ){
 				window.history.back();
 			}
-			// otherwise, if it's the same starting hash as it was at init time,
-			// we can't trigger back to close the dialog, as it might take us elsewhere.
-			// so we have to go forward and create a new hash that does not have this dialog's hash at the end
+			// otherwise, if it's the same starting hash as it was at init time, we
+			// can't trigger back to close the dialog, as it might take us elsewhere.
+			// so we have to go forward and create a new hash that does not have this
+			// dialog's hash at the end
 			else {
-				var escapedRegexpHash = this.hash.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
-				window.location.hash = window.location.hash.replace( new RegExp( "#" + escapedRegexpHash + "$" ), "" );
+				var escapedRegexpHash = this
+            .hash
+            .replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+
+				window.location.hash = window
+          .location
+          .hash
+          .replace( new RegExp( "#" + escapedRegexpHash + "$" ), "" );
 			}
 			return;
 		}
