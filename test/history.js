@@ -28,6 +28,8 @@
 	commonTeardown = function() {
 		$instance.unbind( "dialog-closed" );
 		$instance.unbind( "dialog-opened" );
+		$nested.unbind( "dialog-closed" );
+		$nested.unbind( "dialog-opened" );
 
 		$instance.data( "dialog" ).destroy();
 		$nested.data( "dialog" ).destroy();
@@ -70,9 +72,16 @@
 	})
 
 	asyncTest("should append dialog name to hash for nested dialogs", function(){
+		expect(2);
 		$instance.trigger( "dialog-open" );
 		$instance.find( "#nested-dialog-anchor" ).trigger( "click" );
 		equal("#dialog-dialog#nested-dialog-dialog", location.hash);
-		start();
+
+		$nested.one("dialog-closed", function(){
+			equal("#dialog-dialog", location.hash);
+			start();
+		});
+
+		window.history.back();
 	});
 })(jQuery, this);
