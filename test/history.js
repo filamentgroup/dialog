@@ -4,7 +4,12 @@
 		throw "hash must be clear to start the tests";
 	}
 
-	// force the hash to test init
+	function debugEqual(a, b){
+		debugger;
+		equal(a,b);
+	}
+
+	// force the hash to test init and to ensure that it's the initial hash value
 	location.hash = "#dialog-dialog";
 
 	var $doc, instance, $instance, $nested, $nohist, commonSetup, commonTeardown;
@@ -70,6 +75,30 @@
 	module( "init", {
 		setup: commonSetup,
 		teardown: commonTeardown
+	});
+
+	asyncTest("should go back to dialogback when closing the dialog ", function(){
+		expect(3);
+		$instance.trigger( "dialog-open" );
+		equal(location.hash, "#dialog-dialog");
+
+		$(window).one( "hashchange", function(){
+			equal(location.hash, "");
+
+			$(window).one("hashchange", function(){
+
+				// TODO it's not clear why the hash value isn't reflecting the change
+				//			 immediately
+				setTimeout(function(){
+					equal(location.hash, "#dialog-dialog");
+					closeInstance($instance);
+				}, 1000);
+			});
+
+			window.history.back();
+		});
+
+		$instance.trigger( "dialog-close" );
 	});
 
 	// TODO move to `dialog.js` tests
