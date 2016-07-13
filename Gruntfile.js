@@ -54,4 +54,5 @@ module.exports = function(grunt) {
 	grunt.registerTask('test', ['jshint', 'qunit']);
 	grunt.registerTask('default', ['test', 'concat', 'uglify']);
 	grunt.registerTask('travis', ['test']);
+	grunt.registerTask('stage', ['default']);
 };
