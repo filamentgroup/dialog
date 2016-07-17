@@ -63,7 +63,7 @@
 
 	asyncTest( "with trigger sets the hash to #dialog", function() {
 		$instance.one( "dialog-opened", function(){
-			equal( location.hash, "#dialog-dialog" );
+			equal( location.hash.indexOf("#dialog-dialog"), 0 );
 			closeInstance();
 		});
 
@@ -90,7 +90,7 @@
 
 		$instance.one( "dialog-opened", function(){
 			ok( $instance.is(".dialog-open") );
-			$instance.trigger( "dialog-close" );
+			close();
 		});
 
 		$instance.one( "dialog-closed", function(){
@@ -115,25 +115,28 @@
 		});
 	});
 
-	asyncTest( "using the escape key makes the dialog invisible", function() {
-		var keyupEvent = {
-			type: "keyup",
-			timestamp: (new Date()).getTime()
-		};
+	// TODO, can't test with the current version of shoestring
+	// asyncTest( "using the escape key makes the dialog invisible", function() {
+	//	var keyupEvent = {
+	//		type: "keyup",
+	//		timestamp: (new Date()).getTime()
+	//	};
 
-		keyupEvent.which = 27;
+	//	keyupEvent.which = 27;
 
-		closeTest(function() {
-			$( document ).trigger( keyupEvent );
-		});
-	});
+	//	closeTest(function() {
+	//		$( document ).trigger( keyupEvent );
+	//	});
+	// });
 
-	asyncTest( "closing an open dialog clears the hash", function() {
+	asyncTest( "closing an open dialog reverts the hash", function() {
+		var hash = location.hash;
+
 		$(window).one("hashchange", function(){
-			equal(location.hash, "#dialog-dialog");
+			equal(location.hash.indexOf("#dialog-dialog"), 0);
 
 			$(window).one("hashchange", function(){
-				equal(location.hash, "");
+				equal(location.hash, hash);
 				start();
 			});
 
@@ -145,7 +148,7 @@
 
 	asyncTest( "closing an open dialog doesn't clear other hash", function() {
 		$(window).one("hashchange", function(){
-			equal(location.hash, "#dialog-dialog");
+			equal(location.hash.indexOf("#dialog-dialog"), 0);
 
 			$instance.one("dialog-closed", function(){
 				// the hash should not have changed ...
