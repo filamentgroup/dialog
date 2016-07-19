@@ -132,7 +132,7 @@
 		var oldHash = location.hash;
 
 		$nohist.trigger( "dialog-open" );
-		equal(location.hash, oldHash + "#nohist-dialog");
+		equal(location.hash.indexOf(oldHash + "#nohist-dialog"), 0);
 		$nohist.one("dialog-closed", function(){
 			equal(oldHash, location.hash);
 			closeInstance($nohist);
