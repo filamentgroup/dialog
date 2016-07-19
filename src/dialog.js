@@ -45,6 +45,13 @@ window.jQuery = window.jQuery || window.shoestring;
 		this.nohistory = this.$el.is( '[data-dialog-nohistory]' );
 		this.hash = this.$el.attr( "id" ) + "-dialog";
 
+		// if won't pop up the dialog on initial load (`nohistory`) the user MAY
+		// refresh a url with the dialog id as the hash then a change of the hash
+		// won't be recognized by the browser when the dialog comes up and the back
+		// button will return to the referring page. So, when nohistory is defined,
+		// we append a "unique" identifier to the hash.
+		this.hash += this.nohistory ? "-" + Date.now().toString() : "" ;
+
 		this.isOpen = false;
 		this.isTransparentBackground = this.$el.is( '[data-transbg]' );
 	};
