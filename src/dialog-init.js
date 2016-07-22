@@ -5,8 +5,14 @@
 
 	$.fn[ pluginName ] = function(){
 		return this.each(function(){
-			var $el = $( this ),
-          dialog = new Dialog( this );
+			var $el = $( this );
+
+			// prevent double init
+			if( $el.data( "dialog" ) ){
+				return;
+			}
+
+			var dialog = new Dialog( this );
 
 			$el.addClass( Dialog.classes.content )
 				.attr( "role", "dialog" )
