@@ -207,6 +207,17 @@ window.jQuery = window.jQuery || window.shoestring;
 					id = linkHref;
 				}
 
+				// if there are two links in the page that point to the same url
+				// then the same dialog will be reused and the content updated
+				var $existing = $("[id='" + id + "']");
+				if( $existing.length ){
+					$existing
+						.html("")
+						.append(content)
+						.trigger("enhance");
+					return;
+				}
+
 				$a
 					.attr("href", "#" + id )
 					.removeAttr( "data-dialog-link" );
