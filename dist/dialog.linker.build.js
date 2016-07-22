@@ -21,6 +21,15 @@ window.jQuery = window.jQuery || window.shoestring;
 
 	var Dialog = w.componentNamespace.Dialog = function( element ){
 		this.$el = $( element );
+
+		// prevent double init
+		if( this.$el.data( pluginName ) ){
+			return this.$el.data( pluginName );
+		}
+
+		// record init
+		this.$el.data( pluginName, this );
+
 		this.$background = !this.$el.is( '[data-nobg]' ) ?
 			$( doc.createElement('div') ).addClass( cl.bkgd ).appendTo( "body") :
 			$( [] );
@@ -35,6 +44,13 @@ window.jQuery = window.jQuery || window.shoestring;
 		// also, if the dialog has a data-nohistory attr, this property will prevent its findability for onload and hashchanges
 		this.nohistory = this.$el.is( '[data-dialog-nohistory]' );
 		this.hash = this.$el.attr( "id" ) + "-dialog";
+
+		// if won't pop up the dialog on initial load (`nohistory`) the user MAY
+		// refresh a url with the dialog id as the hash then a change of the hash
+		// won't be recognized by the browser when the dialog comes up and the back
+		// button will return to the referring page. So, when nohistory is defined,
+		// we append a "unique" identifier to the hash.
+		this.hash += this.nohistory ? "-" + Date.now().toString() : "" ;
 
 		this.isOpen = false;
 		this.isTransparentBackground = this.$el.is( '[data-transbg]' );
@@ -63,6 +79,8 @@ window.jQuery = window.jQuery || window.shoestring;
 	};
 
 	Dialog.prototype.destroy = function() {
+		// clear init for this dom element
+		this.$el.data()[pluginName] = undefined;
 		this.$background.remove();
 	};
 
@@ -113,23 +131,32 @@ window.jQuery = window.jQuery || window.shoestring;
 			return;
 		}
 
-		// if close() is called directly and the hash for this dialog is at the end of the url,
-		// then we need to change the hash to remove it, either by going back if we can, or by adding a history
-		// state that doesn't have it at the end
+		// if close() is called directly and the hash for this dialog is at the end
+		// of the url, then we need to change the hash to remove it, either by going
+		// back if we can, or by adding a history state that doesn't have it at the
+		// end
 		if( window.location.hash.split( "#" ).pop() === this.hash ){
-			// let's check if the first segment in the hash is the same as the first segment in the initial hash
-			// if not, it's safe to use back() to close this out and clean the hash up
+			// let's check if the first segment in the hash is the same as the first
+			// segment in the initial hash if not, it's safe to use back() to close
+			// this out and clean the hash up
 			var firstHashSegment = window.location.hash.split( "#" )[ 1 ];
 			var firstInitialHashSegment = this.initialLocationHash.split( "#" )[ 1 ];
 			if( firstHashSegment && firstInitialHashSegment && firstInitialHashSegment !== firstHashSegment ){
 				window.history.back();
 			}
-			// otherwise, if it's the same starting hash as it was at init time,
-			// we can't trigger back to close the dialog, as it might take us elsewhere.
-			// so we have to go forward and create a new hash that does not have this dialog's hash at the end
+			// otherwise, if it's the same starting hash as it was at init time, we
+			// can't trigger back to close the dialog, as it might take us elsewhere.
+			// so we have to go forward and create a new hash that does not have this
+			// dialog's hash at the end
 			else {
-				var escapedRegexpHash = this.hash.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
-				window.location.hash = window.location.hash.replace( new RegExp( "#" + escapedRegexpHash + "$" ), "" );
+				var escapedRegexpHash = this
+            .hash
+            .replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+
+				window.location.hash = window
+          .location
+          .hash
+          .replace( new RegExp( "#" + escapedRegexpHash + "$" ), "" );
 			}
 			return;
 		}
@@ -241,8 +268,6 @@ window.jQuery = window.jQuery || window.shoestring;
 			var $el = $( this ),
           dialog = new Dialog( this );
 
-			$el.data( "instance", dialog );
-
 			$el.addClass( Dialog.classes.content )
 				.attr( "role", "dialog" )
 				.attr( "tabindex", 0 )
@@ -263,23 +288,27 @@ window.jQuery = window.jQuery || window.shoestring;
 				dialog.close();
 			});
 
+			var onHashchange;
+
 			// on load and hashchange, open the dialog if its hash matches the last part of the hash, and close if it doesn't
-			$( w ).bind( "hashchange load", function(){
+			$( w ).bind( "hashchange", onHashchange = function(){
 				var hash = w.location.hash.split( "#" ).pop();
 
-        // if the hash matches this dialog's, open!
-        if( hash === dialog.hash ){
-          if( !dialog.nohistory ){
-            dialog.open();
-          }
-        }
-        // if it doesn't match...
+				// if the hash matches this dialog's, open!
+				if( hash === dialog.hash ){
+					if( !dialog.nohistory ){
+						dialog.open();
+					}
+				}
+				// if it doesn't match...
 				else {
-          dialog.close();
+					dialog.close();
 				}
 			});
 
-      // open on matching a[href=#id] click
+			onHashchange();
+
+			// open on matching a[href=#id] click
 			$( doc ).bind( "click", function( e ){
 				var $matchingDialog, $a;
 
@@ -304,8 +333,6 @@ window.jQuery = window.jQuery || window.shoestring;
 					}
 				}
 			});
-
-
 
 			// close on escape key
 			$( doc ).bind( "keyup", function( e ){
