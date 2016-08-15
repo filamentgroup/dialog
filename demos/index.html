@@ -160,8 +160,14 @@
 
 
 		<h2 class="docs">Non-history Dialogs</h2>
-		<p class="docs">By default, dialogs are re-openable via the back or forward button, and can be deep-linked via the hash.
-			To opt out of this behavior, use the <code>data-dialog-history="false"</code> attribute and value on the dialog or a dialog link.</p>
+		<p class="docs">
+			By default, dialogs are re-openable via the back or forward button, and
+			can be deep-linked via the hash. To opt out of this behavior, use
+			the <code>data-dialog-history="false"</code> attribute and value on the
+			dialog or a dialog link. History tracking can be turned of globally by
+			setting a property on the dialog component
+			constructor, <code>window.Dialog.history = false</code>
+		</p>
 
 		<div data-xrayhtml>
 			<div class="dialog" id="mydialog-3" data-dialog-history="false">
