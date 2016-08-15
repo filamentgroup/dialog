@@ -20,7 +20,10 @@
 			function createDialog(content){
 				var linkHref = $a.attr( "href" );
 				var dialogClasses = $a.attr( "data-dialog-addclass" ) || "";
-				var dialogNoHistory = $a.is( "[data-dialog-nohistory]" );
+				var dialogNoHistory =
+					$a.attr( "data-dialog-history" ) == "false" ||
+					!w.componentNamespace.Dialog.history;
+
 				var id;
 
 				if( linkHref ) {
@@ -42,7 +45,7 @@
 					.attr("href", "#" + id )
 					.removeAttr( "data-dialog-link" );
 
-				var $dialog = $( "<div class='dialog "+ dialogClasses +"' id='" + id + "' " + ( dialogNoHistory ? " data-dialog-nohistory" : "" ) + "></div>" )
+				var $dialog = $( "<div class='dialog "+ dialogClasses +"' id='" + id + "' " + ( dialogNoHistory ? " data-dialog-history='false'" : "" ) + "></div>" )
 						.append( content )
 						.appendTo( "body" )
 						.trigger( "enhance" );
@@ -80,7 +83,10 @@
 		var id = hash.replace( /-dialog$/, "" );
 		var $ajaxLink = $( 'a[href="' + id +'"][data-dialog-link]' );
 		// if the link specified nohistory, don't click it
-		var nohistory = $ajaxLink.is( "[data-dialog-nohistory]" );
+		var nohistory =
+			$ajaxLink.attr( "data-dialog-history" ) == "false" ||
+			!w.componentNamespace.Dialog.history;
+
 		var $dialogInPage = $( '.dialog[id="' + id + '"]' );
 		if( $ajaxLink.length && !nohistory && !$dialogInPage.length ){
 			$ajaxLink.eq( 0 ).trigger( "click" );

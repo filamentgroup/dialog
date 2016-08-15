@@ -161,10 +161,10 @@
 
 		<h2 class="docs">Non-history Dialogs</h2>
 		<p class="docs">By default, dialogs are re-openable via the back or forward button, and can be deep-linked via the hash.
-			To opt out of this behavior, use the <code>data-dialog-nohistory</code> attribute on the dialog or a dialog link.</p>
+			To opt out of this behavior, use the <code>data-dialog-history="false"</code> attribute and value on the dialog or a dialog link.</p>
 
 		<div data-xrayhtml>
-			<div class="dialog" id="mydialog-3" data-dialog-nohistory>
+			<div class="dialog" id="mydialog-3" data-dialog-history="false">
 				<p>This is a no-history dialog</p>
 				<p><a href="#mydialog">Open the first Dialog on the page (that one does have history!)</a></p>
 				<p><a href="#mydialog-2-btn" data-dialog-close>Close</a></p>
@@ -173,7 +173,7 @@
 		</div>
 
 		<div data-xrayhtml>
-		<a href="example-external.html?2" data-dialog-link data-dialog-nohistory>Open Non-history Ajax Dialog</a>
+		<a href="example-external.html?2" data-dialog-link data-dialog-history="false">Open Non-history Ajax Dialog</a>
 		</div>
 
 
