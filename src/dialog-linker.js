@@ -21,7 +21,7 @@
 				var linkHref = $a.attr( "href" );
 				var dialogClasses = $a.attr( "data-dialog-addclass" ) || "";
 				var dialogNoHistory =
-					$a.attr( "data-dialog-history" ) == "false" ||
+					$a.attr( "data-dialog-history" ) === "false" ||
 					!w.componentNamespace.Dialog.history;
 
 				var id;
@@ -84,7 +84,7 @@
 		var $ajaxLink = $( 'a[href="' + id +'"][data-dialog-link]' );
 		// if the link specified nohistory, don't click it
 		var nohistory =
-			$ajaxLink.attr( "data-dialog-history" ) == "false" ||
+			$ajaxLink.attr( "data-dialog-history" ) === "false" ||
 			!w.componentNamespace.Dialog.history;
 
 		var $dialogInPage = $( '.dialog[id="' + id + '"]' );

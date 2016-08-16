@@ -44,7 +44,7 @@ window.jQuery = window.jQuery || window.shoestring;
 		// viewport. also, if the dialog has a data-history attr, this property will
 		// prevent its findability for onload and hashchanges
 		this.nohistory =
-			this.$el.attr( 'data-dialog-history' ) == "false" || !Dialog.history;
+			this.$el.attr( 'data-dialog-history' ) === "false" || !Dialog.history;
 
 		// use the identifier and an extra tag for hash management
 		this.hash = this.$el.attr( "id" ) + "-dialog";
