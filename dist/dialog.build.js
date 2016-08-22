@@ -39,10 +39,14 @@ window.jQuery = window.jQuery || window.shoestring;
 		this.initialLocationHash = w.location.hash;
 
 		// the dialog's url hash is different from the dialog's actual ID attribute
-		// this is because pairing the ID directly makes the browser jump to the top of the dialog,
-		// rather than allowing us to space it off the top of the viewport.
-		// also, if the dialog has a data-nohistory attr, this property will prevent its findability for onload and hashchanges
-		this.nohistory = this.$el.is( '[data-dialog-nohistory]' );
+		// this is because pairing the ID directly makes the browser jump to the top
+		// of the dialog, rather than allowing us to space it off the top of the
+		// viewport. also, if the dialog has a data-history attr, this property will
+		// prevent its findability for onload and hashchanges
+		this.nohistory =
+			this.$el.attr( 'data-dialog-history' ) === "false" || !Dialog.history;
+
+		// use the identifier and an extra tag for hash management
 		this.hash = this.$el.attr( "id" ) + "-dialog";
 
 		// if won't pop up the dialog on initial load (`nohistory`) the user MAY
@@ -55,6 +59,9 @@ window.jQuery = window.jQuery || window.shoestring;
 		this.isOpen = false;
 		this.isTransparentBackground = this.$el.is( '[data-transbg]' );
 	};
+
+  // default to tracking history with the dialog
+  Dialog.history = true;
 
 	Dialog.events = ev = {
 		open: pluginName + "-open",
