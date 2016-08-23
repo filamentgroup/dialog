@@ -21,15 +21,47 @@ window.jQuery = window.jQuery || window.shoestring;
 
 	var Dialog = w.componentNamespace.Dialog = function( element ){
 		this.$el = $( element );
+
+		// prevent double init
+		if( this.$el.data( pluginName ) ){
+			return this.$el.data( pluginName );
+		}
+
+		// record init
+		this.$el.data( pluginName, this );
+
 		this.$background = !this.$el.is( '[data-nobg]' ) ?
 			$( doc.createElement('div') ).addClass( cl.bkgd ).appendTo( "body") :
 			$( [] );
+
+		// when dialog first inits, save a reference to the initial hash so we can know whether
+		// there's room in the history stack to go back or not when closing
+		this.initialLocationHash = w.location.hash;
+
+		// the dialog's url hash is different from the dialog's actual ID attribute
+		// this is because pairing the ID directly makes the browser jump to the top
+		// of the dialog, rather than allowing us to space it off the top of the
+		// viewport. also, if the dialog has a data-history attr, this property will
+		// prevent its findability for onload and hashchanges
+		this.nohistory =
+			this.$el.attr( 'data-dialog-history' ) === "false" || !Dialog.history;
+
+		// use the identifier and an extra tag for hash management
 		this.hash = this.$el.attr( "id" ) + "-dialog";
 
+		// if won't pop up the dialog on initial load (`nohistory`) the user MAY
+		// refresh a url with the dialog id as the hash then a change of the hash
+		// won't be recognized by the browser when the dialog comes up and the back
+		// button will return to the referring page. So, when nohistory is defined,
+		// we append a "unique" identifier to the hash.
+		this.hash += this.nohistory ? "-" + Date.now().toString() : "" ;
+
 		this.isOpen = false;
-		this.positionMedia = this.$el.attr( 'data-set-position-media' );
 		this.isTransparentBackground = this.$el.is( '[data-transbg]' );
 	};
+
+  // default to tracking history with the dialog
+  Dialog.history = true;
 
 	Dialog.events = ev = {
 		open: pluginName + "-open",
@@ -53,16 +85,16 @@ window.jQuery = window.jQuery || window.shoestring;
 		close: "." + Dialog.classes.close + ", [data-close], [data-dialog-close]"
 	};
 
-	Dialog.prototype.isSetScrollPosition = function() {
-		return !this.positionMedia ||
-			( w.matchMedia && w.matchMedia( this.positionMedia ).matches );
-	};
-
 	Dialog.prototype.destroy = function() {
+		// clear init for this dom element
+		this.$el.data()[pluginName] = undefined;
 		this.$background.remove();
 	};
 
 	Dialog.prototype.open = function() {
+		if( this.isOpen ){
+			return;
+		}
 		if( this.$background.length ) {
 			this.$background[ 0 ].style.height = Math.max( docElem.scrollHeight, docElem.clientHeight ) + "px";
 		}
@@ -71,17 +103,21 @@ window.jQuery = window.jQuery || window.shoestring;
 		this.$background.attr( "id", this.$el.attr( "id" ) + "-background" );
 		this._setBackgroundTransparency();
 
-		if( this.isSetScrollPosition() ) {
-			this.scroll = "pageYOffset" in w ? w.pageYOffset : ( docElem.scrollY || docElem.scrollTop || ( body && body.scrollY ) || 0 );
-			this.$el[ 0 ].style.top = this.scroll + "px";
-		} else {
-			this.$el[ 0 ].style.top = '';
-		}
+		this.scroll = "pageYOffset" in w ? w.pageYOffset : ( docElem.scrollY || docElem.scrollTop || ( body && body.scrollY ) || 0 );
+		this.$el[ 0 ].style.top = this.scroll + "px";
 
 		$html.addClass( cl.open );
 		this.isOpen = true;
 
-		window.location.hash = this.hash;
+		var cleanHash = w.location.hash.replace( /^#/, "" );
+		var lastHash = w.location.hash.split( "#" ).pop();
+
+		if( cleanHash.indexOf( "-dialog" ) > -1 && lastHash !== this.hash ){
+			w.location.hash += "#" + this.hash;
+		}
+		else if( lastHash !== this.hash ) {
+			w.location.hash = this.hash;
+		}
 
 		if( doc.activeElement ){
 			this.focused = doc.activeElement;
@@ -102,13 +138,33 @@ window.jQuery = window.jQuery || window.shoestring;
 			return;
 		}
 
-		// if someone is calling close directly and the hash for this dialog is in
-		// the url then we need to go back, this will trigger the hashchange binding
-		// in init
-		// NOTE the bindings seem better in the constructor e.g.
-		// "#foo".indexOf("foo") === 1
-		if(window.location.hash.replace(/^#/, "") === this.hash){
-			window.history.back();
+		// if close() is called directly and the hash for this dialog is at the end
+		// of the url, then we need to change the hash to remove it, either by going
+		// back if we can, or by adding a history state that doesn't have it at the
+		// end
+		if( window.location.hash.split( "#" ).pop() === this.hash ){
+			// let's check if the first segment in the hash is the same as the first
+			// segment in the initial hash if not, it's safe to use back() to close
+			// this out and clean the hash up
+			var firstHashSegment = window.location.hash.split( "#" )[ 1 ];
+			var firstInitialHashSegment = this.initialLocationHash.split( "#" )[ 1 ];
+			if( firstHashSegment && firstInitialHashSegment && firstInitialHashSegment !== firstHashSegment ){
+				window.history.back();
+			}
+			// otherwise, if it's the same starting hash as it was at init time, we
+			// can't trigger back to close the dialog, as it might take us elsewhere.
+			// so we have to go forward and create a new hash that does not have this
+			// dialog's hash at the end
+			else {
+				var escapedRegexpHash = this
+            .hash
+            .replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+
+				window.location.hash = window
+          .location
+          .hash
+          .replace( new RegExp( "#" + escapedRegexpHash + "$" ), "" );
+			}
 			return;
 		}
 
@@ -121,9 +177,7 @@ window.jQuery = window.jQuery || window.shoestring;
 			this.focused.focus();
 		}
 
-		if( this.isSetScrollPosition() ) {
-			w.scrollTo( 0, this.scroll );
-		}
+		w.scrollTo( 0, this.scroll );
 
 		this.isOpen = false;
 
@@ -150,26 +204,38 @@ window.jQuery = window.jQuery || window.shoestring;
 			var link = $a.is( "[data-dialog-link]" );
 			var iframe = $a.is( "[data-dialog-iframe]" );
 
-
 			function createDialog(content){
-				var linkId = $a.attr( "id" );
+				var linkHref = $a.attr( "href" );
 				var dialogClasses = $a.attr( "data-dialog-addclass" ) || "";
+				var dialogNoHistory =
+					$a.attr( "data-dialog-history" ) === "false" ||
+					!w.componentNamespace.Dialog.history;
+
 				var id;
 
-				if( linkId ) {
-					id = linkId + "-dialog";
-				} else {
-					id = "dialog-" + new Date().getTime();
+				if( linkHref ) {
+					id = linkHref;
+				}
+
+				// if there are two links in the page that point to the same url
+				// then the same dialog will be reused and the content updated
+				var $existing = $("[id='" + id + "']");
+				if( $existing.length ){
+					$existing
+						.html("")
+						.append(content)
+						.trigger("enhance");
+					return;
 				}
 
 				$a
 					.attr("href", "#" + id )
 					.removeAttr( "data-dialog-link" );
 
-				var $dialog = $( "<div class='dialog "+ dialogClasses +"' id='" + id + "'></div>" )
+				var $dialog = $( "<div class='dialog "+ dialogClasses +"' id='" + id + "' " + ( dialogNoHistory ? " data-dialog-history='false'" : "" ) + "></div>" )
 						.append( content )
 						.appendTo( "body" )
-						.dialog();
+						.trigger( "enhance" );
 
 				function open(){
 					$dialog.trigger( "dialog-open" );
@@ -198,16 +264,39 @@ window.jQuery = window.jQuery || window.shoestring;
 			}
 		});
 
+	// if the hash matches an ajaxlink's url, open it by triggering a click on the ajaxlink
+	$( w ).bind( "hashchange load", function(){
+		var hash = w.location.hash.split( "#" ).pop();
+		var id = hash.replace( /-dialog$/, "" );
+		var $ajaxLink = $( 'a[href="' + id +'"][data-dialog-link]' );
+		// if the link specified nohistory, don't click it
+		var nohistory =
+			$ajaxLink.attr( "data-dialog-history" ) === "false" ||
+			!w.componentNamespace.Dialog.history;
+
+		var $dialogInPage = $( '.dialog[id="' + id + '"]' );
+		if( $ajaxLink.length && !nohistory && !$dialogInPage.length ){
+			$ajaxLink.eq( 0 ).trigger( "click" );
+		}
+	});
+
 }( this, window.jQuery ));
 
 (function( w, $ ){
-  var Dialog = w.componentNamespace.Dialog, doc = document;
+  var Dialog = w.componentNamespace.Dialog,
+      doc = w.document,
+      pluginName = "dialog";
 
-	$.fn.dialog = function(){
+	$.fn[ pluginName ] = function(){
 		return this.each(function(){
-			var $el = $( this ), dialog = new Dialog( this );
+			var $el = $( this );
 
-			$el.data( "instance", dialog );
+			// prevent double init
+			if( $el.data( "dialog" ) ){
+				return;
+			}
+
+			var dialog = new Dialog( this );
 
 			$el.addClass( Dialog.classes.content )
 				.attr( "role", "dialog" )
@@ -229,14 +318,25 @@ window.jQuery = window.jQuery || window.shoestring;
 				dialog.close();
 			});
 
-			// close on hashchange if open (supports back button closure)
-			$( w ).bind( "hashchange", function(){
-				var hash = w.location.hash.replace( "#", "" );
+			var onHashchange;
 
-				if( hash !== dialog.hash ){
+			// on load and hashchange, open the dialog if its hash matches the last part of the hash, and close if it doesn't
+			$( w ).bind( "hashchange", onHashchange = function(){
+				var hash = w.location.hash.split( "#" ).pop();
+
+				// if the hash matches this dialog's, open!
+				if( hash === dialog.hash ){
+					if( !dialog.nohistory ){
+						dialog.open();
+					}
+				}
+				// if it doesn't match...
+				else {
 					dialog.close();
 				}
 			});
+
+			onHashchange();
 
 			// open on matching a[href=#id] click
 			$( doc ).bind( "click", function( e ){
@@ -244,11 +344,13 @@ window.jQuery = window.jQuery || window.shoestring;
 
 				$a = $( e.target ).closest( "a" );
 
+
 				if( !dialog.isOpen && $a.length && $a.attr( "href" ) ){
+          var id = $a.attr( "href" ).replace( /^#/, "" );
 
 					// catch invalid selector exceptions
 					try {
-						$matchingDialog = $( $a.attr( "href" ) );
+						$matchingDialog = $( "[id='" + id + "']" );
 					} catch ( error ) {
 						// TODO should check the type of exception, it's not clear how well
 						//      the error name "SynatxError" is supported
@@ -271,8 +373,9 @@ window.jQuery = window.jQuery || window.shoestring;
 		});
 	};
 
-	// auto-init
-	$(function(){
-		$( ".dialog" ).dialog();
+  // auto-init on enhance
+	$( w.document ).bind( "enhance", function( e ){
+    var target = e.target === w.document ? "" : e.target;
+		$( "." + pluginName, e.target ).add( target ).filter( "." + pluginName )[ pluginName ]();
 	});
 }( this, window.jQuery ));

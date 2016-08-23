@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Dialog Example</title>
+	<link rel="stylesheet" href="https://filamentgroup.github.io/demo-head/demohead.css">
+	<link rel="stylesheet" href="docs.css">
+	<link rel="stylesheet" href="../lib/xrayhtml.css">
+	<link rel="stylesheet" href="../src/dialog.css">
+
+	<script src="../lib/shoestring-dev.js"></script>
+	<script src="../lib/xrayhtml.js"></script>
+	<script src="../src/dialog.js"></script>
+	<script src="../src/dialog-init.js"></script>
+	<script src="../src/dialog-linker.js"></script>
+	<script>
+		$( function(){
+			$( document ).trigger( "enhance" );
+		} );
+	</script>
+	<script src="https://filamentgroup.github.io/demo-head/loadfont.js"></script>
+</head>
+<body class="docs">
+	<div class="demo-header">
+		<div class="company">
+			<img src="http://filamentgroup.com/images/fg-logo-positive-sm-crop.png">
+		</div>
+		<div class="details">
+			<h1 class="description-container">Demo of <span class="repo-name">Dialog</span>
+				<span class="description">Just a simple, minimal jQuery dialog with typical interactivity</span>
+			</h1>
+			<ul class="outbound-links">
+				<li><a href="https://github.com/filamentgroup/dialog">Code</a></li>
+				<li><a href="https://github.com/filamentgroup/dialog/issues">Issues</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="docs-main">
+
+
+		<h1 class="docs">Dialog Examples</h1>
+
+		<p class="docs">The dialog itself is an element with a class of <code>dialog</code>.  It'll auto-initialize on dom-ready.</p>
+
+		<h2 class="docs">Typical dialog example</h2>
+
+		<div data-xrayhtml>
+			<div class="dialog" id="mydialog">
+				<p>This is a dialog</p>
+				<a href="#mydialog-btn" data-dialog-close>Close</a>
+			</div>
+			<a href="#mydialog" id="mydialog-btn">Open Dialog</a>
+		</div>
+
+		<h2 class="docs">Markup broken down</h2>
+
+		<p class="docs">The dialog itself is an element with a class of dialog:</p>
+
+		<pre  class="docs"><code>&lt;div class="dialog"&gt;Content here...&lt;/div&gt;
+		</code></pre>
+
+		<p class="docs">To open it via a link, give the dialog an <code>id</code> and link to that ID somewhere on the page:</p>
+
+			<pre  class="docs"><code>&lt;div class="dialog" id="mydialog"&gt;Content here....&lt;/div&gt;
+
+&lt;a href="#mydialog"&gt;Open Dialog&lt;/a&gt;
+		</code></pre>
+
+		<p class="docs">Once open, the dialog can be closed via back button, escape key, clicking or tapping the overlay screen (if styled to be visible).</p>
+
+		<p class="docs">You can also add a close link by adding a link anywhere in the dialog element with an attribute <code>data-dialog-close</code>.</p>
+
+		<pre class="docs"><code>&lt;div class="dialog" id="mydialog"&gt;
+			&lt;p&gt;This is a dialog&lt;/p&gt;
+			&lt;a href="#" data-dialog-close&gt;Close&lt;/a&gt;
+		&lt;/div&gt;
+		</code></pre>
+
+		<p class="docs">Rather than using a null <code>#</code> href for the close link, we find it's nice to link back to the link that opened the dialog, just in case the user scrolled away from that place while the dialog was open. You can do this by giving the opener link an <code>id</code> attribute and linking to that ID from the close link:</p>
+
+		<pre class="docs"><code>&lt;div class="dialog" id="mydialog"&gt;
+			&lt;p&gt;This is a dialog&lt;/p&gt;
+			&lt;a href="#mydialog-btn" data-dialog-close&gt;Close&lt;/a&gt;
+		&lt;/div&gt;
+
+		&lt;a href="#mydialog" id="mydialog-btn"&gt;Open Dialog&lt;/a&gt;
+			</code></pre>
+
+		<h2 class="docs">Modal and non-modal</h2>
+
+		<p class="docs">Much of the presentation of the dialog is configured in CSS.
+			The default modal appearance is applied to <code>.dialog-background</code> element that the script generates by default.
+			If you want to style this element differently, just style that selector however you'd like:
+		</p>
+
+		<pre class="docs"><code>.dialog-background {
+			background: red;
+		}
+		</code></pre>
+
+		<p class="docs">You can also configure the background to be transparent via the dialog markup, by using the <code>data-dialog-transbg</code> attribute:</p>
+
+		<pre class="docs"><code>&lt;div class="dialog" data-dialog-transbg&gt;Content here...&lt;/div&gt;
+		</code></pre>
+
+		<p class="docs">If you'd prefer to have no background element at all, you can use the <code>data-dialog-nobg</code> attribute:</p>
+
+		<pre class="docs"><code>&lt;div class="dialog" data-dialog-nobg&gt;Content here...&lt;/div&gt;
+		</code></pre>
+
+		<h2 class="docs">Opening and closing programatically</h2>
+
+		<p class="docs">You can open and close the dialog via JavaScript by triggering an open or close event:</p>
+
+		<pre class="docs"><code>// open:
+		$( "#mydialog" ).trigger( "dialog-open" );
+
+		// close:
+		$( "#mydialog" ).trigger( "dialog-close" );
+		</code></pre>
+
+		<h2 class="docs">Ajax linking</h2>
+
+		<p class="docs">You can pull another page into a dialog by adding a <code>data-dialog-link</code> attribute to a link.</p>
+
+		<div data-xrayhtml>
+		<a href="example-external.html" data-dialog-link>Open in dialog</a>
+		</div>
+
+		<h3 class="docs">Adding a class via ajax linking</h3>
+
+		<p class="docs">To set classes on the ajax dialog container, you can specify classes in a <code>data-dialog-addclass</code> attribute on the anchor:</p>
+
+	<div data-xrayhtml>
+	<a href="example-external.html?1" data-dialog-link data-dialog-addclass="foo bar baz">Open in dialog</a>
+	</div>
+
+		<h2 class="docs">Iframe linking</h2>
+
+		<p>You can pull another page into a dialog in an iframe by adding a <code>data-dialog-iframe</code> attribute to a <code>data-dialog-link</code> link.</p>
+
+		<div data-xrayhtml>
+		<a href="https://filamentgroup.com" data-dialog-link data-dialog-iframe>Open in dialog</a>
+		</div>
+
+
+		<h2 class="docs">"Nested" Dialogs</h2>
+		<p class="docs">Dialogs can open without closing already-open dialogs, and they'll close in the order they were opened.</p>
+
+		<div data-xrayhtml>
+			<div class="dialog" id="mydialog-2">
+				<p>This is a dialog</p>
+				<p><a href="#mydialog">Open the first Dialog on the page</a></p>
+				<p><a href="#mydialog-2-btn" data-dialog-close>Close</a></p>
+			</div>
+			<a href="#mydialog-2" id="mydialog-2-btn">Open Dialog</a>
+		</div>
+
+
+		<h2 class="docs">Non-history Dialogs</h2>
+		<p class="docs">
+			By default, dialogs are re-openable via the back or forward button, and
+			can be deep-linked via the hash. To opt out of this behavior, use
+			the <code>data-dialog-history="false"</code> attribute and value on the
+			dialog or a dialog link. History tracking can be turned of globally by
+			setting a property on the dialog component
+			constructor, <code>window.Dialog.history = false</code>
+		</p>
+
+		<div data-xrayhtml>
+			<div class="dialog" id="mydialog-3" data-dialog-history="false">
+				<p>This is a no-history dialog</p>
+				<p><a href="#mydialog">Open the first Dialog on the page (that one does have history!)</a></p>
+				<p><a href="#mydialog-2-btn" data-dialog-close>Close</a></p>
+			</div>
+			<a href="#mydialog-3" id="mydialog-3-btn">Open Dialog</a>
+		</div>
+
+		<div data-xrayhtml>
+		<a href="example-external.html?2" data-dialog-link data-dialog-history="false">Open Non-history Ajax Dialog</a>
+		</div>
+
+
+
+	</div>
+</body>
+</html>

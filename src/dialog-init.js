@@ -1,11 +1,18 @@
 (function( w, $ ){
-  var Dialog = w.componentNamespace.Dialog, doc = document;
+  var Dialog = w.componentNamespace.Dialog,
+      doc = w.document,
+      pluginName = "dialog";
 
-	$.fn.dialog = function(){
+	$.fn[ pluginName ] = function(){
 		return this.each(function(){
-			var $el = $( this ), dialog = new Dialog( this );
+			var $el = $( this );
 
-			$el.data( "instance", dialog );
+			// prevent double init
+			if( $el.data( "dialog" ) ){
+				return;
+			}
+
+			var dialog = new Dialog( this );
 
 			$el.addClass( Dialog.classes.content )
 				.attr( "role", "dialog" )
@@ -27,14 +34,25 @@
 				dialog.close();
 			});
 
-			// close on hashchange if open (supports back button closure)
-			$( w ).bind( "hashchange", function(){
-				var hash = w.location.hash.replace( "#", "" );
+			var onHashchange;
 
-				if( hash !== dialog.hash ){
+			// on load and hashchange, open the dialog if its hash matches the last part of the hash, and close if it doesn't
+			$( w ).bind( "hashchange", onHashchange = function(){
+				var hash = w.location.hash.split( "#" ).pop();
+
+				// if the hash matches this dialog's, open!
+				if( hash === dialog.hash ){
+					if( !dialog.nohistory ){
+						dialog.open();
+					}
+				}
+				// if it doesn't match...
+				else {
 					dialog.close();
 				}
 			});
+
+			onHashchange();
 
 			// open on matching a[href=#id] click
 			$( doc ).bind( "click", function( e ){
@@ -42,11 +60,13 @@
 
 				$a = $( e.target ).closest( "a" );
 
+
 				if( !dialog.isOpen && $a.length && $a.attr( "href" ) ){
+          var id = $a.attr( "href" ).replace( /^#/, "" );
 
 					// catch invalid selector exceptions
 					try {
-						$matchingDialog = $( $a.attr( "href" ) );
+						$matchingDialog = $( "[id='" + id + "']" );
 					} catch ( error ) {
 						// TODO should check the type of exception, it's not clear how well
 						//      the error name "SynatxError" is supported
@@ -69,8 +89,9 @@
 		});
 	};
 
-	// auto-init
-	$(function(){
-		$( ".dialog" ).dialog();
+  // auto-init on enhance
+	$( w.document ).bind( "enhance", function( e ){
+    var target = e.target === w.document ? "" : e.target;
+		$( "." + pluginName, e.target ).add( target ).filter( "." + pluginName )[ pluginName ]();
 	});
 }( this, window.jQuery ));
