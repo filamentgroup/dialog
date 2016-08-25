@@ -54,6 +54,12 @@
 					$dialog.trigger( "dialog-open" );
 				}
 
+				// make sure the opener link is set as the focued item if one is not defined already
+				var instance = $dialog.data( "dialog" );
+				if( instance && !instance.focused ){
+					instance.focused = $a[ 0 ];
+				}
+
 				if( iframe ){
 					$dialog.find( "iframe" ).one( "load", open );
 				}
