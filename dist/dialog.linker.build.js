@@ -214,7 +214,7 @@ window.jQuery = window.jQuery || window.shoestring;
 				var id;
 
 				if( linkHref ) {
-					id = linkHref;
+					id = encodeURIComponent(linkHref);
 				}
 
 				// if there are two links in the page that point to the same url
