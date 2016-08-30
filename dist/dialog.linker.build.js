@@ -214,7 +214,7 @@ window.jQuery = window.jQuery || window.shoestring;
 				var id;
 
 				if( linkHref ) {
-					id = linkHref;
+					id = encodeURIComponent(linkHref);
 				}
 
 				// if there are two links in the page that point to the same url
@@ -274,7 +274,7 @@ window.jQuery = window.jQuery || window.shoestring;
 	$( w ).bind( "hashchange load", function(){
 		var hash = w.location.hash.split( "#" ).pop();
 		var id = hash.replace( /-dialog$/, "" );
-		var $ajaxLink = $( 'a[href="' + id +'"][data-dialog-link]' );
+		var $ajaxLink = $( 'a[href="' + decodeURIComponent(id) +'"][data-dialog-link], a[href="' + id +'"][data-dialog-link]' );
 		// if the link specified nohistory, don't click it
 		var nohistory =
 			$ajaxLink.attr( "data-dialog-history" ) === "false" ||
