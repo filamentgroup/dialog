@@ -87,7 +87,7 @@
 	$( w ).bind( "hashchange load", function(){
 		var hash = w.location.hash.split( "#" ).pop();
 		var id = hash.replace( /-dialog$/, "" );
-		var $ajaxLink = $( 'a[href="' + id +'"][data-dialog-link]' );
+		var $ajaxLink = $( 'a[href="' + decodeURIComponent(id) +'"][data-dialog-link], a[href="' + id +'"][data-dialog-link]' );
 		// if the link specified nohistory, don't click it
 		var nohistory =
 			$ajaxLink.attr( "data-dialog-history" ) === "false" ||
