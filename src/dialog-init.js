@@ -62,7 +62,7 @@
 
 
 				if( !dialog.isOpen && $a.length && $a.attr( "href" ) ){
-          var id = $a.attr( "href" ).replace( /^#/, "" );
+					var id = $a.attr( "href" ).replace( /^#/, "" );
 
 					// catch invalid selector exceptions
 					try {
