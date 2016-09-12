@@ -249,11 +249,15 @@ window.jQuery = window.jQuery || window.shoestring;
 
 
 				if( !dialog.isOpen && $a.length && $a.attr( "href" ) ){
-          var id = $a.attr( "href" ).replace( /^#/, "" );
+					var id = $a.attr( "href" ).replace( /^#/, "" );
 
 					// catch invalid selector exceptions
 					try {
-						$matchingDialog = $( "[id='" + id + "']" );
+						// Attempt to find the matching dialog at the same id or at the
+						// encoded id. This allows matching even when href url ids are being
+						// changed back and forth between encoded and decoded forms.
+						$matchingDialog =
+							$( "[id='" + id + "'],	[id='" + encodeURIComponent(id) + "']" );
 					} catch ( error ) {
 						// TODO should check the type of exception, it's not clear how well
 						//      the error name "SynatxError" is supported
