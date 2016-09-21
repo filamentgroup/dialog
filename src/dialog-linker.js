@@ -37,6 +37,7 @@
 					$existing
 						.html("")
 						.append(content)
+						.dialog()
 						.trigger("enhance");
 					return;
 				}
@@ -48,7 +49,7 @@
 				var $dialog = $( "<div class='dialog "+ dialogClasses +"' id='" + id + "' " + ( dialogNoHistory ? " data-dialog-history='false'" : "" ) + "></div>" )
 						.append( content )
 						.appendTo( "body" )
-						.trigger( "enhance" );
+						.dialog();
 
 				function open(){
 					$dialog.trigger( "dialog-open" );
@@ -66,6 +67,8 @@
 				else {
 					open();
 				}
+
+				$dialog.trigger( "enhance" );
 			}
 
 			if( link ){
