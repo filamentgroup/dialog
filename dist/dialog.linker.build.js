@@ -224,6 +224,7 @@ window.jQuery = window.jQuery || window.shoestring;
 					$existing
 						.html("")
 						.append(content)
+						.dialog()
 						.trigger("enhance");
 					return;
 				}
@@ -235,7 +236,7 @@ window.jQuery = window.jQuery || window.shoestring;
 				var $dialog = $( "<div class='dialog "+ dialogClasses +"' id='" + id + "' " + ( dialogNoHistory ? " data-dialog-history='false'" : "" ) + "></div>" )
 						.append( content )
 						.appendTo( "body" )
-						.trigger( "enhance" );
+						.dialog();
 
 				function open(){
 					$dialog.trigger( "dialog-open" );
@@ -253,6 +254,8 @@ window.jQuery = window.jQuery || window.shoestring;
 				else {
 					open();
 				}
+
+				$dialog.trigger( "enhance" );
 			}
 
 			if( link ){
