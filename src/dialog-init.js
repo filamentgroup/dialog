@@ -90,12 +90,61 @@
 					dialog.close();
 				}
 			});
+
+			window.Focus.register(dialog);
 		});
 	};
 
-  // auto-init on enhance
+	// auto-init on enhance
 	$( w.document ).bind( "enhance", function( e ){
-    var target = e.target === w.document ? "" : e.target;
+		var target = e.target === w.document ? "" : e.target;
 		$( "." + pluginName, e.target ).add( target ).filter( "." + pluginName )[ pluginName ]();
 	});
+
+	function Focus(){
+		var self = this;
+
+		this.registry = [];
+
+		$(window.document).bind("focusin", function(event){
+			self.check(event);
+		});
+	}
+
+	Focus.prototype.register = function(obj){
+		if( !obj.checkFocus ){
+			throw new Error( "Obj must implement `checkFocus`" );
+		}
+
+		if( !obj.stealFocus ){
+			throw new Error( "Obj must implement `stealFocus`" );
+		}
+
+		this.registry.push(obj);
+	};
+
+	Focus.prototype.check = function(event){
+		var stealing = [];
+
+		// for all the registered components
+		for(var i = 0; i < this.registry.length; i++){
+
+			// if a given component wants to steal the focus, record that
+			if( this.registry[i].checkFocus(event) ){
+				stealing.push(this.registry[i]);
+			}
+		}
+
+		// if more than one component wants to steal focus throw an exception
+		if( stealing.length > 1 ){
+			throw new Error("Two components are attempting to steal focus.");
+		}
+
+		// otherwise allow the first component to steal focus
+		if(stealing[0]) {
+			stealing[0].stealFocus(event);
+		}
+	};
+
+	window.Focus = new Focus();
 }( this, window.jQuery ));

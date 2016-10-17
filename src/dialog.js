@@ -91,6 +91,15 @@ window.jQuery = window.jQuery || window.shoestring;
 		this.$background.remove();
 	};
 
+	Dialog.prototype.checkFocus = function(event){
+		var $target = $( event.target );
+		return this.isOpen && !$target.closest( this.$el[0]).length;
+	};
+
+	Dialog.prototype.stealFocus = function(){
+		this.$el[0].focus();
+	};
+
 	Dialog.prototype.open = function() {
 		if( this.isOpen ){
 			return;
