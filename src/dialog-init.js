@@ -142,7 +142,13 @@
 
 		// otherwise allow the first component to steal focus
 		if(stealing[0]) {
-			stealing[0].stealFocus(event);
+			event.preventDefault();
+
+			// let this event stack unwind and then steal the focus
+			// which will again trigger the check above
+			setTimeout(function(){
+				stealing[0].stealFocus(event);
+			});
 		}
 	};
 
