@@ -133,9 +133,9 @@ window.jQuery = window.jQuery || window.shoestring;
 
 		var cleanHash = w.location.hash.replace( /^#/, "" );
 
-		if( cleanHash.indexOf( "-dialog" ) > -1 && !this.isLastDialog()){
+		if( cleanHash.indexOf( "-dialog" ) > -1 && !this.isLastDialog() ){
 			w.location.hash += "#" + this.hash;
-		} else if( !this.isLastDialog()){
+		} else if( !this.isLastDialog() ){
 			w.location.hash = this.hash;
 		}
 
@@ -152,6 +152,7 @@ window.jQuery = window.jQuery || window.shoestring;
 		return w.location.hash.split( "#" ).pop();
 	};
 
+	// is this the last dialog that was opened based on the hash
 	Dialog.prototype.isLastDialog = function(){
 		return this.lastHash() === this.hash;
 	};
@@ -204,6 +205,8 @@ window.jQuery = window.jQuery || window.shoestring;
 
 		this.isOpen = false;
 
+		// we only want to throw focus on close if we aren't
+		// opening a nested dialog or some other UI state
 		if( this.focused && this.isLastDialog()){
 			this.focused.focus();
 		}
