@@ -103,7 +103,7 @@ window.jQuery = window.jQuery || window.shoestring;
 		shouldSteal =
 			this.isOpen &&
 			!$target.closest( this.$el[0]).length &&
-			this.lastHash() === this.hash;
+			this.isLastDialog();
 
 		return shouldSteal;
 	};
@@ -133,9 +133,9 @@ window.jQuery = window.jQuery || window.shoestring;
 
 		var cleanHash = w.location.hash.replace( /^#/, "" );
 
-		if( cleanHash.indexOf( "-dialog" ) > -1 && this.lastHash() !== this.hash ){
+		if( cleanHash.indexOf( "-dialog" ) > -1 && !this.isLastDialog()){
 			w.location.hash += "#" + this.hash;
-		} else if( this.lastHash() !== this.hash ) {
+		} else if( !this.isLastDialog()){
 			w.location.hash = this.hash;
 		}
 
@@ -204,7 +204,7 @@ window.jQuery = window.jQuery || window.shoestring;
 
 		this.isOpen = false;
 
-		if( this.focused && this.lastHash() === this.hash ){
+		if( this.focused && this.isLastDialog()){
 			this.focused.focus();
 		}
 
