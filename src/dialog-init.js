@@ -123,6 +123,16 @@
 		this.registry.push(obj);
 	};
 
+	Focus.prototype.unregister = function(obj){
+		for(var i = 0; i < this.registry.length; i++ ){
+			if(this.registry[i] === obj){
+				break;
+			}
+		}
+
+		this.registry.splice(i, 1);
+	};
+
 	Focus.prototype.check = function(event){
 		var stealing = [];
 
