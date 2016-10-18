@@ -124,13 +124,15 @@
 	};
 
 	FocusRegistry.prototype.unregister = function(obj){
+		var newRegistry = [];
+
 		for(var i = 0; i < this.registry.length; i++ ){
-			if(this.registry[i] === obj){
-				break;
+			if(this.registry[i] !== obj){
+				newRegistry.push(this.registry[i]);
 			}
 		}
 
-		this.registry.splice(i, 1);
+		this.registry = newRegistry;
 	};
 
 	FocusRegistry.prototype.check = function(event){
