@@ -47,7 +47,6 @@
 		$instance.data( "dialog" ).destroy();
 		$nested.data( "dialog" ).destroy();
 		$nohist.data( "dialog" ).destroy();
-		window.Focus.registry = [];
 	};
 
 	// we have to give the browser the time to trigger a hashchange
