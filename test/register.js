@@ -4,6 +4,10 @@
 	module("Focus", {
 		setup: function(){
 			instance = new window.componentNamespace.FocusRegistry();
+		},
+
+		teardown: function(){
+			$(window.document).unbind(".focus-registry");
 		}
 	});
 
@@ -145,5 +149,20 @@
 
 		equal(instance.registry.length, 1);
 		equal(instance.registry[0], obj2);
+	});
+
+	asyncTest("should call stealFocus on focusin if checkFocus", function(){
+		expect(1);
+		var obj = {
+			checkFocus: function(){ return true; },
+			stealFocus: function(){
+				ok( true, "steal focus called" );
+				start();
+			}
+		};
+
+		instance.register(obj);
+
+		$(window.document).trigger("focusin");
 	});
 })(window.jQuery, window);

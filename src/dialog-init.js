@@ -106,7 +106,7 @@
 
 		this.registry = [];
 
-		$(window.document).bind("focusin", function(event){
+		$(window.document).bind("focusin.focus-registry", function(event){
 			self.check(event);
 		});
 	}
