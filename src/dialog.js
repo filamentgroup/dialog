@@ -87,7 +87,7 @@ window.jQuery = window.jQuery || window.shoestring;
 
 	Dialog.prototype.destroy = function() {
 		// unregister the focus stealing
-		window.Focus.unregister(this);
+		window.focusRegistry.unregister(this);
 
 		// clear init for this dom element
 		this.$el.data()[pluginName] = undefined;

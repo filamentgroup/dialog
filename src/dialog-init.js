@@ -1,7 +1,7 @@
 (function( w, $ ){
-  var Dialog = w.componentNamespace.Dialog,
-      doc = w.document,
-      pluginName = "dialog";
+	var Dialog = w.componentNamespace.Dialog,
+		doc = w.document,
+		pluginName = "dialog";
 
 	$.fn[ pluginName ] = function(){
 		return this.each(function(){
@@ -91,7 +91,7 @@
 				}
 			});
 
-			window.Focus.register(dialog);
+			window.focusRegistry.register(dialog);
 		});
 	};
 
@@ -101,7 +101,7 @@
 		$( "." + pluginName, e.target ).add( target ).filter( "." + pluginName )[ pluginName ]();
 	});
 
-	function Focus(){
+	function FocusRegistry(){
 		var self = this;
 
 		this.registry = [];
@@ -111,7 +111,7 @@
 		});
 	}
 
-	Focus.prototype.register = function(obj){
+	FocusRegistry.prototype.register = function(obj){
 		if( !obj.checkFocus ){
 			throw new Error( "Obj must implement `checkFocus`" );
 		}
@@ -123,7 +123,7 @@
 		this.registry.push(obj);
 	};
 
-	Focus.prototype.unregister = function(obj){
+	FocusRegistry.prototype.unregister = function(obj){
 		for(var i = 0; i < this.registry.length; i++ ){
 			if(this.registry[i] === obj){
 				break;
@@ -133,7 +133,7 @@
 		this.registry.splice(i, 1);
 	};
 
-	Focus.prototype.check = function(event){
+	FocusRegistry.prototype.check = function(event){
 		var stealing = [];
 
 		// for all the registered components
@@ -162,5 +162,9 @@
 		}
 	};
 
-	window.Focus = new Focus();
+	// constructor in namespace
+	window.componentNamespace.FocusRegistry = FocusRegistry;
+
+	// singleton
+	window.focusRegistry = new FocusRegistry();
 }( this, window.jQuery ));
