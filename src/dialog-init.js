@@ -1,7 +1,7 @@
 (function( w, $ ){
-  var Dialog = w.componentNamespace.Dialog,
-      doc = w.document,
-      pluginName = "dialog";
+	var Dialog = w.componentNamespace.Dialog,
+		doc = w.document,
+		pluginName = "dialog";
 
 	$.fn[ pluginName ] = function(){
 		return this.each(function(){
@@ -90,12 +90,83 @@
 					dialog.close();
 				}
 			});
+
+			window.focusRegistry.register(dialog);
 		});
 	};
 
-  // auto-init on enhance
+	// auto-init on enhance
 	$( w.document ).bind( "enhance", function( e ){
-    var target = e.target === w.document ? "" : e.target;
+		var target = e.target === w.document ? "" : e.target;
 		$( "." + pluginName, e.target ).add( target ).filter( "." + pluginName )[ pluginName ]();
 	});
+
+	function FocusRegistry(){
+		var self = this;
+
+		this.registry = [];
+
+		$(window.document).bind("focusin.focus-registry", function(event){
+			self.check(event);
+		});
+	}
+
+	FocusRegistry.prototype.register = function(obj){
+		if( !obj.checkFocus ){
+			throw new Error( "Obj must implement `checkFocus`" );
+		}
+
+		if( !obj.stealFocus ){
+			throw new Error( "Obj must implement `stealFocus`" );
+		}
+
+		this.registry.push(obj);
+	};
+
+	FocusRegistry.prototype.unregister = function(obj){
+		var newRegistry = [];
+
+		for(var i = 0; i < this.registry.length; i++ ){
+			if(this.registry[i] !== obj){
+				newRegistry.push(this.registry[i]);
+			}
+		}
+
+		this.registry = newRegistry;
+	};
+
+	FocusRegistry.prototype.check = function(event){
+		var stealing = [];
+
+		// for all the registered components
+		for(var i = 0; i < this.registry.length; i++){
+
+			// if a given component wants to steal the focus, record that
+			if( this.registry[i].checkFocus(event) ){
+				stealing.push(this.registry[i]);
+			}
+		}
+
+		// if more than one component wants to steal focus throw an exception
+		if( stealing.length > 1 ){
+			throw new Error("Two components are attempting to steal focus.");
+		}
+
+		// otherwise allow the first component to steal focus
+		if(stealing[0]) {
+			event.preventDefault();
+
+			// let this event stack unwind and then steal the focus
+			// which will again trigger the check above
+			setTimeout(function(){
+				stealing[0].stealFocus(event);
+			});
+		}
+	};
+
+	// constructor in namespace
+	window.componentNamespace.FocusRegistry = FocusRegistry;
+
+	// singleton
+	window.focusRegistry = new FocusRegistry();
 }( this, window.jQuery ));

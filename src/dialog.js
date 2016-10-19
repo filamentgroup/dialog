@@ -86,15 +86,37 @@ window.jQuery = window.jQuery || window.shoestring;
 	};
 
 	Dialog.prototype.destroy = function() {
+		// unregister the focus stealing
+		window.focusRegistry.unregister(this);
+
 		// clear init for this dom element
 		this.$el.data()[pluginName] = undefined;
+
+		// remove the backdrop for the dialog
 		this.$background.remove();
+	};
+
+	Dialog.prototype.checkFocus = function(event){
+		var $target = $( event.target );
+		var shouldSteal;
+
+		shouldSteal =
+			this.isOpen &&
+			!$target.closest( this.$el[0]).length &&
+			this.isLastDialog();
+
+		return shouldSteal;
+	};
+
+	Dialog.prototype.stealFocus = function(){
+		this.$el[0].focus();
 	};
 
 	Dialog.prototype.open = function() {
 		if( this.isOpen ){
 			return;
 		}
+
 		if( this.$background.length ) {
 			this.$background[ 0 ].style.height = Math.max( docElem.scrollHeight, docElem.clientHeight ) + "px";
 		}
@@ -110,21 +132,29 @@ window.jQuery = window.jQuery || window.shoestring;
 		this.isOpen = true;
 
 		var cleanHash = w.location.hash.replace( /^#/, "" );
-		var lastHash = w.location.hash.split( "#" ).pop();
 
-		if( cleanHash.indexOf( "-dialog" ) > -1 && lastHash !== this.hash ){
+		if( cleanHash.indexOf( "-dialog" ) > -1 && !this.isLastDialog() ){
 			w.location.hash += "#" + this.hash;
-		}
-		else if( lastHash !== this.hash ) {
+		} else if( !this.isLastDialog() ){
 			w.location.hash = this.hash;
 		}
 
 		if( doc.activeElement ){
 			this.focused = doc.activeElement;
 		}
+
 		this.$el[ 0 ].focus();
 
 		this.$el.trigger( ev.opened );
+	};
+
+	Dialog.prototype.lastHash = function(){
+		return w.location.hash.split( "#" ).pop();
+	};
+
+	// is this the last dialog that was opened based on the hash
+	Dialog.prototype.isLastDialog = function(){
+		return this.lastHash() === this.hash;
 	};
 
 	Dialog.prototype._setBackgroundTransparency = function() {
@@ -173,13 +203,15 @@ window.jQuery = window.jQuery || window.shoestring;
 		this.$background.removeClass( cl.bkgdOpen );
 		$html.removeClass( cl.open );
 
-		if( this.focused ){
+		this.isOpen = false;
+
+		// we only want to throw focus on close if we aren't
+		// opening a nested dialog or some other UI state
+		if( this.focused && this.isLastDialog()){
 			this.focused.focus();
 		}
 
 		w.scrollTo( 0, this.scroll );
-
-		this.isOpen = false;
 
 		this.$el.trigger( ev.closed );
 	};
