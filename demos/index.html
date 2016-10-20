@@ -51,7 +51,7 @@
 				<p>This is a dialog</p>
 				<a href="#mydialog-btn" data-dialog-close>Close</a>
 			</div>
-			<a href="#mydialog" id="mydialog-btn">Open Dialog</a>
+			<a href="#mydialog" id="mydialog-btn" class="docs-btn">Open Dialog</a>
 		</div>
 
 		<h2 class="docs">Markup broken down</h2>
@@ -126,13 +126,13 @@
 		<p class="docs">You can pull another page into a dialog by adding a <code>data-dialog-link</code> attribute to a link.</p>
 
 		<div data-xrayhtml>
-		<a href="example-external.html" data-dialog-link>Open in dialog</a>
+		<a href="example-external.html" data-dialog-link class="docs-btn">Open in dialog</a>
 		</div>
 
 		<p class="docs">Additional external dialog with a # in its href, just for testing purposes:</p>
 
 		<div data-xrayhtml>
-		<a href="example-external.html?3#foo=bar" data-dialog-link>Open in dialog</a>
+		<a href="example-external.html?3#foo=bar" data-dialog-link class="docs-btn">Open in dialog</a>
 		</div>
 
 		<h3 class="docs">Adding a class via ajax linking</h3>
@@ -140,7 +140,7 @@
 		<p class="docs">To set classes on the ajax dialog container, you can specify classes in a <code>data-dialog-addclass</code> attribute on the anchor:</p>
 
 	<div data-xrayhtml>
-	<a href="example-external.html?1" data-dialog-link data-dialog-addclass="foo bar baz">Open in dialog</a>
+	<a href="example-external.html?1" class="docs-btn" data-dialog-link data-dialog-addclass="foo bar baz">Open in dialog</a>
 	</div>
 
 		<h2 class="docs">Iframe linking</h2>
@@ -148,7 +148,7 @@
 		<p>You can pull another page into a dialog in an iframe by adding a <code>data-dialog-iframe</code> attribute to a <code>data-dialog-link</code> link.</p>
 
 		<div data-xrayhtml>
-		<a href="https://filamentgroup.com" data-dialog-link data-dialog-iframe>Open in dialog</a>
+		<a href="https://filamentgroup.com" data-dialog-link data-dialog-iframe class="docs-btn">Open in dialog</a>
 		</div>
 
 
@@ -161,7 +161,7 @@
 				<p><a href="#mydialog">Open the first Dialog on the page</a></p>
 				<p><a href="#mydialog-2-btn" data-dialog-close>Close</a></p>
 			</div>
-			<a href="#mydialog-2" id="mydialog-2-btn">Open Dialog</a>
+			<a href="#mydialog-2" id="mydialog-2-btn" class="docs-btn">Open Dialog</a>
 		</div>
 
 
@@ -181,11 +181,11 @@
 				<p><a href="#mydialog">Open the first Dialog on the page (that one does have history!)</a></p>
 				<p><a href="#mydialog-2-btn" data-dialog-close>Close</a></p>
 			</div>
-			<a href="#mydialog-3" id="mydialog-3-btn">Open Dialog</a>
+			<a href="#mydialog-3" id="mydialog-3-btn" class="docs-btn">Open Dialog</a>
 		</div>
 
 		<div data-xrayhtml>
-		<a href="example-external.html?2" data-dialog-link data-dialog-history="false">Open Non-history Ajax Dialog</a>
+		<a href="example-external.html?2" data-dialog-link data-dialog-history="false" class="docs-btn">Open Non-history Ajax Dialog</a>
 		</div>
 
 
@@ -223,7 +223,7 @@
 				<p>This is a dialog</p>
 				<a href="#mydialog-btn" data-dialog-close>Close</a>
 			</div>
-			<a href="#mydialog-sometimesstatic" id="mydialog-sometimesstatic-btn">Open Dialog</a>
+			<a href="#mydialog-sometimesstatic" id="mydialog-sometimesstatic-btn"  class="docs-btn">Open Dialog</a>
 		</div>
 
 
