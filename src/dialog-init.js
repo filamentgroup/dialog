@@ -15,8 +15,7 @@
 			var dialog = new Dialog( this );
 
 			$el.addClass( Dialog.classes.content )
-				.attr( "role", "dialog" )
-				.attr( "tabindex", 0 )
+
 				.bind( Dialog.events.open, function(){
 					dialog.open();
 				})
@@ -90,6 +89,17 @@
 					dialog.close();
 				}
 			});
+
+			dialog._checkInteractivity();
+			var resizepoll;
+			$( window ).bind( "resize", function(){
+				if( resizepoll ){
+					clearTimeout( resizepoll );
+				}
+				resizepoll = setTimeout( function(){
+					dialog._checkInteractivity.call( dialog );
+				}, 150 );
+			} );
 
 			window.focusRegistry.register(dialog);
 		});

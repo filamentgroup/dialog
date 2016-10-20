@@ -189,6 +189,31 @@
 		</div>
 
 
+		<h2 class="docs">Sometimes-static dialog example</h2>
+
+		<div data-xrayhtml>
+		<style>
+			@media (min-width:40em) {
+				#mydialog-sometimesstatic-background,
+				#mydialog-sometimesstatic [data-dialog-close],
+				#mydialog-sometimesstatic-btn  {
+					display: none;
+				}
+				#mydialog-sometimesstatic {
+					display: block !important;
+					position: static;
+				}
+			}
+		</style>
+
+			<div class="dialog" id="mydialog-sometimesstatic">
+				<p>This is a dialog</p>
+				<a href="#mydialog-btn" data-dialog-close>Close</a>
+			</div>
+			<a href="#mydialog-sometimesstatic" id="mydialog-sometimesstatic-btn">Open Dialog</a>
+		</div>
+
+
 
 	</div>
 </body>
