@@ -190,14 +190,19 @@
 
 
 		<h2 class="docs">Dialog styled to be visible at some breakpoints</h2>
-		<p class="docs">If a dialog is styled to be visible and non-closeable at any breakpoint, the JavaScript will detect that and remove the dialog's role and tabindex attributes for accessibility purposes. This happens both upon initialization and whenever the viewport is resized.
-		The following criteria must be met in order for this to happen automatically:</p>
+		<p class="docs">If a dialog is styled to be visible and non-closeable at any breakpoint, the JavaScript will detect that and remove the dialog's role and tabindex attributes so that its role in the page is communicated accurately to assistive technology.
+			This happens both upon initialization and whenever the viewport is resized.</p>
+
+
+		<p class="docs">To take advantage of this accessibility feature, the following criteria must be met in your dialog's CSS:</p>
 		<ol>
 			<li>The dialog element's CSS display property does not equal "none"
 			<li>The dialog element's CSS visibility property does not equal "hidden"
 			<li>The dialog close link's (if it is in the markup) CSS display property equals "none"
 			<li>The dialog background screen's CSS display property equals "none"
 		</ol>
+
+		<p class="docs">The following dialog uses CSS to display it as static content at wider breakpoints, as well as hiding the elements associated with deeming the dialog non-closeable.</p>
 
 		<div data-xrayhtml>
 		<style>
