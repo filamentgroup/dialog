@@ -105,7 +105,8 @@ window.jQuery = window.jQuery || window.shoestring;
 		shouldSteal =
 			this.isOpen &&
 			!$target.closest( this.$el[0]).length &&
-			this.isLastDialog();
+			this.isLastDialog() &&
+			!this._isNonInteractive();
 
 		return shouldSteal;
 	};
