@@ -58,6 +58,8 @@ window.jQuery = window.jQuery || window.shoestring;
 
 		this.isOpen = false;
 		this.isTransparentBackground = this.$el.is( '[data-transbg]' );
+
+		this._addA11yAttrs();
 	};
 
   // default to tracking history with the dialog
@@ -86,15 +88,73 @@ window.jQuery = window.jQuery || window.shoestring;
 	};
 
 	Dialog.prototype.destroy = function() {
+		// unregister the focus stealing
+		window.focusRegistry.unregister(this);
+
 		// clear init for this dom element
 		this.$el.data()[pluginName] = undefined;
+
+		// remove the backdrop for the dialog
 		this.$background.remove();
+	};
+
+	Dialog.prototype.checkFocus = function(event){
+		var $target = $( event.target );
+		var shouldSteal;
+
+		shouldSteal =
+			this.isOpen &&
+			!$target.closest( this.$el[0]).length &&
+			this.isLastDialog() &&
+			!this._isNonInteractive();
+
+		return shouldSteal;
+	};
+
+	Dialog.prototype.stealFocus = function(){
+		this.$el[0].focus();
+	};
+
+
+
+	Dialog.prototype._addA11yAttrs = function(){
+		this.$el.attr( "role", "dialog" );
+		this.$el.attr( "tabindex", "0" );
+	};
+
+	Dialog.prototype._removeA11yAttrs = function(){
+		this.$el.removeAttr( "role" );
+		this.$el.removeAttr( "tabindex" );
+	};
+
+	Dialog.prototype._isNonInteractive = function(){
+		var computedDialog = window.getComputedStyle( this.$el[ 0 ], null );
+		var closeLink = this.$el.find( Dialog.selectors.close )[0];
+		var computedCloseLink;
+		if( closeLink ){
+			computedCloseLink = window.getComputedStyle( closeLink, null );
+		}
+		var computedBackground = window.getComputedStyle( this.$background[ 0 ], null );
+		return computedDialog.getPropertyValue( "display" ) !== "none" &&
+			computedDialog.getPropertyValue( "visibility" ) !== "hidden" &&
+			( !computedCloseLink || computedCloseLink.getPropertyValue( "display" ) === "none" ) &&
+			computedBackground.getPropertyValue( "display" ) === "none";
+	};
+
+	Dialog.prototype._checkInteractivity = function(){
+		if( this._isNonInteractive() ){
+			this._removeA11yAttrs();
+		}
+		else{
+			this._addA11yAttrs();
+		}
 	};
 
 	Dialog.prototype.open = function() {
 		if( this.isOpen ){
 			return;
 		}
+
 		if( this.$background.length ) {
 			this.$background[ 0 ].style.height = Math.max( docElem.scrollHeight, docElem.clientHeight ) + "px";
 		}
@@ -110,21 +170,29 @@ window.jQuery = window.jQuery || window.shoestring;
 		this.isOpen = true;
 
 		var cleanHash = w.location.hash.replace( /^#/, "" );
-		var lastHash = w.location.hash.split( "#" ).pop();
 
-		if( cleanHash.indexOf( "-dialog" ) > -1 && lastHash !== this.hash ){
+		if( cleanHash.indexOf( "-dialog" ) > -1 && !this.isLastDialog() ){
 			w.location.hash += "#" + this.hash;
-		}
-		else if( lastHash !== this.hash ) {
+		} else if( !this.isLastDialog() ){
 			w.location.hash = this.hash;
 		}
 
 		if( doc.activeElement ){
 			this.focused = doc.activeElement;
 		}
+
 		this.$el[ 0 ].focus();
 
 		this.$el.trigger( ev.opened );
+	};
+
+	Dialog.prototype.lastHash = function(){
+		return w.location.hash.split( "#" ).pop();
+	};
+
+	// is this the last dialog that was opened based on the hash
+	Dialog.prototype.isLastDialog = function(){
+		return this.lastHash() === this.hash;
 	};
 
 	Dialog.prototype._setBackgroundTransparency = function() {
@@ -173,13 +241,15 @@ window.jQuery = window.jQuery || window.shoestring;
 		this.$background.removeClass( cl.bkgdOpen );
 		$html.removeClass( cl.open );
 
-		if( this.focused ){
+		this.isOpen = false;
+
+		// we only want to throw focus on close if we aren't
+		// opening a nested dialog or some other UI state
+		if( this.focused && this.isLastDialog()){
 			this.focused.focus();
 		}
 
 		w.scrollTo( 0, this.scroll );
-
-		this.isOpen = false;
 
 		this.$el.trigger( ev.closed );
 	};
@@ -292,9 +362,9 @@ window.jQuery = window.jQuery || window.shoestring;
 }( this, window.jQuery ));
 
 (function( w, $ ){
-  var Dialog = w.componentNamespace.Dialog,
-      doc = w.document,
-      pluginName = "dialog";
+	var Dialog = w.componentNamespace.Dialog,
+		doc = w.document,
+		pluginName = "dialog";
 
 	$.fn[ pluginName ] = function(){
 		return this.each(function(){
@@ -308,8 +378,7 @@ window.jQuery = window.jQuery || window.shoestring;
 			var dialog = new Dialog( this );
 
 			$el.addClass( Dialog.classes.content )
-				.attr( "role", "dialog" )
-				.attr( "tabindex", 0 )
+
 				.bind( Dialog.events.open, function(){
 					dialog.open();
 				})
@@ -383,12 +452,94 @@ window.jQuery = window.jQuery || window.shoestring;
 					dialog.close();
 				}
 			});
+
+			dialog._checkInteractivity();
+			var resizepoll;
+			$( window ).bind( "resize", function(){
+				if( resizepoll ){
+					clearTimeout( resizepoll );
+				}
+				resizepoll = setTimeout( function(){
+					dialog._checkInteractivity.call( dialog );
+				}, 150 );
+			} );
+
+			window.focusRegistry.register(dialog);
 		});
 	};
 
-  // auto-init on enhance
+	// auto-init on enhance
 	$( w.document ).bind( "enhance", function( e ){
-    var target = e.target === w.document ? "" : e.target;
+		var target = e.target === w.document ? "" : e.target;
 		$( "." + pluginName, e.target ).add( target ).filter( "." + pluginName )[ pluginName ]();
 	});
+
+	function FocusRegistry(){
+		var self = this;
+
+		this.registry = [];
+
+		$(window.document).bind("focusin.focus-registry", function(event){
+			self.check(event);
+		});
+	}
+
+	FocusRegistry.prototype.register = function(obj){
+		if( !obj.checkFocus ){
+			throw new Error( "Obj must implement `checkFocus`" );
+		}
+
+		if( !obj.stealFocus ){
+			throw new Error( "Obj must implement `stealFocus`" );
+		}
+
+		this.registry.push(obj);
+	};
+
+	FocusRegistry.prototype.unregister = function(obj){
+		var newRegistry = [];
+
+		for(var i = 0; i < this.registry.length; i++ ){
+			if(this.registry[i] !== obj){
+				newRegistry.push(this.registry[i]);
+			}
+		}
+
+		this.registry = newRegistry;
+	};
+
+	FocusRegistry.prototype.check = function(event){
+		var stealing = [];
+
+		// for all the registered components
+		for(var i = 0; i < this.registry.length; i++){
+
+			// if a given component wants to steal the focus, record that
+			if( this.registry[i].checkFocus(event) ){
+				stealing.push(this.registry[i]);
+			}
+		}
+
+		// if more than one component wants to steal focus throw an exception
+		if( stealing.length > 1 ){
+			throw new Error("Two components are attempting to steal focus.");
+		}
+
+		// otherwise allow the first component to steal focus
+		if(stealing[0]) {
+			event.preventDefault();
+
+			// let this event stack unwind and then steal the focus
+			// which will again trigger the check above
+			setTimeout(function(){
+				stealing[0].stealFocus(event);
+			});
+		}
+	};
+
+	// constructor in namespace
+	window.componentNamespace.FocusRegistry = FocusRegistry;
+
+	// singleton
+	window.focusRegistry = new FocusRegistry();
 }( this, window.jQuery ));

@@ -58,6 +58,8 @@ window.jQuery = window.jQuery || window.shoestring;
 
 		this.isOpen = false;
 		this.isTransparentBackground = this.$el.is( '[data-transbg]' );
+
+		this._addA11yAttrs();
 	};
 
   // default to tracking history with the dialog
@@ -103,13 +105,49 @@ window.jQuery = window.jQuery || window.shoestring;
 		shouldSteal =
 			this.isOpen &&
 			!$target.closest( this.$el[0]).length &&
-			this.isLastDialog();
+			this.isLastDialog() &&
+			!this._isNonInteractive();
 
 		return shouldSteal;
 	};
 
 	Dialog.prototype.stealFocus = function(){
 		this.$el[0].focus();
+	};
+
+
+
+	Dialog.prototype._addA11yAttrs = function(){
+		this.$el.attr( "role", "dialog" );
+		this.$el.attr( "tabindex", "0" );
+	};
+
+	Dialog.prototype._removeA11yAttrs = function(){
+		this.$el.removeAttr( "role" );
+		this.$el.removeAttr( "tabindex" );
+	};
+
+	Dialog.prototype._isNonInteractive = function(){
+		var computedDialog = window.getComputedStyle( this.$el[ 0 ], null );
+		var closeLink = this.$el.find( Dialog.selectors.close )[0];
+		var computedCloseLink;
+		if( closeLink ){
+			computedCloseLink = window.getComputedStyle( closeLink, null );
+		}
+		var computedBackground = window.getComputedStyle( this.$background[ 0 ], null );
+		return computedDialog.getPropertyValue( "display" ) !== "none" &&
+			computedDialog.getPropertyValue( "visibility" ) !== "hidden" &&
+			( !computedCloseLink || computedCloseLink.getPropertyValue( "display" ) === "none" ) &&
+			computedBackground.getPropertyValue( "display" ) === "none";
+	};
+
+	Dialog.prototype._checkInteractivity = function(){
+		if( this._isNonInteractive() ){
+			this._removeA11yAttrs();
+		}
+		else{
+			this._addA11yAttrs();
+		}
 	};
 
 	Dialog.prototype.open = function() {

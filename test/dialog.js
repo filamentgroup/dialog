@@ -163,4 +163,14 @@
 		$instance.trigger("dialog-open");
 	});
 
+	test( "dialog has aria role and tabindex depending on visibility", function(){
+
+		expect(4);
+		ok( $( "#dialog" ).attr( "role" ) === "dialog" );
+		ok( $( "#dialog" ).attr( "tabindex" ) === "0" );
+		ok( !$( "#mydialog-alwaysstatic" ).attr( "role" ) );
+		ok( !$( "#mydialog-alwaysstatic" ).attr( "tabindex" ) );
+
+	} );
+
 })( window.jQuery || window.shoestring, this );

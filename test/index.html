@@ -18,6 +18,25 @@
 				<p>This is a dialog</p>
 				<a href="#dialog-anchor" class="dialog-close">Close</a>
 			</div>
+
+			<style>
+					#mydialog-alwaysstatic {
+						display: block !important;
+						position: static;
+					}
+					#mydialog-alwaysstatic-background,
+					#mydialog-alwaysstatic [data-dialog-close],
+					#mydialog-alwaysstatic-btn  {
+						display: none;
+					}
+			</style>
+
+				<div class="dialog" id="mydialog-alwaysstatic">
+					<p>This is a dialog</p>
+					<a href="#mydialog-btn" data-dialog-close>Close</a>
+				</div>
+
+
 		</div>
 
 		<script src="dialog.js"></script>
