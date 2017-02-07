@@ -47,8 +47,8 @@
 		<h2 class="docs">Typical dialog example</h2>
 
 		<div data-xrayhtml>
-			<div class="dialog" id="mydialog">
-				<p>This is a dialog</p>
+			<div class="dialog" id="mydialog" aria-label="dialog example">
+				<p id="mydialog-title">This is a dialog</p>
 				<a href="#mydialog-btn" data-dialog-close>Close</a>
 			</div>
 			<a href="#mydialog" id="mydialog-btn" class="docs-btn">Open Dialog</a>
@@ -87,6 +87,12 @@
 
 		&lt;a href="#mydialog" id="mydialog-btn"&gt;Open Dialog&lt;/a&gt;
 			</code></pre>
+
+			<p class="docs">Lastly, it's helpful to add a title for the dialog and identify it as such for assistive technology. You can either do that by setting the <code>aria-labelledby</code> attribute on the dialog element to reference the ID of another element that acts as its title, or by adding an <code>aria-label</code> attribute with a text value that acts as a title for the dialog. The demos on this page use <code>aria-label</code>.</p>
+
+			<pre  class="docs"><code>&lt;div class="dialog" id="mydialog" aria-label="dialog example"&gt;Content here...&lt;/div&gt;
+			</code></pre>
+
 
 		<h2 class="docs">Modal and non-modal</h2>
 
@@ -143,6 +149,15 @@
 	<a href="example-external.html?1" class="docs-btn" data-dialog-link data-dialog-addclass="foo bar baz">Open in dialog</a>
 	</div>
 
+
+	<h3 class="docs">Adding a label via ajax linking</h3>
+
+	<p class="docs">To set the <code>aria-label</code> or <code>aria-labelledby</code> attributes on the ajax dialog container, you can specify a value in a <code>data-dialog-label</code> or <code>data-dialog-labelledby</code> attribute on the anchor:</p>
+
+<div data-xrayhtml>
+<a href="example-external.html?14" class="docs-btn" data-dialog-link data-dialog-label="this is the title">Open in dialog</a>
+</div>
+
 		<h2 class="docs">Iframe linking</h2>
 
 		<p>You can pull another page into a dialog in an iframe by adding a <code>data-dialog-iframe</code> attribute to a <code>data-dialog-link</code> link.</p>
@@ -156,7 +171,7 @@
 		<p class="docs">Dialogs can open without closing already-open dialogs, and they'll close in the order they were opened.</p>
 
 		<div data-xrayhtml>
-			<div class="dialog" id="mydialog-2">
+			<div class="dialog" id="mydialog-2"  aria-label="dialog example">
 				<p>This is a dialog</p>
 				<p><a href="#mydialog">Open the first Dialog on the page</a></p>
 				<p><a href="#mydialog-2-btn" data-dialog-close>Close</a></p>
@@ -176,7 +191,7 @@
 		</p>
 
 		<div data-xrayhtml>
-			<div class="dialog" id="mydialog-3" data-dialog-history="false">
+			<div class="dialog" id="mydialog-3" data-dialog-history="false"  aria-label="dialog example">
 				<p>This is a no-history dialog</p>
 				<p><a href="#mydialog">Open the first Dialog on the page (that one does have history!)</a></p>
 				<p><a href="#mydialog-2-btn" data-dialog-close>Close</a></p>
@@ -219,7 +234,7 @@
 			}
 		</style>
 
-			<div class="dialog" id="mydialog-sometimesstatic">
+			<div class="dialog" id="mydialog-sometimesstatic"  aria-label="dialog example">
 				<p>This is a dialog</p>
 				<form action="">
 					<input type="text" placeholder="sample focusable element to test focus handling">

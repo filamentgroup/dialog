@@ -20,6 +20,9 @@
 			function createDialog(content){
 				var linkHref = $a.attr( "href" );
 				var dialogClasses = $a.attr( "data-dialog-addclass" ) || "";
+				var dialogLabelledBy =  $a.attr( "data-dialog-labeledby" ) || "";
+				var dialogLabel =  $a.attr( "data-dialog-label" ) || "";
+
 				var dialogNoHistory =
 					$a.attr( "data-dialog-history" ) === "false" ||
 					!w.componentNamespace.Dialog.history;
@@ -46,7 +49,7 @@
 					.attr("href", "#" + id )
 					.removeAttr( "data-dialog-link" );
 
-				var $dialog = $( "<div class='dialog "+ dialogClasses +"' id='" + id + "' " + ( dialogNoHistory ? " data-dialog-history='false'" : "" ) + "></div>" )
+				var $dialog = $( "<div class='dialog "+ dialogClasses +"' id='" + id + "' " + ( dialogNoHistory ? " data-dialog-history='false'" : "" ) + ( dialogLabel ? " aria-label='" + dialogLabel + "'" : "" ) + ( dialogLabelledBy ? " aria-labelledby='" + dialogLabelledBy + "'" : "" ) + "></div>" )
 						.append( content )
 						.appendTo( "body" )
 						.dialog();
