@@ -245,8 +245,8 @@ window.jQuery = window.jQuery || window.shoestring;
 
 		// we only want to throw focus on close if we aren't
 		// opening a nested dialog or some other UI state
-		if( this.focused && this.isLastDialog()){
-			this.focused.focus();
+		if( this.focused && !this.isLastDialog()){
+				this.focused.focus();
 		}
 
 		w.scrollTo( 0, this.scroll );

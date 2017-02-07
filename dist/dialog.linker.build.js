@@ -245,8 +245,8 @@ window.jQuery = window.jQuery || window.shoestring;
 
 		// we only want to throw focus on close if we aren't
 		// opening a nested dialog or some other UI state
-		if( this.focused && this.isLastDialog()){
-			this.focused.focus();
+		if( this.focused && !this.isLastDialog()){
+				this.focused.focus();
 		}
 
 		w.scrollTo( 0, this.scroll );
@@ -277,6 +277,9 @@ window.jQuery = window.jQuery || window.shoestring;
 			function createDialog(content){
 				var linkHref = $a.attr( "href" );
 				var dialogClasses = $a.attr( "data-dialog-addclass" ) || "";
+				var dialogLabelledBy =  $a.attr( "data-dialog-labeledby" ) || "";
+				var dialogLabel =  $a.attr( "data-dialog-label" ) || "";
+
 				var dialogNoHistory =
 					$a.attr( "data-dialog-history" ) === "false" ||
 					!w.componentNamespace.Dialog.history;
@@ -303,7 +306,7 @@ window.jQuery = window.jQuery || window.shoestring;
 					.attr("href", "#" + id )
 					.removeAttr( "data-dialog-link" );
 
-				var $dialog = $( "<div class='dialog "+ dialogClasses +"' id='" + id + "' " + ( dialogNoHistory ? " data-dialog-history='false'" : "" ) + "></div>" )
+				var $dialog = $( "<div class='dialog "+ dialogClasses +"' id='" + id + "' " + ( dialogNoHistory ? " data-dialog-history='false'" : "" ) + ( dialogLabel ? " aria-label='" + dialogLabel + "'" : "" ) + ( dialogLabelledBy ? " aria-labelledby='" + dialogLabelledBy + "'" : "" ) + "></div>" )
 						.append( content )
 						.appendTo( "body" )
 						.dialog();
