@@ -205,7 +205,6 @@ window.jQuery = window.jQuery || window.shoestring;
 		if( !this.isOpen ){
 			return;
 		}
-		var self= this;
 
 		// if close() is called directly and the hash for this dialog is at the end
 		// of the url, then we need to change the hash to remove it, either by going
