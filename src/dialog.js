@@ -205,6 +205,7 @@ window.jQuery = window.jQuery || window.shoestring;
 		if( !this.isOpen ){
 			return;
 		}
+		var self= this;
 
 		// if close() is called directly and the hash for this dialog is at the end
 		// of the url, then we need to change the hash to remove it, either by going
@@ -245,8 +246,8 @@ window.jQuery = window.jQuery || window.shoestring;
 
 		// we only want to throw focus on close if we aren't
 		// opening a nested dialog or some other UI state
-		if( this.focused && this.isLastDialog()){
-			this.focused.focus();
+		if( this.focused && !this.isLastDialog()){
+				this.focused.focus();
 		}
 
 		w.scrollTo( 0, this.scroll );
