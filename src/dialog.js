@@ -31,7 +31,7 @@ window.jQuery = window.jQuery || window.shoestring;
 		this.$el.data( pluginName, this );
 
 		// keeping data-nobg here for compat. Deprecated.
-		this.$background = ( !this.$el.is( '[data-nobg]' ) && !this.$el.is( '[data-' + pluginName + '-nobg]' ) ) ?
+		this.$background = !this.$el.is( '[data-' + pluginName + '-nobg]' ) ?
 			$( doc.createElement('div') ).addClass( cl.bkgd ).appendTo( "body") :
 			$( [] );
 
