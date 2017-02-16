@@ -141,6 +141,15 @@
 		<a href="example-external.html?3#foo=bar" data-dialog-link class="docs-btn">Open in dialog</a>
 		</div>
 
+		<h3 class="docs">Ajax linking to separate URL</h3>
+
+		<p class="docs">Sometimes it makes sense to request a fragment of HTML for the Ajax dialog, instead of referencing the same page that the link would point to.
+			You can specify an ajax-specific url by providing a value in the <code>data-dialog-link</code> attribute. The same works for iframe dialogs, explained later.</p>
+
+		<div data-xrayhtml>
+		<a href="example-external.html" data-dialog-link="example-external-2.html" class="docs-btn">Open in dialog</a>
+		</div>
+
 		<h3 class="docs">Adding a class via ajax linking</h3>
 
 		<p class="docs">To set classes on the ajax dialog container, you can specify classes in a <code>data-dialog-addclass</code> attribute on the anchor:</p>
@@ -163,7 +172,13 @@
 		<p>You can pull another page into a dialog in an iframe by adding a <code>data-dialog-iframe</code> attribute to a <code>data-dialog-link</code> link.</p>
 
 		<div data-xrayhtml>
-		<a href="https://filamentgroup.com" data-dialog-link data-dialog-iframe class="docs-btn">Open in dialog</a>
+		<a href="https://www.filamentgroup.com" data-dialog-link data-dialog-iframe class="docs-btn">Open in dialog</a>
+		</div>
+
+		<p>You can also specify a different iframe url via the <code>data-dialog-link</code> attribute value.</p>
+
+		<div data-xrayhtml>
+		<a href="https://www.filamentgroup.com" data-dialog-link="https://www.filamentgroup.com/lab/" data-dialog-iframe class="docs-btn">Open in dialog</a>
 		</div>
 
 

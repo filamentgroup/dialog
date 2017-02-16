@@ -273,10 +273,11 @@ window.jQuery = window.jQuery || window.shoestring;
 
 			var $a = $( e.target ).closest( "a" );
 			var link = $a.is( "[data-dialog-link]" );
+			var linkValue = $a.attr( "data-dialog-link" );
 			var iframe = $a.is( "[data-dialog-iframe]" );
 
 			function createDialog(content){
-				var linkHref = $a.attr( "href" );
+				var linkHref = (linkValue && linkValue !== "") ? linkValue : $a.attr( "href" );
 				var dialogClasses = $a.attr( "data-dialog-addclass" ) || "";
 				var dialogLabelledBy =  $a.attr( "data-dialog-labeledby" ) || "";
 				var dialogLabel =  $a.attr( "data-dialog-label" ) || "";
@@ -334,6 +335,9 @@ window.jQuery = window.jQuery || window.shoestring;
 
 			if( link ){
 				var url = $a.attr( "href" );
+				if( linkValue && linkValue !== "" ){
+					url = linkValue;
+				}
 
 				// get content either from an iframe or not
 				if( $a.is( "[data-dialog-iframe]" ) ){
@@ -352,6 +356,9 @@ window.jQuery = window.jQuery || window.shoestring;
 		var hash = w.location.hash.split( "#" ).pop();
 		var id = hash.replace( /-dialog$/, "" );
 		var $ajaxLink = $( 'a[href="' + decodeURIComponent(id) +'"][data-dialog-link], a[href="' + id +'"][data-dialog-link]' );
+		if( decodeURIComponent(id) !== "" && !$ajaxLink.length ){
+			$ajaxLink = $( 'a[data-dialog-link="' + decodeURIComponent(id) + '"]' );
+		}
 		// if the link specified nohistory, don't click it
 		var nohistory =
 			$ajaxLink.attr( "data-dialog-history" ) === "false" ||
