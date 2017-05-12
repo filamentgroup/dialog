@@ -247,9 +247,9 @@ window.jQuery = window.jQuery || window.shoestring;
 		// opening a nested dialog or some other UI state
 		if( this.focused && this.isLastDialog()){
 			this.focused.focus();
-		}
+			w.scrollTo( 0, this.scroll );
 
-		w.scrollTo( 0, this.scroll );
+		}
 
 		this.$el.trigger( ev.closed );
 	};
