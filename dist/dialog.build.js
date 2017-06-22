@@ -191,7 +191,7 @@ window.jQuery = window.jQuery || window.shoestring;
 		return w.location.hash.split( "#" ).pop();
 	};
 
-	// is this the last dialog that was opened based on the hash
+	// is this the newest/last dialog that was opened based on the hash
 	Dialog.prototype.isLastDialog = function(){
 		return this.lastHash() === this.hash;
 	};
@@ -250,7 +250,10 @@ window.jQuery = window.jQuery || window.shoestring;
 				this.focused.focus();
 		}
 
-		w.scrollTo( 0, this.scroll );
+		// only restore scroll position if this is the newest dialog
+		if( this.isLastDialog() ) {
+			w.scrollTo( 0, this.scroll );
+		}
 
 		this.$el.trigger( ev.closed );
 	};
