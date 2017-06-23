@@ -240,7 +240,6 @@ window.jQuery = window.jQuery || window.shoestring;
 		this.$el.removeClass( cl.open );
 
 		this.$background.removeClass( cl.bkgdOpen );
-		$html.removeClass( cl.open );
 
 		this.isOpen = false;
 
@@ -249,9 +248,8 @@ window.jQuery = window.jQuery || window.shoestring;
 		if( this.focused && !this.isLastDialog()){
 				this.focused.focus();
 		}
-
-		// only restore scroll position if this is the newest dialog
-		if( this.isLastDialog() ) {
+		if( $( "." + pluginName + "." + cl.open ).length === 0 ){
+			$html.removeClass( cl.open );
 			w.scrollTo( 0, this.scroll );
 		}
 
