@@ -261,7 +261,7 @@ window.jQuery = window.jQuery || window.shoestring;
 		if( $( "." + pluginName + "." + cl.open ).length === 0 ){
 			$html.removeClass( cl.open );
 			w.scrollTo( 0, this.scroll );
-			this._hideSiblingContent();
+			this._showSiblingContent();
 		}
 
 		this.$el.trigger( ev.closed );
