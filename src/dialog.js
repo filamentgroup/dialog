@@ -29,6 +29,7 @@ window.jQuery = window.jQuery || window.shoestring;
 
 		// record init
 		this.$el.data( pluginName, this );
+		this.$el.appendTo( "body" );
 
 		// keeping data-nobg here for compat. Deprecated.
 		this.$background = !this.$el.is( '[data-' + pluginName + '-nobg]' ) ?
@@ -152,11 +153,11 @@ window.jQuery = window.jQuery || window.shoestring;
 	};
 
 	Dialog.prototype._hideSiblingContent = function(){
-		console.log( this.$el.siblings().attr( "aria-hidden", "true" ) );
+		this.$el.siblings().not( "script, style" ).attr( "aria-hidden", "true" );
 	};
 
 	Dialog.prototype._showSiblingContent = function(){
-		this.$el.siblings().removeAttr( "aria-hidden" );
+		this.$el.siblings().not( "script, style" ).removeAttr( "aria-hidden" );
 	};
 
 	Dialog.prototype.open = function() {
@@ -167,7 +168,6 @@ window.jQuery = window.jQuery || window.shoestring;
 		if( this.$background.length ) {
 			this.$background[ 0 ].style.height = Math.max( docElem.scrollHeight, docElem.clientHeight ) + "px";
 		}
-		this.$el.insertAfter( this.$background );
 		this.$el.addClass( cl.open );
 		this.$background.addClass( cl.bkgdOpen );
 		this.$background.attr( "id", this.$el.attr( "id" ) + "-background" );
