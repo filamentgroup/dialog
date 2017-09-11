@@ -32,7 +32,7 @@ window.jQuery = window.jQuery || window.shoestring;
 
 		// keeping data-nobg here for compat. Deprecated.
 		this.$background = !this.$el.is( '[data-' + pluginName + '-nobg]' ) ?
-			$( doc.createElement('div') ).addClass( cl.bkgd ).appendTo( "body") :
+			$( doc.createElement('div') ).addClass( cl.bkgd ).attr( "tabindex", "-1" ).appendTo( "body") :
 			$( [] );
 
 		// when dialog first inits, save a reference to the initial hash so we can know whether
@@ -151,6 +151,14 @@ window.jQuery = window.jQuery || window.shoestring;
 		}
 	};
 
+	Dialog.prototype._hideSiblingContent = function(){
+		console.log( this.$el.siblings().attr( "aria-hidden", "true" ) );
+	};
+
+	Dialog.prototype._showSiblingContent = function(){
+		this.$el.siblings().removeAttr( "aria-hidden" );
+	};
+
 	Dialog.prototype.open = function() {
 		if( this.isOpen ){
 			return;
@@ -159,6 +167,7 @@ window.jQuery = window.jQuery || window.shoestring;
 		if( this.$background.length ) {
 			this.$background[ 0 ].style.height = Math.max( docElem.scrollHeight, docElem.clientHeight ) + "px";
 		}
+		this.$el.insertAfter( this.$background );
 		this.$el.addClass( cl.open );
 		this.$background.addClass( cl.bkgdOpen );
 		this.$background.attr( "id", this.$el.attr( "id" ) + "-background" );
@@ -169,6 +178,7 @@ window.jQuery = window.jQuery || window.shoestring;
 
 		$html.addClass( cl.open );
 		this.isOpen = true;
+		this._hideSiblingContent();
 
 		var cleanHash = w.location.hash.replace( /^#/, "" );
 
@@ -251,6 +261,7 @@ window.jQuery = window.jQuery || window.shoestring;
 		if( $( "." + pluginName + "." + cl.open ).length === 0 ){
 			$html.removeClass( cl.open );
 			w.scrollTo( 0, this.scroll );
+			this._hideSiblingContent();
 		}
 
 		this.$el.trigger( ev.closed );
