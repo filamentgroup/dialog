@@ -145,27 +145,38 @@ window.jQuery = window.jQuery || window.shoestring;
 	Dialog.prototype._checkInteractivity = function(){
 		if( this._isNonInteractive() ){
 			this._removeA11yAttrs();
+			this._ariaShowUnrelatedElems();
 		}
 		else{
 			this._addA11yAttrs();
 		}
 	};
 
-	Dialog.prototype._hideSiblingContent = function(){
+
+	Dialog.prototype._ariaHideUnrelatedElems = function(){
+		this._ariaShowUnrelatedElems();
 		var ignoredElems = "script, style";
-		var self = this;
-		this._ariaHiddenElems = this.$el.siblings().not( ignoredElems );
+		var hideList = this.$el.siblings().not( ignoredElems );
 		this.$el.parents().not( "body, html" ).each(function(){
-			self._ariaHiddenElems = self._ariaHiddenElems.add( $( this ).siblings().not( ignoredElems ) );
+			hideList = hideList.add( $( this ).siblings().not( ignoredElems ) );
 		});
-		this._ariaHiddenElems.attr( "aria-hidden", "true" );
+		hideList.each(function(){
+			$( this )
+				.attr( "data-dialog-aria-hidden", $( this ).attr( "aria-hidden" ) )
+				.attr( "aria-hidden", "true" );
+		});
 	};
 
-	Dialog.prototype._showSiblingContent = function(){
-		if( this._ariaHiddenElems ){
-			this._ariaHiddenElems.removeAttr( "aria-hidden" );
-			this._ariaHiddenElems = null;
-		}
+
+	Dialog.prototype._ariaShowUnrelatedElems = function(){
+		$( "[data-dialog-aria-hidden]" ).each(function(){
+			if( $( this ).attr( "data-dialog-aria-hidden" ).match( "true|false" ) ){
+				$( this ).attr( "aria-hidden", $( this ).attr( "data-dialog-aria-hidden" ) );
+			}
+			else {
+				$( this ).removeAttr( "aria-hidden" );
+			}
+		}).removeAttr( "data-dialog-aria-hidden" );
 	};
 
 	Dialog.prototype.open = function() {
@@ -186,7 +197,6 @@ window.jQuery = window.jQuery || window.shoestring;
 
 		$html.addClass( cl.open );
 		this.isOpen = true;
-		this._hideSiblingContent();
 
 		var cleanHash = w.location.hash.replace( /^#/, "" );
 
@@ -201,6 +211,10 @@ window.jQuery = window.jQuery || window.shoestring;
 		}
 
 		this.$el[ 0 ].focus();
+		var self = this;
+		setTimeout(function(){
+			self._ariaHideUnrelatedElems();
+		});
 
 		this.$el.trigger( ev.opened );
 	};
@@ -224,6 +238,8 @@ window.jQuery = window.jQuery || window.shoestring;
 		if( !this.isOpen ){
 			return;
 		}
+
+		this._ariaShowUnrelatedElems();
 
 		// if close() is called directly and the hash for this dialog is at the end
 		// of the url, then we need to change the hash to remove it, either by going
@@ -255,7 +271,6 @@ window.jQuery = window.jQuery || window.shoestring;
 			return;
 		}
 
-		this._showSiblingContent();
 		this.$el.removeClass( cl.open );
 
 		this.$background.removeClass( cl.bkgdOpen );
