@@ -29,7 +29,6 @@ window.jQuery = window.jQuery || window.shoestring;
 
 		// record init
 		this.$el.data( pluginName, this );
-		this.$el.appendTo( "body" );
 
 		// keeping data-nobg here for compat. Deprecated.
 		this.$background = !this.$el.is( '[data-' + pluginName + '-nobg]' ) ?
@@ -153,11 +152,20 @@ window.jQuery = window.jQuery || window.shoestring;
 	};
 
 	Dialog.prototype._hideSiblingContent = function(){
-		this.$el.siblings().not( "script, style" ).attr( "aria-hidden", "true" );
+		var ignoredElems = "script, style";
+		var self = this;
+		this._ariaHiddenElems = this.$el.siblings().not( ignoredElems );
+		this.$el.parents().not( "body, html" ).each(function(){
+			self._ariaHiddenElems = self._ariaHiddenElems.add( $( this ).siblings().not( ignoredElems ) );
+		});
+		this._ariaHiddenElems.attr( "aria-hidden", "true" );
 	};
 
 	Dialog.prototype._showSiblingContent = function(){
-		this.$el.siblings().not( "script, style" ).removeAttr( "aria-hidden" );
+		if( this._ariaHiddenElems ){
+			this._ariaHiddenElems.removeAttr( "aria-hidden" );
+			this._ariaHiddenElems = null;
+		}
 	};
 
 	Dialog.prototype.open = function() {
@@ -247,6 +255,7 @@ window.jQuery = window.jQuery || window.shoestring;
 			return;
 		}
 
+		this._showSiblingContent();
 		this.$el.removeClass( cl.open );
 
 		this.$background.removeClass( cl.bkgdOpen );
@@ -261,7 +270,6 @@ window.jQuery = window.jQuery || window.shoestring;
 		if( $( "." + pluginName + "." + cl.open ).length === 0 ){
 			$html.removeClass( cl.open );
 			w.scrollTo( 0, this.scroll );
-			this._showSiblingContent();
 		}
 
 		this.$el.trigger( ev.closed );
