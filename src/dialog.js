@@ -149,6 +149,8 @@ window.jQuery = window.jQuery || window.shoestring;
 		}
 		else{
 			this._addA11yAttrs();
+			this._ariaHideUnrelatedElems();
+
 		}
 	};
 
