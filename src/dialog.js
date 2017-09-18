@@ -120,7 +120,7 @@ window.jQuery = window.jQuery || window.shoestring;
 
 	Dialog.prototype._addA11yAttrs = function(){
 		this.$el.attr( "role", "dialog" );
-		this.$el.attr( "tabindex", "0" );
+		this.$el.attr( "tabindex", "-1" );
 	};
 
 	Dialog.prototype._removeA11yAttrs = function(){
