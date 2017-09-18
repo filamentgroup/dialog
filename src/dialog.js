@@ -149,7 +149,6 @@ window.jQuery = window.jQuery || window.shoestring;
 		}
 		else{
 			this._addA11yAttrs();
-			this._ariaHideUnrelatedElems();
 
 		}
 	};
@@ -163,8 +162,9 @@ window.jQuery = window.jQuery || window.shoestring;
 			hideList = hideList.add( $( this ).siblings().not( ignoredElems ) );
 		});
 		hideList.each(function(){
+			var priorHidden = $( this ).attr( "aria-hidden" ) || "";
 			$( this )
-				.attr( "data-dialog-aria-hidden", $( this ).attr( "aria-hidden" ) )
+				.attr( "data-dialog-aria-hidden", priorHidden )
 				.attr( "aria-hidden", "true" );
 		});
 	};
