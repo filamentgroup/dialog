@@ -88,6 +88,7 @@ window.jQuery = window.jQuery || window.shoestring;
 		close: "." + Dialog.classes.close + ", [data-close], [data-dialog-close]"
 	};
 
+
 	Dialog.prototype.destroy = function() {
 		// unregister the focus stealing
 		window.focusRegistry.unregister(this);
@@ -119,8 +120,12 @@ window.jQuery = window.jQuery || window.shoestring;
 
 
 	Dialog.prototype._addA11yAttrs = function(){
-		this.$el.attr( "role", "dialog" );
-		this.$el.attr( "tabindex", "-1" );
+		this.$el
+			.attr( "role", "dialog" )
+			.attr( "tabindex", "-1" );
+
+		.$el.find( Dialog.selectors.close ).attr( "role", "button" );
+
 	};
 
 	Dialog.prototype._removeA11yAttrs = function(){
