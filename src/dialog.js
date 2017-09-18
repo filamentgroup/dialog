@@ -122,9 +122,8 @@ window.jQuery = window.jQuery || window.shoestring;
 	Dialog.prototype._addA11yAttrs = function(){
 		this.$el
 			.attr( "role", "dialog" )
-			.attr( "tabindex", "-1" );
-
-		.$el.find( Dialog.selectors.close ).attr( "role", "button" );
+			.attr( "tabindex", "-1" )
+			.find( Dialog.selectors.close ).attr( "role", "button" );
 
 	};
 
