@@ -55,7 +55,7 @@ window.jQuery = window.jQuery || window.shoestring;
 		// won't be recognized by the browser when the dialog comes up and the back
 		// button will return to the referring page. So, when nohistory is defined,
 		// we append a "unique" identifier to the hash.
-		this.hash += this.nohistory ? "-" + Date.now().toString() : "" ;
+		this.hash += this.nohistory ? "-" + new Date().getTime().toString() : "" ;
 
 		this.isOpen = false;
 		this.isTransparentBackground = this.$el.is( '[data-transbg]' );
