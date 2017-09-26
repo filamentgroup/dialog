@@ -13,23 +13,24 @@
 			}
 
 			var dialog = new Dialog( this );
+			var onOpen, onClose, onClick, onBackgroundClick;
 
 			$el.addClass( Dialog.classes.content )
 
-				.bind( Dialog.events.open, function(){
+				.bind( Dialog.events.open, onOpen = function(){
 					dialog.open();
 				})
-				.bind( Dialog.events.close, function(){
+				.bind( Dialog.events.close, onClose = function(){
 					dialog.close();
 				})
-				.bind( "click", function( e ){
+				.bind( "click", onClick = function( e ){
 					if( $(e.target).closest(Dialog.selectors.close).length ){
 						e.preventDefault();
 						dialog.close();
 					}
 				});
 
-			dialog.$background.bind( "click", function() {
+			dialog.$background.bind( "click", onBackgroundClick = function() {
 				dialog.close();
 			});
 
@@ -51,10 +52,10 @@
 				}
 			});
 
-			onHashchange();
+			var onDocClick, onKeyup, onResize;
 
 			// open on matching a[href=#id] click
-			$( doc ).bind( "click", function( e ){
+			$( doc ).bind( "click", onDocClick = function( e ){
 				var $matchingDialog, $a;
 
 				$a = $( e.target ).closest( "a" );
@@ -72,7 +73,7 @@
 							$( "[id='" + id + "'],	[id='" + encodeURIComponent(id) + "']" );
 					} catch ( error ) {
 						// TODO should check the type of exception, it's not clear how well
-						//      the error name "SynatxError" is supported
+						//			the error name "SynatxError" is supported
 						return;
 					}
 
@@ -84,7 +85,7 @@
 			});
 
 			// close on escape key
-			$( doc ).bind( "keyup", function( e ){
+			$( doc ).bind( "keyup", onKeyup = function( e ){
 				if( e.which === 27 ){
 					dialog.close();
 				}
@@ -92,14 +93,31 @@
 
 			dialog._checkInteractivity();
 			var resizepoll;
-			$( window ).bind( "resize", function(){
+			$( window ).bind( "resize", onResize = function(){
 				if( resizepoll ){
 					clearTimeout( resizepoll );
 				}
 				resizepoll = setTimeout( function(){
 					dialog._checkInteractivity.call( dialog );
 				}, 150 );
-			} );
+			});
+
+			$el.bind("destroy", function(){
+				$(w).unbind("hashchange", onHashchange);
+
+				$el
+					.unbind( Dialog.events.open, onOpen )
+					.unbind( Dialog.events.close, onClose )
+					.unbind( "click", onClick );
+
+				dialog.$background.unbind( "click", onBackgroundClick);
+
+				$( doc ).unbind( "click", onDocClick );
+				$( doc ).unbind( "keyup", onKeyup );
+				$( window ).unbind( "resize", onResize );
+			});
+
+			onHashchange();
 
 			window.focusRegistry.register(dialog);
 		});

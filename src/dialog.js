@@ -32,7 +32,7 @@ window.jQuery = window.jQuery || window.shoestring;
 
 		// keeping data-nobg here for compat. Deprecated.
 		this.$background = !this.$el.is( '[data-' + pluginName + '-nobg]' ) ?
-			$( doc.createElement('div') ).addClass( cl.bkgd ).appendTo( "body") :
+			$( doc.createElement('div') ).addClass( cl.bkgd ).attr( "tabindex", "-1" ).appendTo( "body") :
 			$( [] );
 
 		// when dialog first inits, save a reference to the initial hash so we can know whether
@@ -55,7 +55,7 @@ window.jQuery = window.jQuery || window.shoestring;
 		// won't be recognized by the browser when the dialog comes up and the back
 		// button will return to the referring page. So, when nohistory is defined,
 		// we append a "unique" identifier to the hash.
-		this.hash += this.nohistory ? "-" + Date.now().toString() : "" ;
+		this.hash += this.nohistory ? "-" + new Date().getTime().toString() : "" ;
 
 		this.isOpen = false;
 		this.isTransparentBackground = this.$el.is( '[data-transbg]' );
@@ -88,9 +88,12 @@ window.jQuery = window.jQuery || window.shoestring;
 		close: "." + Dialog.classes.close + ", [data-close], [data-dialog-close]"
 	};
 
+
 	Dialog.prototype.destroy = function() {
 		// unregister the focus stealing
 		window.focusRegistry.unregister(this);
+
+		this.$el.trigger("destroy");
 
 		// clear init for this dom element
 		this.$el.data()[pluginName] = undefined;
@@ -119,8 +122,11 @@ window.jQuery = window.jQuery || window.shoestring;
 
 
 	Dialog.prototype._addA11yAttrs = function(){
-		this.$el.attr( "role", "dialog" );
-		this.$el.attr( "tabindex", "0" );
+		this.$el
+			.attr( "role", "dialog" )
+			.attr( "tabindex", "-1" )
+			.find( Dialog.selectors.close ).attr( "role", "button" );
+
 	};
 
 	Dialog.prototype._removeA11yAttrs = function(){
@@ -145,10 +151,40 @@ window.jQuery = window.jQuery || window.shoestring;
 	Dialog.prototype._checkInteractivity = function(){
 		if( this._isNonInteractive() ){
 			this._removeA11yAttrs();
+			this._ariaShowUnrelatedElems();
 		}
 		else{
 			this._addA11yAttrs();
+
 		}
+	};
+
+
+	Dialog.prototype._ariaHideUnrelatedElems = function(){
+		this._ariaShowUnrelatedElems();
+		var ignoredElems = "script, style";
+		var hideList = this.$el.siblings().not( ignoredElems );
+		this.$el.parents().not( "body, html" ).each(function(){
+			hideList = hideList.add( $( this ).siblings().not( ignoredElems ) );
+		});
+		hideList.each(function(){
+			var priorHidden = $( this ).attr( "aria-hidden" ) || "";
+			$( this )
+				.attr( "data-dialog-aria-hidden", priorHidden )
+				.attr( "aria-hidden", "true" );
+		});
+	};
+
+
+	Dialog.prototype._ariaShowUnrelatedElems = function(){
+		$( "[data-dialog-aria-hidden]" ).each(function(){
+			if( $( this ).attr( "data-dialog-aria-hidden" ).match( "true|false" ) ){
+				$( this ).attr( "aria-hidden", $( this ).attr( "data-dialog-aria-hidden" ) );
+			}
+			else {
+				$( this ).removeAttr( "aria-hidden" );
+			}
+		}).removeAttr( "data-dialog-aria-hidden" );
 	};
 
 	Dialog.prototype.open = function() {
@@ -183,6 +219,11 @@ window.jQuery = window.jQuery || window.shoestring;
 		}
 
 		this.$el[ 0 ].focus();
+		var self = this;
+		setTimeout(function(){
+			self._ariaHideUnrelatedElems();
+		});
+
 
 		this.$el.trigger( ev.opened );
 	};
@@ -207,33 +248,36 @@ window.jQuery = window.jQuery || window.shoestring;
 			return;
 		}
 
+		this._ariaShowUnrelatedElems();
+
 		// if close() is called directly and the hash for this dialog is at the end
 		// of the url, then we need to change the hash to remove it, either by going
 		// back if we can, or by adding a history state that doesn't have it at the
 		// end
 		if( window.location.hash.split( "#" ).pop() === this.hash ){
-			// let's check if the first segment in the hash is the same as the first
-			// segment in the initial hash if not, it's safe to use back() to close
-			// this out and clean the hash up
-			var firstHashSegment = window.location.hash.split( "#" )[ 1 ];
-			var firstInitialHashSegment = this.initialLocationHash.split( "#" )[ 1 ];
-			if( firstHashSegment && firstInitialHashSegment && firstInitialHashSegment !== firstHashSegment ){
-				window.history.back();
-			}
+			// check if we're back at the original hash, if we are then we can't
+			// go back again otherwise we'll move away from the page
+			var hashKeys = window.location.hash.split( "#" );
+			var initialHashKeys = this.initialLocationHash.split( "#" );
+
+			// if we are not at the original hash then use history
 			// otherwise, if it's the same starting hash as it was at init time, we
 			// can't trigger back to close the dialog, as it might take us elsewhere.
 			// so we have to go forward and create a new hash that does not have this
 			// dialog's hash at the end
-			else {
+			if( hashKeys.join("") !== initialHashKeys.join("") ){
+				window.history.back();
+			} else {
 				var escapedRegexpHash = this
-            .hash
-            .replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+						.hash
+						.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 
 				window.location.hash = window
-          .location
-          .hash
-          .replace( new RegExp( "#" + escapedRegexpHash + "$" ), "" );
+					.location
+					.hash
+					.replace( new RegExp( "#" + escapedRegexpHash + "$" ), "" );
 			}
+
 			return;
 		}
 

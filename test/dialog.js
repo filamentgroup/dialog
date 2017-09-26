@@ -167,7 +167,7 @@
 
 		expect(4);
 		ok( $( "#dialog" ).attr( "role" ) === "dialog" );
-		ok( $( "#dialog" ).attr( "tabindex" ) === "0" );
+		ok( $( "#dialog" ).attr( "tabindex" ) === "-1" );
 		ok( !$( "#mydialog-alwaysstatic" ).attr( "role" ) );
 		ok( !$( "#mydialog-alwaysstatic" ).attr( "tabindex" ) );
 

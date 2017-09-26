@@ -9,9 +9,6 @@
 		equal(a,b);
 	}
 
-	// force the hash to test init and to ensure that it's the initial hash value
-	location.hash = "#dialog-dialog";
-
 	var $doc, instance, $instance, $nested, $nohist, commonSetup, commonTeardown;
 
 	commonSetup = function() {
@@ -51,24 +48,13 @@
 
 	// we have to give the browser the time to trigger a hashchange
 	// so there's no mixup
-	function closeInstance($dialog){
-		$dialog.trigger( "dialog-close" );
+	function closeInstance($dialog, teardown){
+		$("#dialog").trigger( "dialog-close" );
 		setTimeout(function(){
-			start()
+      if(teardown){ commonTeardown() };
+			start();
 		}, 400);
 	}
-
-	var initOpened;
-
-	$(window).one("dialog-opened", function(event){
-		$instance = $(event.target).data( "dialog" ).$el;
-		initOpened = event.target;
-	});
-
-	asyncTest("should open on init if hash is correct", function(){
-		ok(initOpened);
-		closeInstance($instance);
-	});
 
 	// NOTE this must come after the first test so that the init of the dialog
 	// comes from the page's enhance event
@@ -77,28 +63,33 @@
 		teardown: commonTeardown
 	});
 
-	asyncTest("should go back to dialogback when closing the dialog ", function(){
+	asyncTest("should go back to dialog after closing the dialog ", function(){
 		expect(3);
-		$instance.trigger( "dialog-open" );
-		equal(location.hash, "#dialog-dialog");
+    var isOpen = $instance.data("dialog").isOpen;
 
-		$(window).one( "hashchange", function(){
-			equal(location.hash, "");
+    function testSeq(){
+      equal(location.hash, "#dialog-dialog", "#dialog-dialog hash");
 
-			$(window).one("hashchange", function(){
+		  $(window).one( "hashchange", function(){
+			  equal(location.hash, "", "no hash");
 
-				// TODO it's not clear why the hash value isn't reflecting the change
-				//			 immediately
-				setTimeout(function(){
-					equal(location.hash, "#dialog-dialog");
-					closeInstance($instance);
-				}, 1000);
-			});
+			  $(window).one("hashchange", function(){
+					equal(location.hash, "#dialog-dialog", "#dialog-dialog hash again");
+          start();
+			  });
 
-			window.history.back();
-		});
+		    $instance.trigger( "dialog-open" );
+		  });
 
-		$instance.trigger( "dialog-close" );
+		  $instance.trigger( "dialog-close" );
+    }
+
+    if(!isOpen) {
+      $(window).one("hashchange", testSeq);
+		  $instance.trigger( "dialog-open" );
+    } else {
+      testSeq();
+    }
 	});
 
 	// TODO move to `dialog.js` tests
