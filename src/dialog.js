@@ -93,6 +93,8 @@ window.jQuery = window.jQuery || window.shoestring;
 		// unregister the focus stealing
 		window.focusRegistry.unregister(this);
 
+		this.$el.trigger("destroy");
+
 		// clear init for this dom element
 		this.$el.data()[pluginName] = undefined;
 
@@ -222,6 +224,7 @@ window.jQuery = window.jQuery || window.shoestring;
 			self._ariaHideUnrelatedElems();
 		});
 
+
 		this.$el.trigger( ev.opened );
 	};
 
@@ -252,28 +255,29 @@ window.jQuery = window.jQuery || window.shoestring;
 		// back if we can, or by adding a history state that doesn't have it at the
 		// end
 		if( window.location.hash.split( "#" ).pop() === this.hash ){
-			// let's check if the first segment in the hash is the same as the first
-			// segment in the initial hash if not, it's safe to use back() to close
-			// this out and clean the hash up
-			var firstHashSegment = window.location.hash.split( "#" )[ 1 ];
-			var firstInitialHashSegment = this.initialLocationHash.split( "#" )[ 1 ];
-			if( firstHashSegment && firstInitialHashSegment && firstInitialHashSegment !== firstHashSegment ){
-				window.history.back();
-			}
+			// check if we're back at the original hash, if we are then we can't
+			// go back again otherwise we'll move away from the page
+			var hashKeys = window.location.hash.split( "#" );
+			var initialHashKeys = this.initialLocationHash.split( "#" );
+
+			// if we are not at the original hash then use history
 			// otherwise, if it's the same starting hash as it was at init time, we
 			// can't trigger back to close the dialog, as it might take us elsewhere.
 			// so we have to go forward and create a new hash that does not have this
 			// dialog's hash at the end
-			else {
+			if( hashKeys.join("") !== initialHashKeys.join("") ){
+				window.history.back();
+			} else {
 				var escapedRegexpHash = this
-            .hash
-            .replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+						.hash
+						.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 
 				window.location.hash = window
-          .location
-          .hash
-          .replace( new RegExp( "#" + escapedRegexpHash + "$" ), "" );
+					.location
+					.hash
+					.replace( new RegExp( "#" + escapedRegexpHash + "$" ), "" );
 			}
+
 			return;
 		}
 
