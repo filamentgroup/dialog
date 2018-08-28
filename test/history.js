@@ -64,6 +64,11 @@
 	});
 
 	asyncTest("should go back to dialog after closing the dialog ", function(){
+		if( !Dialog.useHash ){
+			expect(1);
+			ok("Hash use is disabled");
+			return start();
+		}
 		expect(3);
     var isOpen = $instance.data("dialog").isOpen;
 
@@ -94,6 +99,11 @@
 
 	// TODO move to `dialog.js` tests
 	test("should prevent double init", function(){
+		if( !Dialog.useHash ){
+			expect(1);
+			ok("Hash use is disabled");
+			return start();
+		}
 		// the `isOpen` propery of the dialog object is set
 		// to `false` at the end of init, we check that it never gets there
 		$instance.data("dialog").hash = "foo";
@@ -102,6 +112,11 @@
 	});
 
 	asyncTest("should append dialog name to hash for nested dialogs", function(){
+		if( !Dialog.useHash ){
+			expect(1);
+			ok("Hash use is disabled");
+			return start();
+		}
 		expect(3);
 
 		$instance.trigger( "dialog-open" );
@@ -118,6 +133,11 @@
 	});
 
 	asyncTest("nohist dialog should still work as normal after page load", function(){
+		if( !Dialog.useHash ){
+			expect(1);
+			ok("Hash use is disabled");
+			return start();
+		}
 		expect(2);
 
 		var oldHash = location.hash;

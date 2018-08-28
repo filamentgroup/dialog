@@ -62,6 +62,10 @@
 	});
 
 	asyncTest( "with trigger sets the hash to #dialog", function() {
+		if( !Dialog.useHash ){
+			ok("Hash use is disabled");
+			return start();
+		}
 		$instance.one( "dialog-opened", function(){
 			equal( location.hash, "#dialog-dialog" );
 			closeInstance();
@@ -129,6 +133,10 @@
 	});
 
 	asyncTest( "closing an open dialog clears the hash", function() {
+		if( !Dialog.useHash ){
+			ok("Hash use is disabled");
+			return start();
+		}
 		$(window).one("hashchange", function(){
 			equal(location.hash, "#dialog-dialog");
 
@@ -144,6 +152,10 @@
 	});
 
 	asyncTest( "closing an open dialog doesn't clear other hash", function() {
+		if( !Dialog.useHash ){
+			ok("Hash use is disabled");
+			return start();
+		}
 		$(window).one("hashchange", function(){
 			equal(location.hash, "#dialog-dialog");
 

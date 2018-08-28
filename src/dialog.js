@@ -66,6 +66,9 @@ window.jQuery = window.jQuery || window.shoestring;
   // default to tracking history with the dialog
   Dialog.history = true;
 
+	// This property is global across dialogs - it determines whether the hash is get/set at all
+	Dialog.useHash = true;
+
 	Dialog.events = ev = {
 		open: pluginName + "-open",
 		opened: pluginName + "-opened",
@@ -208,10 +211,12 @@ window.jQuery = window.jQuery || window.shoestring;
 
 		var cleanHash = w.location.hash.replace( /^#/, "" );
 
-		if( cleanHash.indexOf( "-dialog" ) > -1 && !this.isLastDialog() ){
-			w.location.hash += "#" + this.hash;
-		} else if( !this.isLastDialog() ){
-			w.location.hash = this.hash;
+		if( w.Dialog.useHash ){
+			if( cleanHash.indexOf( "-dialog" ) > -1 && !this.isLastDialog() ){
+				w.location.hash += "#" + this.hash;
+			} else if( !this.isLastDialog() ){
+				w.location.hash = this.hash;
+			}
 		}
 
 		if( doc.activeElement ){
@@ -265,18 +270,20 @@ window.jQuery = window.jQuery || window.shoestring;
 			// can't trigger back to close the dialog, as it might take us elsewhere.
 			// so we have to go forward and create a new hash that does not have this
 			// dialog's hash at the end
-			if( hashKeys.join("") !== initialHashKeys.join("") ){
-				window.history.back();
-			} else {
-				var escapedRegexpHash = this
-						.hash
-						.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+			if( window.Dialog.useHash ){
+				if( hashKeys.join("") !== initialHashKeys.join("") ){
+					window.history.back();
+				} else {
+					var escapedRegexpHash = this
+							.hash
+							.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 
-				window.location.hash = window
-					.location
-					.hash
-					.replace( new RegExp( "#" + escapedRegexpHash + "$" ), "" );
-			}
+					window.location.hash = window
+						.location
+						.hash
+						.replace( new RegExp( "#" + escapedRegexpHash + "$" ), "" );
+				}
+		}
 
 			return;
 		}
