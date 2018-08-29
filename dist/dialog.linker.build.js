@@ -32,7 +32,7 @@ window.jQuery = window.jQuery || window.shoestring;
 
 		// keeping data-nobg here for compat. Deprecated.
 		this.$background = !this.$el.is( '[data-' + pluginName + '-nobg]' ) ?
-			$( doc.createElement('div') ).addClass( cl.bkgd ).appendTo( "body") :
+			$( doc.createElement('div') ).addClass( cl.bkgd ).attr( "tabindex", "-1" ).appendTo( "body") :
 			$( [] );
 
 		// when dialog first inits, save a reference to the initial hash so we can know whether
@@ -55,7 +55,7 @@ window.jQuery = window.jQuery || window.shoestring;
 		// won't be recognized by the browser when the dialog comes up and the back
 		// button will return to the referring page. So, when nohistory is defined,
 		// we append a "unique" identifier to the hash.
-		this.hash += this.nohistory ? "-" + Date.now().toString() : "" ;
+		this.hash += this.nohistory ? "-" + new Date().getTime().toString() : "" ;
 
 		this.isOpen = false;
 		this.isTransparentBackground = this.$el.is( '[data-transbg]' );
@@ -65,6 +65,9 @@ window.jQuery = window.jQuery || window.shoestring;
 
   // default to tracking history with the dialog
   Dialog.history = true;
+
+	// This property is global across dialogs - it determines whether the hash is get/set at all
+	Dialog.useHash = true;
 
 	Dialog.events = ev = {
 		open: pluginName + "-open",
@@ -88,9 +91,12 @@ window.jQuery = window.jQuery || window.shoestring;
 		close: "." + Dialog.classes.close + ", [data-close], [data-dialog-close]"
 	};
 
+
 	Dialog.prototype.destroy = function() {
 		// unregister the focus stealing
 		window.focusRegistry.unregister(this);
+
+		this.$el.trigger("destroy");
 
 		// clear init for this dom element
 		this.$el.data()[pluginName] = undefined;
@@ -119,8 +125,11 @@ window.jQuery = window.jQuery || window.shoestring;
 
 
 	Dialog.prototype._addA11yAttrs = function(){
-		this.$el.attr( "role", "dialog" );
-		this.$el.attr( "tabindex", "0" );
+		this.$el
+			.attr( "role", "dialog" )
+			.attr( "tabindex", "-1" )
+			.find( Dialog.selectors.close ).attr( "role", "button" );
+
 	};
 
 	Dialog.prototype._removeA11yAttrs = function(){
@@ -145,10 +154,40 @@ window.jQuery = window.jQuery || window.shoestring;
 	Dialog.prototype._checkInteractivity = function(){
 		if( this._isNonInteractive() ){
 			this._removeA11yAttrs();
+			this._ariaShowUnrelatedElems();
 		}
 		else{
 			this._addA11yAttrs();
+
 		}
+	};
+
+
+	Dialog.prototype._ariaHideUnrelatedElems = function(){
+		this._ariaShowUnrelatedElems();
+		var ignoredElems = "script, style";
+		var hideList = this.$el.siblings().not( ignoredElems );
+		this.$el.parents().not( "body, html" ).each(function(){
+			hideList = hideList.add( $( this ).siblings().not( ignoredElems ) );
+		});
+		hideList.each(function(){
+			var priorHidden = $( this ).attr( "aria-hidden" ) || "";
+			$( this )
+				.attr( "data-dialog-aria-hidden", priorHidden )
+				.attr( "aria-hidden", "true" );
+		});
+	};
+
+
+	Dialog.prototype._ariaShowUnrelatedElems = function(){
+		$( "[data-dialog-aria-hidden]" ).each(function(){
+			if( $( this ).attr( "data-dialog-aria-hidden" ).match( "true|false" ) ){
+				$( this ).attr( "aria-hidden", $( this ).attr( "data-dialog-aria-hidden" ) );
+			}
+			else {
+				$( this ).removeAttr( "aria-hidden" );
+			}
+		}).removeAttr( "data-dialog-aria-hidden" );
 	};
 
 	Dialog.prototype.open = function() {
@@ -172,10 +211,12 @@ window.jQuery = window.jQuery || window.shoestring;
 
 		var cleanHash = w.location.hash.replace( /^#/, "" );
 
-		if( cleanHash.indexOf( "-dialog" ) > -1 && !this.isLastDialog() ){
-			w.location.hash += "#" + this.hash;
-		} else if( !this.isLastDialog() ){
-			w.location.hash = this.hash;
+		if( w.Dialog.useHash ){
+			if( cleanHash.indexOf( "-dialog" ) > -1 && !this.isLastDialog() ){
+				w.location.hash += "#" + this.hash;
+			} else if( !this.isLastDialog() ){
+				w.location.hash = this.hash;
+			}
 		}
 
 		if( doc.activeElement ){
@@ -183,6 +224,11 @@ window.jQuery = window.jQuery || window.shoestring;
 		}
 
 		this.$el[ 0 ].focus();
+		var self = this;
+		setTimeout(function(){
+			self._ariaHideUnrelatedElems();
+		});
+
 
 		this.$el.trigger( ev.opened );
 	};
@@ -207,33 +253,38 @@ window.jQuery = window.jQuery || window.shoestring;
 			return;
 		}
 
+		this._ariaShowUnrelatedElems();
+
 		// if close() is called directly and the hash for this dialog is at the end
 		// of the url, then we need to change the hash to remove it, either by going
 		// back if we can, or by adding a history state that doesn't have it at the
 		// end
 		if( window.location.hash.split( "#" ).pop() === this.hash ){
-			// let's check if the first segment in the hash is the same as the first
-			// segment in the initial hash if not, it's safe to use back() to close
-			// this out and clean the hash up
-			var firstHashSegment = window.location.hash.split( "#" )[ 1 ];
-			var firstInitialHashSegment = this.initialLocationHash.split( "#" )[ 1 ];
-			if( firstHashSegment && firstInitialHashSegment && firstInitialHashSegment !== firstHashSegment ){
-				window.history.back();
-			}
+			// check if we're back at the original hash, if we are then we can't
+			// go back again otherwise we'll move away from the page
+			var hashKeys = window.location.hash.split( "#" );
+			var initialHashKeys = this.initialLocationHash.split( "#" );
+
+			// if we are not at the original hash then use history
 			// otherwise, if it's the same starting hash as it was at init time, we
 			// can't trigger back to close the dialog, as it might take us elsewhere.
 			// so we have to go forward and create a new hash that does not have this
 			// dialog's hash at the end
-			else {
-				var escapedRegexpHash = this
-            .hash
-            .replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+			if( window.Dialog.useHash ){
+				if( hashKeys.join("") !== initialHashKeys.join("") ){
+					window.history.back();
+				} else {
+					var escapedRegexpHash = this
+							.hash
+							.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 
-				window.location.hash = window
-          .location
-          .hash
-          .replace( new RegExp( "#" + escapedRegexpHash + "$" ), "" );
-			}
+					window.location.hash = window
+						.location
+						.hash
+						.replace( new RegExp( "#" + escapedRegexpHash + "$" ), "" );
+				}
+		}
+
 			return;
 		}
 
@@ -381,48 +432,51 @@ window.jQuery = window.jQuery || window.shoestring;
 			}
 
 			var dialog = new Dialog( this );
+			var onOpen, onClose, onClick, onBackgroundClick;
 
 			$el.addClass( Dialog.classes.content )
 
-				.bind( Dialog.events.open, function(){
+				.bind( Dialog.events.open, onOpen = function(){
 					dialog.open();
 				})
-				.bind( Dialog.events.close, function(){
+				.bind( Dialog.events.close, onClose = function(){
 					dialog.close();
 				})
-				.bind( "click", function( e ){
+				.bind( "click", onClick = function( e ){
 					if( $(e.target).closest(Dialog.selectors.close).length ){
 						e.preventDefault();
 						dialog.close();
 					}
 				});
 
-			dialog.$background.bind( "click", function() {
+			dialog.$background.bind( "click", onBackgroundClick = function() {
 				dialog.close();
 			});
 
 			var onHashchange;
 
 			// on load and hashchange, open the dialog if its hash matches the last part of the hash, and close if it doesn't
-			$( w ).bind( "hashchange", onHashchange = function(){
-				var hash = w.location.hash.split( "#" ).pop();
+			if( Dialog.useHash ){
+				$( w ).bind( "hashchange", onHashchange = function(){
+					var hash = w.location.hash.split( "#" ).pop();
 
-				// if the hash matches this dialog's, open!
-				if( hash === dialog.hash ){
-					if( !dialog.nohistory ){
-						dialog.open();
+					// if the hash matches this dialog's, open!
+					if( hash === dialog.hash ){
+						if( !dialog.nohistory ){
+							dialog.open();
+						}
 					}
-				}
-				// if it doesn't match...
-				else {
-					dialog.close();
-				}
-			});
+					// if it doesn't match...
+					else {
+						dialog.close();
+					}
+				});
+			}
 
-			onHashchange();
+			var onDocClick, onKeyup, onResize;
 
 			// open on matching a[href=#id] click
-			$( doc ).bind( "click", function( e ){
+			$( doc ).bind( "click", onDocClick = function( e ){
 				var $matchingDialog, $a;
 
 				$a = $( e.target ).closest( "a" );
@@ -440,7 +494,7 @@ window.jQuery = window.jQuery || window.shoestring;
 							$( "[id='" + id + "'],	[id='" + encodeURIComponent(id) + "']" );
 					} catch ( error ) {
 						// TODO should check the type of exception, it's not clear how well
-						//      the error name "SynatxError" is supported
+						//			the error name "SynatxError" is supported
 						return;
 					}
 
@@ -452,7 +506,7 @@ window.jQuery = window.jQuery || window.shoestring;
 			});
 
 			// close on escape key
-			$( doc ).bind( "keyup", function( e ){
+			$( doc ).bind( "keyup", onKeyup = function( e ){
 				if( e.which === 27 ){
 					dialog.close();
 				}
@@ -460,14 +514,31 @@ window.jQuery = window.jQuery || window.shoestring;
 
 			dialog._checkInteractivity();
 			var resizepoll;
-			$( window ).bind( "resize", function(){
+			$( window ).bind( "resize", onResize = function(){
 				if( resizepoll ){
 					clearTimeout( resizepoll );
 				}
 				resizepoll = setTimeout( function(){
 					dialog._checkInteractivity.call( dialog );
 				}, 150 );
-			} );
+			});
+
+			$el.bind("destroy", function(){
+				$(w).unbind("hashchange", onHashchange);
+
+				$el
+					.unbind( Dialog.events.open, onOpen )
+					.unbind( Dialog.events.close, onClose )
+					.unbind( "click", onClick );
+
+				dialog.$background.unbind( "click", onBackgroundClick);
+
+				$( doc ).unbind( "click", onDocClick );
+				$( doc ).unbind( "keyup", onKeyup );
+				$( window ).unbind( "resize", onResize );
+			});
+
+			onHashchange();
 
 			window.focusRegistry.register(dialog);
 		});
