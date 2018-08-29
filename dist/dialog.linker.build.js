@@ -456,20 +456,22 @@ window.jQuery = window.jQuery || window.shoestring;
 			var onHashchange;
 
 			// on load and hashchange, open the dialog if its hash matches the last part of the hash, and close if it doesn't
-			$( w ).bind( "hashchange", onHashchange = function(){
-				var hash = w.location.hash.split( "#" ).pop();
+			if( Dialog.useHash ){
+				$( w ).bind( "hashchange", onHashchange = function(){
+					var hash = w.location.hash.split( "#" ).pop();
 
-				// if the hash matches this dialog's, open!
-				if( hash === dialog.hash ){
-					if( !dialog.nohistory ){
-						dialog.open();
+					// if the hash matches this dialog's, open!
+					if( hash === dialog.hash ){
+						if( !dialog.nohistory ){
+							dialog.open();
+						}
 					}
-				}
-				// if it doesn't match...
-				else {
-					dialog.close();
-				}
-			});
+					// if it doesn't match...
+					else {
+						dialog.close();
+					}
+				});
+			}
 
 			var onDocClick, onKeyup, onResize;
 
