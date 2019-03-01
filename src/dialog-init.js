@@ -80,8 +80,8 @@
 					}
 
 					if( $matchingDialog.length && $matchingDialog.is( $el ) ){
-						$matchingDialog.trigger( Dialog.events.open );
 						e.preventDefault();
+						$matchingDialog.trigger( Dialog.events.open );
 					}
 				}
 			});
