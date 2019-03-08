@@ -41,7 +41,8 @@
 						.html("")
 						.append(content)
 						.dialog()
-						.trigger("enhance dialog-update");
+						.trigger("enhance")
+						.trigger( "dialog-update" );
 					return;
 				}
 
