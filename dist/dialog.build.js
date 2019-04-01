@@ -203,6 +203,8 @@ window.jQuery = window.jQuery || window.shoestring;
 			return;
 		}
 
+		var self = this;
+
 		this.$el.addClass( cl.open );
 
 		this.$background.addClass( cl.bkgdOpen );
@@ -231,12 +233,11 @@ window.jQuery = window.jQuery || window.shoestring;
 		}
 
 		this.$el[ 0 ].focus();
-		var self = this;
+
 		setTimeout(function(){
 			self._ariaHideUnrelatedElems();
 		});
 
-		var self = this;
 		this.$el.on( ev.resize, function() {
 			self.resizeBackground();
 		});
