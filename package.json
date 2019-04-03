@@ -1,7 +1,11 @@
 {
   "name": "fg-dialog",
   "description": "simple dialog",
+<<<<<<< HEAD
   "version": "1.6.1",
+=======
+  "version": "1.6.3",
+>>>>>>> 1cf2469f2febf276dda7827a369fefc47e98a0e0
   "homepage": "https://github.com/filamentgroup/dialog",
   "author": {
     "name": "Filament Group",

@@ -42,7 +42,7 @@
 						.append(content)
 						.dialog()
 						.trigger("enhance")
-						.trigger( "dialog-update" );
+						.trigger("dialog-update");
 					return;
 				}
 

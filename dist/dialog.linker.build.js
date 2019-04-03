@@ -73,7 +73,8 @@ window.jQuery = window.jQuery || window.shoestring;
 		open: pluginName + "-open",
 		opened: pluginName + "-opened",
 		close: pluginName + "-close",
-		closed: pluginName + "-closed"
+		closed: pluginName + "-closed",
+		resize: pluginName + "-resize"
 	};
 
 	Dialog.classes = cl = {
@@ -190,21 +191,29 @@ window.jQuery = window.jQuery || window.shoestring;
 		}).removeAttr( "data-dialog-aria-hidden" );
 	};
 
+	Dialog.prototype.resizeBackground = function() {
+		if( this.$background.length ) {
+			var scrollPlusHeight = (this.scroll || 0) + this.$el[0].clientHeight;
+			this.$background[ 0 ].style.height = Math.max( scrollPlusHeight, docElem.scrollHeight, docElem.clientHeight ) + "px";
+		}
+	};
+
 	Dialog.prototype.open = function() {
 		if( this.isOpen ){
 			return;
 		}
 
-		if( this.$background.length ) {
-			this.$background[ 0 ].style.height = Math.max( docElem.scrollHeight, docElem.clientHeight ) + "px";
-		}
+		var self = this;
+
 		this.$el.addClass( cl.open );
+
 		this.$background.addClass( cl.bkgdOpen );
 		this.$background.attr( "id", this.$el.attr( "id" ) + "-background" );
 		this._setBackgroundTransparency();
 
 		this.scroll = "pageYOffset" in w ? w.pageYOffset : ( docElem.scrollY || docElem.scrollTop || ( body && body.scrollY ) || 0 );
 		this.$el[ 0 ].style.top = this.scroll + "px";
+		this.resizeBackground();
 
 		$html.addClass( cl.open );
 		this.isOpen = true;
@@ -224,11 +233,14 @@ window.jQuery = window.jQuery || window.shoestring;
 		}
 
 		this.$el[ 0 ].focus();
-		var self = this;
+
 		setTimeout(function(){
 			self._ariaHideUnrelatedElems();
 		});
 
+		this.$el.on( ev.resize, function() {
+			self.resizeBackground();
+		});
 
 		this.$el.trigger( ev.opened );
 	};
@@ -283,7 +295,7 @@ window.jQuery = window.jQuery || window.shoestring;
 						.hash
 						.replace( new RegExp( "#" + escapedRegexpHash + "$" ), "" );
 				}
-		}
+			}
 
 			return;
 		}
@@ -303,6 +315,8 @@ window.jQuery = window.jQuery || window.shoestring;
 			$html.removeClass( cl.open );
 			w.scrollTo( 0, this.scroll );
 		}
+
+		this.$el.off( ev.resize );
 
 		this.$el.trigger( ev.closed );
 	};
@@ -351,7 +365,8 @@ window.jQuery = window.jQuery || window.shoestring;
 						.html("")
 						.append(content)
 						.dialog()
-						.trigger("enhance");
+						.trigger("enhance")
+						.trigger("dialog-update");
 					return;
 				}
 
