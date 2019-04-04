@@ -47,8 +47,9 @@ window.jQuery = window.jQuery || window.shoestring;
 		this.nohistory =
 			this.$el.attr( 'data-dialog-history' ) === "false" || !Dialog.history;
 
+		var id = this.$el.attr( "id" );
 		// use the identifier and an extra tag for hash management
-		this.hash = this.$el.attr( "id" ) + "-dialog";
+		this.hash = id + "-dialog";
 
 		// if won't pop up the dialog on initial load (`nohistory`) the user MAY
 		// refresh a url with the dialog id as the hash then a change of the hash
@@ -59,6 +60,10 @@ window.jQuery = window.jQuery || window.shoestring;
 
 		this.isOpen = false;
 		this.isTransparentBackground = this.$el.is( '[data-transbg]' );
+
+		if( id ) {
+			this.resizeEventName = "resize.dialog-" + id;
+		}
 
 		this._addA11yAttrs();
 	};
@@ -193,8 +198,14 @@ window.jQuery = window.jQuery || window.shoestring;
 
 	Dialog.prototype.resizeBackground = function() {
 		if( this.$background.length ) {
+			var bg = this.$background[ 0 ];
+			// don’t let the background size interfere with our height measurements
+			bg.style.display = "none";
+
 			var scrollPlusHeight = (this.scroll || 0) + this.$el[0].clientHeight;
-			this.$background[ 0 ].style.height = Math.max( scrollPlusHeight, docElem.scrollHeight, docElem.clientHeight ) + "px";
+			var height = Math.max( scrollPlusHeight, docElem.scrollHeight, docElem.clientHeight );
+			bg.style.height = height + "px";
+			bg.style.display = "";
 		}
 	};
 
@@ -241,6 +252,16 @@ window.jQuery = window.jQuery || window.shoestring;
 		this.$el.on( ev.resize, function() {
 			self.resizeBackground();
 		});
+
+		if( this.resizeEventName ) {
+			var timeout;
+			$(w).on(this.resizeEventName, function() {
+				w.clearTimeout(timeout);
+				timeout = setTimeout(function() {
+					self.resizeBackground();
+				}, 50);
+			});
+		}
 
 		this.$el.trigger( ev.opened );
 	};
@@ -317,6 +338,10 @@ window.jQuery = window.jQuery || window.shoestring;
 		}
 
 		this.$el.off( ev.resize );
+
+		if( this.resizeEventName ) {
+			$(w).off(this.resizeEventName);
+		}
 
 		this.$el.trigger( ev.closed );
 	};
