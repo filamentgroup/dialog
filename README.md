@@ -6,7 +6,4 @@ Just a simple, minimal, Responsive jQuery/Shoestring dialog with typical interac
 
 See demo page for how-to and examples: 
 
-- https://master-origin-dialog.fgview.com/demos/
-- OR if it's a branch you want to see: https://BRANCHNAMEHERE-origin-dialog.fgview.com/demos/
-
-[![Build Status](https://travis-ci.org/filamentgroup/dialog.svg)](https://travis-ci.org/filamentgroup/dialog)
+- https://fg-dialog.netlify.app/demos
