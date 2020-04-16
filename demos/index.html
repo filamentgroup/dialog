@@ -247,11 +247,24 @@
 
 		<h2 class="docs">Dialog is taller than the document</h2>
 
+		<style>
+		#really-tall-div {
+			height: 5000px;
+		}
+		@media (min-width: 37.5em) { /* 600px */
+			#really-tall-div {
+				height: 10000px;
+			}
+		}
+		</style>
 		<div data-xrayhtml>
 			<div class="dialog" id="mydialog-tall" aria-label="dialog example">
 				<p id="mydialog-tall-title">This is a dialog</p>
 				<a href="#mydialog-tall-btn" data-dialog-close>Close</a>
-				<div style="height: 10000px; background-color: pink">Really tall div</div>
+				<div id="really-tall-div" style="background-color: pink">
+					<p>&lt; 600px: 5000px height</p>
+					<p>&gt; 600px: 10000px height</p>
+				</div>
 			</div>
 			<a href="#mydialog-tall" id="mydialog-tall-btn" class="docs-btn">Open Dialog</a>
 		</div>
