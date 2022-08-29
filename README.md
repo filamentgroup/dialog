@@ -1,4 +1,5 @@
-> Hello! We recommend using the [dialog HTML tag](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog) now that it's [well supported](https://caniuse.com/dialog). We're no longer maintaining this repository.
+
+:warning: This project is archived and the repository is no longer maintained. We recommend using the [HTML dialog tag](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog) now that it's [well supported](https://caniuse.com/dialog). 
 
 # dialog
 
